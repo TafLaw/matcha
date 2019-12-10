@@ -1,0 +1,24 @@
+{
+  "name": "matcha",
+  "version": "1.0.0",
+  "description": "Dating website created using Nodejs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TafLaw/matcha.git"
+  },
+  "author": "Tafadzwa",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TafLaw/matcha/issues"
+  },
+  "homepage": "https://github.com/TafLaw/matcha#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1"
+  }
+}
