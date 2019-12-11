@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
+    <script src="javascripts/pop.js"></script>
+</head>
+<body>
+    <nav>
+        <div id="nav">
+            <span>MATCHA</span>
+            <button id="a" onclick="clicked_show()">Login</button>
+        </div>
+    </nav>
+    <div id="login">
+        <div id="popupContact">
+            <h1>Login</h1>
+            <form action="" id="login-form" method="POST">
+                <img id="close" src="/icons/error.png" onclick ="clicked_hide()">
+                <input class="login-in" type="email" name="email" placeholder="email"><br>
+                <input class="login-in" type="password" name="password" placeholder="password"><br>
+                <input class="login-in" type="submit" name="submit" value="Login">
+            </form>
+        </div>
+    </div>
+    <div id="signup">
+        <h1>Join Now</h1>
+        <div id="signupcont">
+            <form action="" id="signup-form" method="POST">
+                <input class="signup-in" type="text" name="firstname" placeholder="first name" required><br>
+                <input class="signup-in" type="text" name="secondname" placeholder="second name" required><br>
+                <input class="signup-in" type="email" name="email" placeholder="email" required><br>
+                <input class="signup-in" type="password" name="password" placeholder="password" required><br>
+                <input class="signup-in" type="password" name="confirmpass" placeholder="confirm password" required><br>
+                <input class="signup-in" type="submit" name="submit" value="Sign Up">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
