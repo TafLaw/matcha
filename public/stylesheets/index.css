@@ -20,6 +20,10 @@ h1 {
     text-align: center;
 }
 
+h3 {
+    color: red;
+}
+
 span {
     font-family: yellowtail;
     font-size: -webkit-xxx-large;
