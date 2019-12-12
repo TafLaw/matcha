@@ -19,6 +19,7 @@ router.post('/', function(req, res){
       "surname": surname,
       "email":email, 
       "password":pass,
+      "verify": 0,
       "notifications": 1
     }
     MongoClient.connect(url, function(err, db) {
@@ -33,8 +34,28 @@ router.post('/', function(req, res){
   //redirect
     res.render('login', {name: "signup"});
   }
-  else
-      res.render('login', {name: "login"});
+  else{
+    var email = req.body.email;
+    var password = req.body.password;
+
+    MongoClient.connect(url, function(err, db) {
+      if (err) throw err;
+      var dbo = db.db("matcha");
+      dbo.collection('users').findOne({email: email}, function(err, user) {
+        if (user === null){
+          console.log("User not found!");
+          res.render("index", {error: "User not found"});
+          // return res.status(400).send({message: "User not found"});
+        }
+        // if (err) throw err;
+        else{
+          console.log("logged in successfully!");
+          db.close();
+          res.render('login', {name: "login"});
+        }
+      });      
+  });
+  }
 });
 
 module.exports = router;
