@@ -7,11 +7,10 @@ var url = "mongodb://localhost:27017/";
 
 //for sending an email
 var transporter = nodemailer.createTransport({
-  host: 'smtp.mailtrap.io',
-  port: 2525,
+  service: 'gmail',
   auth: {
-     user: '1bcfce1e963b02',
-     pass: 'cb86d0bb05154e'
+      user: 'jj646019@gmail.com',
+      pass: 'matchaproject'
   }
 });
 
@@ -27,7 +26,7 @@ router.post('/', function(req, res){
   var pass = req.body.password;
   var hashedPassword = passwordHash.generate(pass);
   var sub = req.body.submit;
-  
+  //sign up
   if (sub === "Sign Up"){
     var data = { 
       "name": name,
@@ -48,11 +47,19 @@ router.post('/', function(req, res){
       });
     });
     //send email
+    function message(){
+      var l1 = 'Your verification Code is ';
+      var code = hashedPassword.substr(0, 9);
+      var l3 = ', Please Click On ';
+      var link = '<a href="http://localhost:8080/login">this link</a>';
+      var l4 = ' to activate your account.';
+      return l1 + code + l3 + link + l4;
+    }
     var mailOptions = {
-      from: 'tmuzeren@student.wethinkcode.co.za',
-      to: 'reneg37685@tmail2.com',
+      from: 'auth@matcha.com',
+      to: email,
       subject: 'Sending Email using Node.js',
-      text: 'That was easy!'
+      html: message()
     };
     transporter.sendMail(mailOptions, function(error, info){
       if (error) {
@@ -64,6 +71,7 @@ router.post('/', function(req, res){
   //redirect
     res.render('login', {name: "email sent"});
   }
+  //login
   else{
     var email = req.body.email;
     var password = req.body.password;
