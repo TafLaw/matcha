@@ -1,6 +1,23 @@
-var http = require('http');
+var express = require('express');
+var router = express.Router();
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/";
 
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end('Hello World!');
-})
+/* Email verification */
+router.get('/', function(req, res, next) {
+  email = req.query.email;
+  code = req.query.code;
+
+  MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
+    if (err) throw err;
+    var dbo = db.db("matcha");
+    dbo.collection('users').updateOne({email:email, code:code},{$set:{verify:1}}, function(err, res) {
+      if (err) throw err;
+      console.log("updated successfully!");
+      db.close();
+    });
+  });
+  res.render('verify', { title: 'TAF' });
+});
+
+module.exports = router;

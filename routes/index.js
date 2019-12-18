@@ -26,6 +26,10 @@ router.post('/', function(req, res){
   var pass = req.body.password;
   var hashedPassword = passwordHash.generate(pass);
   var sub = req.body.submit;
+
+  //check if user doesn't exist
+  
+
   //sign up
   if (sub === "Sign Up"){
     var data = { 
@@ -34,7 +38,8 @@ router.post('/', function(req, res){
       "email":email,
       "password":hashedPassword,
       "verify": 0,
-      "notifications": 1
+      "notifications": 1,
+      "code":hashedPassword.substr(0, 9)
     }
     MongoClient.connect(url, function(err, db) {
       if (err) throw err;
@@ -51,7 +56,7 @@ router.post('/', function(req, res){
       var l1 = 'Your verification Code is ';
       var code = hashedPassword.substr(0, 9);
       var l3 = ', Please Click On ';
-      var link = '<a href="http://localhost:8080/login">this link</a>';
+      var link = '<a href="http://localhost:8080/verify?email=' + email + '&code=' + code +'">this link</a>';//{}&code=">this link</a>';
       var l4 = ' to activate your account.';
       return l1 + code + l3 + link + l4;
     }
@@ -95,7 +100,9 @@ router.post('/', function(req, res){
       });
 
       dbo.collection('users').findOne({email: email}, function(err, user) {
-        if (user === null){
+        if (!verify)
+          console.log("Please verify your account");
+        else if (user === null){
           console.log("User not found!");
           res.render("index");
           // return res.status(400).send({message: "User not found"});
