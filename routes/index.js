@@ -1,10 +1,12 @@
 var express = require('express');
 var passwordHash = require('password-hash');
 var nodemailer = require("nodemailer");
+const session = require('express-session');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
+router.use(session({secret: 'ssshhhhh', resave: false, saveUninitialized: false}));
 //for sending an email
 var transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -115,9 +117,15 @@ router.post('/', function(req, res){
         }
         // if (err) throw err;
         else if(passwordHash.verify(password, hashedPass)){
+          var sess;
+          sess=req.session;
+          sess.email=email;
+          global.sessionemail=sess.email;
+          console.log(this);
           console.log("logged in successfully!");
           db.close();
-          res.render('login', {name: "login"});
+          if (sess.email)
+            res.render('login', {name: "login"});
         }
         else{
           console.log("Incorrect password!");
