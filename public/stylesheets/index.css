@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Yellowtail&display=swap');
 
 body {
-    /* background-image: url(../../adminGallery/background.jpg); */
     padding: 0;
     margin: 0;
     background-image: url(../images/background.jpg);
@@ -74,6 +73,11 @@ span {
     overflow:auto
 }
 
+#forgot_pass {
+    text-align: center;
+    color: blue;
+}
+
 div#popupContact {
     background-color: #0000008c;
     position: absolute;
@@ -101,4 +105,22 @@ img#close {
     height: 4vh;
     border: 0px solid;
     border-radius: 8%;
+}
+
+#bd_wrp {
+    color: white;
+    text-align: center;
+    margin-bottom: -11%;
+}
+
+._bd_s {
+    display: inline-block;
+    margin: 5% 5% 0% 5%;
+}
+
+select {
+    background-color: #fff;
+    color: #1c1e21;
+    border: 1px solid #ccd0d5;
+    height: 27px;
 }
