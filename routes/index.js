@@ -25,6 +25,9 @@ router.post('/', function(req, res){
   var email = req.body.email;
   var pass = req.body.password;
   var hashedPassword = passwordHash.generate(pass);
+  var birthday_day = req.body.birthday_day;
+  var birthday_month = req.body.birthday_month;
+  var birthday_year = req.body.birthday_year;
   var sub = req.body.submit;
 
   //check if user doesn't exist
@@ -37,6 +40,9 @@ router.post('/', function(req, res){
       "surname": surname,
       "email":email,
       "password":hashedPassword,
+      "birthday_day":birthday_day,
+      "birthday_month":birthday_month,
+      "birthday_year":birthday_year,
       "verify": 0,
       "notifications": 1,
       "code":hashedPassword.substr(0, 9)
@@ -63,7 +69,7 @@ router.post('/', function(req, res){
     var mailOptions = {
       from: 'auth@matcha.com',
       to: email,
-      subject: 'Sending Email using Node.js',
+      subject: 'Matcha Verification',
       html: message()
     };
     transporter.sendMail(mailOptions, function(error, info){
@@ -100,7 +106,7 @@ router.post('/', function(req, res){
       });
 
       dbo.collection('users').findOne({email: email}, function(err, user) {
-        if (!verify)
+        if (!verified)
           console.log("Please verify your account");
         else if (user === null){
           console.log("User not found!");
