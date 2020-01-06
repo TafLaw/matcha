@@ -1,6 +1,4 @@
 var express = require('express');
-var sessio = require("./index");
-var dt = require('./myfirstmodule');
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
@@ -9,7 +7,6 @@ var url = "mongodb://localhost:27017/";
 router.get('/', function(req, res, next) {
   email = req.query.email;
   code = req.query.code;
-  console.log(sessio.setsess);
 
   MongoClient.connect(url, { useUnifiedTopology: true }, function(err, db) {
     if (err) throw err;
@@ -22,5 +19,6 @@ router.get('/', function(req, res, next) {
   });
   res.render('verify', { title: 'TAF' });
 });
+
 
 module.exports = router;

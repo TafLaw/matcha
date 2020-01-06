@@ -4,8 +4,16 @@ var formidable = require("formidable");
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  console.log("Handled get request on the home page.");
-  res.render('login', { title: 'TAF' });
+  if (req.session.user){
+    console.log(req.session.user);
+      console.log("Handled get request on the home page.");
+
+  }
+  else{
+    console.log(req.session.user);
+      console.log("Not defined!");
+  }
+  // res.render('login', { title: 'TAF' });
 });
 
 router.post('/', (req, res, next) => {
