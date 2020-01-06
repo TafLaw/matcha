@@ -19,6 +19,12 @@ router.get("/", function(req, res){
   res.render('index');
 });
 
+/*router.get("/chat", function(req, res){
+  console.log("in index");
+  
+  res.render('chat', { title: 'Express' });
+}); */
+
 router.get("/forgot_pass", function(req, res){
   res.render('forgot_pass');
 });
