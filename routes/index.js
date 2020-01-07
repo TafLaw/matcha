@@ -19,11 +19,27 @@ router.get("/", function(req, res){
   res.render('index');
 });
 
-/*router.get("/chat", function(req, res){
+router.get("/search", function(req, res){
   console.log("in index");
+  MongoClient.connect(url, function(err, db) {
+    if (err) throw err;
+    var name = req.query.name;
+    var dbo = db.db("matcha");
+    var query = {name: name};
+    console.log(name);
+    
+    dbo.collection("users").find(query).toArray(function(err, result) {
+      if (err) throw err;
+      
+      result.forEach(function(user) {
+        console.log(user.name, user.surname);
+      });
+      // console.log(result);
+      db.close();
+    });
+  });
   
-  res.render('chat', { title: 'Express' });
-}); */
+});
 
 router.get("/forgot_pass", function(req, res){
   res.render('forgot_pass');
