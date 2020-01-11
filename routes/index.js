@@ -19,6 +19,17 @@ router.get("/", function(req, res){
   res.render('index');
 });
 
+router.get("/reset", function(req, res){
+  var email = req.query.email;
+  res.render('reset', {email:email});
+});
+
+router.get("/logout", function(req, res){
+  req.session.destroy();
+  res.redirect('http://localhost:8080');
+  // res.render('index');
+});
+
 router.get("/search", function(req, res){
   console.log("in index");
   MongoClient.connect(url, function(err, db) {
@@ -50,15 +61,15 @@ router.post('/', function(req, res){
   var surname = req.body.secondname;
   var email = req.body.email;
   var pass = req.body.password;
-  var hashedPassword = passwordHash.generate(pass);
+  var confirmPass = req.body.confirmpass;
   var birthday_day = req.body.birthday_day;
   var birthday_month = req.body.birthday_month;
   var birthday_year = req.body.birthday_year;
   var sub = req.body.submit;
-
+  
   //check if user doesn't exist
   
-
+  
   //sign up
   if (sub === "Sign Up"){
     if (birthday_day == 0 || birthday_month == 0 || birthday_year == 0){
@@ -67,8 +78,9 @@ router.post('/', function(req, res){
       console.log(birthday_month);
       console.log(birthday_day);
     }
-    else{
+    else if(pass === confirmPass){
       console.log(birthday_year);
+      var hashedPassword = passwordHash.generate(pass);
       var data = { 
         "name": name,
         "surname": surname,
@@ -117,6 +129,9 @@ router.post('/', function(req, res){
       });
     //redirect
       res.render('login', {name: "email sent"});
+    }else{
+      console.log("passwords do not match");
+      
     }
   }
   //login
@@ -143,13 +158,15 @@ router.post('/', function(req, res){
       });
 
       dbo.collection('users').findOne({email: email}, function(err, user) {
-        if (!verified)
-          console.log("Please verify your account");
-        else if (user === null){
+        console.log(user);
+        
+        if (user === null){
           console.log("User not found!");
           res.render("index");
           // return res.status(400).send({message: "User not found"});
         }
+        else if (!verified)
+          console.log("Please verify your account");
         else if(passwordHash.verify(password, hashedPass)){
           //create a user session
           req.session.user = user;
@@ -157,7 +174,7 @@ router.post('/', function(req, res){
           console.log("logged in successfully!");
           db.close();
           if (req.session.user.email)
-            res.render('login', {name: req.session.user.name});
+            res.render('search', {name: req.session.user.name});
         }
         else{
           console.log("Incorrect password!");
