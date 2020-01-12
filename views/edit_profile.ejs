@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>About</title>
+    <h1>Edit Profile Information</h1>
+</head>
+
+<body>
+    <div>
+        <!-- page 1 -->
+        <h3>Insert Information About Youself</h3>
+        <form method="post">
+            <textarea style="width: 800px;height: 100px;" name="aboutprofile">
+            </textarea>
+            <input type="submit" name="updateAbout" value="updateAbout">
+        </form>
+    </div>
+    <!-- page 2 -->
+    <h3>Insert Profile Information</h3>
+    <form method="post">
+        <div style="margin-bottom: 20px;">
+            <div style="margin-bottom: 20px;">
+                Orientation :
+                <select name="gender">
+                    <option name="Female" value="Female">Female</option>
+                    <option name="Male" value="Male">Male</option>
+                    <option name="Custom" value="Custom">Custom</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px;">
+                ethnicity :
+                <select name="race">
+                    <option name="African" value="African">African</option>
+                    <option name="coloured" value="coloured">coloured</option>
+                    <option name="white" value="white">white</option>
+                    <option name="indian" value="indian">indian</option>
+                    <option name="asian" value="asian">asian</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 20px;">
+                height :
+                    <input style="width: 40px;" name="height" type="text">
+                    &nbsp;Metres
+            </div>
+            <div style="margin-bottom: 20px;">
+                Diet :
+                <select name="diet">
+                    <option name="vegetarian" value="vegetarian">vegetarian</option>
+                    <option name="vegan" value="vegan">vegan</option>
+                    <option name="Gluten_free" value="Gluten_free">Gluten_free</option>
+                    <option name="Whole_food" value="Whole_food">Whole_food</option>
+                </select>
+            </div>
+            <input type="submit" name="saveAbout" value="saveAbout">
+        </div>
+    </form>
+</body>
+</html>
