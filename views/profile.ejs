@@ -1,12 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+    <title>
+        Matcha Profile
+    </title>
+    <style>
+        .picbod {
+            border: pink 5px solid;
+            border-radius: 50%;
+            height: 180px;
+            width: 170px;
+        }
+
+        .proimage {
+            border-radius: 50%;
+            height: 180px;
+            width: 170px;
+        }
+
+        .topcontainer {
+            display: flex;
+            margin: 50px;
+        }
+
+        .rating {
+            margin-left: 100px;
+        }
+
+        .bio {
+            height: 600px;
+            width: 800px;
+        }
+
+        .map{
+            height: 500px;
+            width: 500px;
+            margin-bottom: 40px;
+            border: pink 2px solid;
+        }
+        .location
+        {
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 40px;
+            color: pink;
+        }
+        /* .form-popup {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            right: 15px;
+            border: 3px solid #f1f1f1;
+            z-index: 9;
+        } */
+    </style>
+    <!-- <script>
+        function openForm()
+        {
+            document.getElementById("myabout").style.display = "block";
+        }
+    </script> -->
 </head>
+<!-- https://gcs.thesouthafrican.com/2019/12/edf14e72-zozibini-tunzi-2-1200x858.jpg -->
+
 <body>
-    
+    <div class="topcontainer">
+        <div class="picbod">
+            <img class="proimage" src="/images/pogba.jpg" alt="prifile picture">
+            <div style="display: flex;">
+                <div style="margin-right: 20px;">
+                    <form method="post">
+                        <input style="margin-top: 20px;" type="submit" name="Take" value="Take">
+                    </form>
+                </div>
+                <div>
+                    <form method="post" enctype="multipart/form-data">
+                        <input style="margin-top: 20px;" type="file" name="fileuploaded">
+                        <input type="submit" name="upload" value="upload">
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div style="display: flex;margin: 50px;">
+            <div>
+                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <%= username %>
+                </p>
+            </div>
+            <div style="margin-left: 30px;">
+                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <%= age %>
+                </p>
+            </div>
+        </div>
+        <div class="rating">
+            <p
+                style="margin-bottom:50px;color: pink;font-size: 40px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                100%</p>
+            <p
+                style="font-size: 35px;color:lightcoral;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+                Match</p>
+        </div>
+    </div>
+    <hr style="width: 900px">
+    <div class="bio">
+        <div>
+            <p
+                style="font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
+                About MySelf
+            </p>
+            <form method="post">
+                <input type="submit" name="About" value="About">
+            </form>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Veerdana, sans-serif;">
+                <%= text %>
+            </p>
+        </div>
+        <div>
+            <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
+                My Details
+            </p>
+            <form method="post">
+                <input type="submit" name="Details" value="Details">
+            </form>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                Birthday&nbsp;&nbsp;15&nbsp;October
+            </p>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                Orientation&nbsp;&nbsp;<%= gender %>
+            </p>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                Ethnicity&nbsp;&nbsp;<%= race %>
+            </p>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                height&nbsp;&nbsp;<%= height %>
+            </p>
+            <hr>
+            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                Diet&nbsp;&nbsp;<%= diet %>
+            </p>
+            <hr>
+        </div>
+        <div>
+            <h3 class="location" >Your Geolocation</h3>
+            <div id="map" class="map">
+            </div>
+            <p id="location"></p>
+            <button name="getlocation" onclick="getGeoLocation()">Get Your location</button>
+            <!-- <form action="/profile.html" method="post"></form>
+                <input type="submit" name="Geolocation" value="Geolocation">
+            </form> -->
+        </div>
+    </div>
 </body>
+<script>
+    var map = L.map('map').setView([0,0],1);
+
+    L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=DaIkHlWAFmbWHM9uC42N',
+    {
+        tileSize: 512,
+        zoomOffset: -1,
+        minZoom: 1,
+        attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
+    }).addTo(map);
+
+    function getGeoLocation()
+    {
+        if (navigator.geolocation)
+        {
+            navigator.geolocation.getCurrentPosition(showPosition,showError)
+        }
+        else
+        {
+            document.getElementById("location").innerHTML = "Geolocation Is Not Supported By Your Browser";
+        }
+
+        function showPosition(position)
+        {
+            document.getElementById("location").innerHTML = "Latitude: " + position.coords.latitude +
+            "<br>Longitude: " + position.coords.longitude;
+             /* var latlon = position.coords.latitude + "," + position.coords.longitude;
+
+            var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=YOUR_KEY"; */
+
+            document.getElementById("Map").innerHTML = "<img src='"+img_url+"' alt='yourlocation'>";
+        }
+        function showError(positionError)
+        {
+            switch (positionError.code)
+            {
+                case positionError.PERMISSION_DENIED:
+                    document.getElementById("location").innerHTML = "You denied your device location"
+                    break;
+                case positionError.POSITION_UNAVAILABLE:
+                    document.getElementById("location").innerHTML = "Your Device had an Internal Error"
+                    break;
+                case positionError.TIMEOUT:
+                    document.getElementById("location").innerHTML = "Your device had a TIMEOUT WHILE retrieving your location"
+                    break;
+                case positionError.UNKNOWN_ERROR:
+                    document.getElementById("location").innerHTML = "AN UNKOWN ERROR OCCURED"
+                    break;
+            }
+        }
+    }
+</script>
 </html>
