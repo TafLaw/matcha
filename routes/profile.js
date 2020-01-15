@@ -82,7 +82,8 @@ router.post("/", function (req, res) {
                     var checkimage = { name: req.session.user.email };
                     dbo.collection('profileimages').findOne(checkimage, function (err, cresult) {
                         if (err) throw err;
-                        imgname = cresult.name;
+                        //imgname = cresult.name;
+                        imgname = null;
                         if (imgname != null) {
                             console.log("profile image alrady in");
                             MongoClient.connect(url, function (err, db) {
