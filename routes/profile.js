@@ -65,31 +65,54 @@ router.post("/", function (req, res) {
 
         form.parse(req, function (err, fields, files) {
             var oldpath = files.fileuploaded.path;
-            var newpath = __dirname.replace("routes","public") + "/images/" + files.fileuploaded.name;
+            var newpath = __dirname.replace("routes", "public") + "/images/" + files.fileuploaded.name;
             if (files.fileuploaded.size == 0) {
                 console.log("file field is empty");
-               //res.redirect('http://localhost:8080/profile');
-              // res.render('profile');
+                //res.redirect('http://localhost:8080/profile');
+                // res.render('profile');
             }
             else {
                 fs.rename(oldpath, newpath, function (err) {
                     if (err) throw err;
-                   // console.log(newpath);
+                    // console.log(newpath);
                 });
-                MongoClient.connect(url, function(err, db)
-                {
+                MongoClient.connect(url, function (err, db) {
                     if (err) throw err;
                     var dbo = db.db('matcha');
-                    var imagepath = {name: req.session.user.email, pathinfo: "/images/" + files.fileuploaded.name};
-                    dbo.collection('profileimages').insertOne(imagepath, function(err, res)
-                    {
-                        if(err) throw err;
-                        console.log("profile path saved!");
-                    })
-                })
+                    var checkimage = { name: req.session.user.email };
+                    dbo.collection('profileimages').findOne(checkimage, function (err, cresult) {
+                        if (err) throw err;
+                        imgname = cresult.name;
+                        if (imgname != null) {
+                            console.log("profile image alrady in");
+                            MongoClient.connect(url, function (err, db) {
+                                if (err) throw err;
+                                var dbo = db.db('matcha');
+                                var updateimage = { name: req.session.user.email };
+                                var newimage = { $set: { pathinfo: "/images/" + files.fileuploaded.name } };
+                                dbo.collection('profileimages').updateOne(updateimage, newimage, function (err, res) {
+                                    if (err) throw err;
+                                    console.log('profile image updated');
+                                });
+                            });
+                        }
+                        else {
+                            MongoClient.connect(url, function (err, db) {
+                                if (err) throw err;
+                                var dbo = db.db('matcha');
+                                var imagepath = { name: req.session.user.email, pathinfo: "/images/" + files.fileuploaded.name };
+                                dbo.collection('profileimages').insertOne(imagepath, function (err, res) {
+                                    if (err) throw err;
+                                    console.log("profile path saved!");
+                                });
+                            });
+                        }
+                    });
+                });
                 console.log("file has been moved");
+                console.log("profile redirected");
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
         });
     }
 }
@@ -120,6 +143,7 @@ router.get("/", function (req, res) {
     var gender = null;
     var height = null;
     var img = null;
+    var birthday = null;
 
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
@@ -134,7 +158,8 @@ router.get("/", function (req, res) {
             //console.log("Myname");
             result.forEach(function (user) {
                 username1 = user.name;
-                //age = Number(17);
+                birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
+                age = Number(17);
             })
             //console.log(username1);
         }
@@ -171,13 +196,14 @@ router.get("/", function (req, res) {
 
         var query4 = { name: req.session.user.email }
 
-        dbo.collection("profileimages").find(query4).toArray(function(err, result4) {
+        dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
             if (err) throw err;
             result4.forEach(function (image) {
                 img = image.pathinfo;
                 //console.log("mthomega" + image.pathinfo)
             });
-            console.log("mthomega" + img);
+            console.log("profile images");
+            console.log(result4);
         }
         );
 
@@ -192,9 +218,37 @@ router.get("/", function (req, res) {
             });
             //console.log(result3);
             console.log(username1 + "the nigga");
-            res.render('profile', { username1: username1 ,imageu: img/*age: age  text: texta */ /* , diet: diet, race: race, gender: gender, height: height */ });
-        }
-        );
+            if (texta == null) {
+                texta = '';
+                console.log("whats wrong");
+                console.log(username1);
+            }
+            else if (img == null) {
+                img = '';
+            }
+            else if (username1 == null) {
+                username1 = '';
+            }
+            else if (birthday == null) {
+                birthday = '';
+            }
+            else if (diet == null) {
+                diet = '';
+            }
+            else if (race == null) {
+                race = '';
+            }
+            else if (gender == null) {
+                gender = '';
+            }
+            else if (height == null) {
+                height = '';
+            }
+            else if (text == null) {
+                text = '';
+            }
+            res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, diet: diet, race: race, gender: gender, height: height });
+        });
         db.close();
     });
 
@@ -207,10 +261,8 @@ router.get("/", function (req, res) {
     /* if (texta == null) {
         console.log("whats wrong");
         console.log(username1);
-    } */
-    //console.log(diet);
-
-    /* if (username1 == null)
+    }
+    if (username1 == null)
     {
         username1 = '';
     }
