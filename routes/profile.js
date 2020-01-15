@@ -25,7 +25,7 @@ router.post("/", function (req, res) {
             });
             db.close();
         });
-        res.render('profile');
+        res.redirect('http://localhost:8080/profile');
     }
     else if (req.body.saveAbout == "saveAbout") {
         console.log("updating inputs");
@@ -40,7 +40,7 @@ router.post("/", function (req, res) {
             });
             db.close();
         });
-        res.render('profile');
+        res.redirect('http://localhost:8080/profile');
     }
     else if (req.body.About == "About") {
         console.log("About is Being Changed")
