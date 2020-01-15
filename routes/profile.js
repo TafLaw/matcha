@@ -65,19 +65,31 @@ router.post("/", function (req, res) {
 
         form.parse(req, function (err, fields, files) {
             var oldpath = files.fileuploaded.path;
-            /* var newpath = __dirname.replace("routes","public") + "/images/" + files.fileuploaded.name; */
+            var newpath = __dirname.replace("routes","public") + "/images/" + files.fileuploaded.name;
             if (files.fileuploaded.size == 0) {
                 console.log("file field is empty");
-                res.redirect('http://localhost:8080/profile');
+               //res.redirect('http://localhost:8080/profile');
+              // res.render('profile');
             }
             else {
                 fs.rename(oldpath, newpath, function (err) {
                     if (err) throw err;
-                    console.log(newpath);
+                   // console.log(newpath);
                 });
+                MongoClient.connect(url, function(err, db)
+                {
+                    if (err) throw err;
+                    var dbo = db.db('matcha');
+                    var imagepath = {name: req.session.user.email, pathinfo: "/images/" + files.fileuploaded.name};
+                    dbo.collection('profileimages').insertOne(imagepath, function(err, res)
+                    {
+                        if(err) throw err;
+                        console.log("profile path saved!");
+                    })
+                })
                 console.log("file has been moved");
             }
-            res.end();
+            res.redirect('http://localhost:8080/profile');
         });
     }
 }
@@ -107,6 +119,7 @@ router.get("/", function (req, res) {
     var race = null;
     var gender = null;
     var height = null;
+    var img = null;
 
     MongoClient.connect(url, function (err, db) {
         if (err) throw err;
@@ -118,12 +131,12 @@ router.get("/", function (req, res) {
         dbo.collection("users").find(query).toArray(function (err, result) {
             if (err) throw err;
             //console.log(result);
-            console.log("Myname");
+            //console.log("Myname");
             result.forEach(function (user) {
                 username1 = user.name;
                 //age = Number(17);
             })
-            console.log(username1);
+            //console.log(username1);
         }
         );
 
@@ -156,6 +169,18 @@ router.get("/", function (req, res) {
         }
         );
 
+        var query4 = { name: req.session.user.email }
+
+        dbo.collection("profileimages").find(query4).toArray(function(err, result4) {
+            if (err) throw err;
+            result4.forEach(function (image) {
+                img = image.pathinfo;
+                //console.log("mthomega" + image.pathinfo)
+            });
+            console.log("mthomega" + img);
+        }
+        );
+
         var query2 = { email: req.session.user.email }
 
         dbo.collection("profiletext").find(query2).toArray(function (err, result3) {
@@ -166,9 +191,10 @@ router.get("/", function (req, res) {
                 texta = textb.about;
             });
             //console.log(result3);
+            console.log(username1 + "the nigga");
+            res.render('profile', { username1: username1 ,imageu: img/*age: age  text: texta */ /* , diet: diet, race: race, gender: gender, height: height */ });
         }
         );
-
         db.close();
     });
 
@@ -178,10 +204,10 @@ router.get("/", function (req, res) {
         if (err) throw err
         console.log(position)
     }) */
-    if (texta == null) {
+    /* if (texta == null) {
         console.log("whats wrong");
         console.log(username1);
-    }
+    } */
     //console.log(diet);
 
     /* if (username1 == null)
@@ -209,7 +235,6 @@ router.get("/", function (req, res) {
         text = '';
     }*/
     //  username1 = "Mthokozisi";
-    res.render('profile', { username1: username1 /*age: age  text: texta */ /* , diet: diet, race: race, gender: gender, height: height */ });
 });
 
 /*
