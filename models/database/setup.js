@@ -15,6 +15,19 @@ MongoClient.connect(ur, function(err, db) {
   dbo.createCollection("users", function(err, res) {
     if (err) throw err;
     console.log("Collection created!");
+  });
+  dbo.createCollection("profiletext", function(err, res) {
+    if (err) throw err;
+    console.log("profiletext created!");
+  });
+  dbo.createCollection("profileimages", function(err, res) {
+    if (err) throw err;
+    console.log("profileimages created!");
+  });
+  dbo.createCollection("profile", function(err,res)
+  {
+    if(err) throw err;
+    console.log("profile colection created!");
     db.close();
   });
 });
