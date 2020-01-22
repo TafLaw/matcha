@@ -648,7 +648,8 @@ router.get("/", function (req, res) {
                     texta = '';
                 }
                 else if (img == null) {
-                    img = 'images/profile.jpg';
+                    //img = 'images/profile.jpg';
+                    img = '';
                 }
                 else if (username1 == null) {
                     username1 = '';
@@ -694,7 +695,7 @@ router.get("/", function (req, res) {
                 console.log(req.session); */
                 //console.log(req.session);
 
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery});
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, def: "images/profile.jpg"});
             });
             db.close();
         });
