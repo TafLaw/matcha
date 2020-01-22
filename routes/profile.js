@@ -3,6 +3,7 @@ var router = express.Router();
 const bodyparser = require('body-parser');
 const formidable = require('formidable');
 const fs = require('fs');
+const isImage = require('is-image');
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
 
@@ -235,9 +236,9 @@ router.post("/", function (req, res) {
             form.parse(req, function (err, fields, files) {
                 var oldpath = files.fileuploaded.path;
                 var newpath = __dirname.replace("routes", "public") + "/images/" + files.fileuploaded.name;
-                if (files.fileuploaded.size == 0) {
+                if (files.fileuploaded.size == 0 || isImage(files.fileuploaded.name) == false) {
                     console.log("file field is empty");
-                    //res.redirect('http://localhost:8080/profile');
+                    res.redirect('http://localhost:8080/profile');
                     // res.render('profile');
                 }
                 else {
@@ -290,6 +291,25 @@ router.post("/", function (req, res) {
 }
 );
 
+router.post("/remove", function (req, res) {
+    console.log("removing images");
+    MongoClient.connect(url, function(err, db)
+    {
+        if(err) throw err;
+        var dbo = db.db("matcha");
+        var remove = {name: req.session.user.email, pathinfo: req.body.pathr};
+
+        console.log(req.body.pathr);
+
+        dbo.collection("profileGallery").deleteOne(remove, function(err, res)
+        {
+            if(err) throw err;
+            console.log("Gallery Image has been Removed");
+        });
+    });
+    res.redirect('http://localhost:8080/profile');
+});
+
 router.post("/gallery", function (req, res) {
     console.log("The gallery is being Fixed");
 
@@ -298,9 +318,11 @@ router.post("/gallery", function (req, res) {
     form.parse(req, function (err, fields, files) {
         var oldpath = files.fileuploaded.path;
         var newpath = __dirname.replace("routes", "public") + "/images/" + files.fileuploaded.name;
-        if (files.fileuploaded.size == 0) {
+        console.log("checking whether its image or not");
+        console.log(isImage(files.fileuploaded.name));
+        if (files.fileuploaded.size == 0 || isImage(files.fileuploaded.name) == false) {
             console.log("file field is empty");
-            //res.redirect('http://localhost:8080/profile');
+            res.redirect('http://localhost:8080/profile');
             // res.render('profile');
         }
         else {
@@ -681,6 +703,7 @@ router.get("/", function (req, res) {
                 }
                 console.log("This the user information");
                 console.log(req.session);
+                console.log(img);
                 /*  dbo.collection("users").findOne({code: req.session.user.code}, function(err, user)
                  {
                      if(err) throw err;
