@@ -78,6 +78,18 @@ span {
     color: blue;
 }
 
+#error {
+    color: white;
+    max-width: max-content;
+    position: relative;
+    top: 80px;
+    height: 44px;
+    left: 179px;
+    background-color: #ec2626c9;
+}
+
+
+
 div#popupContact {
     background-color: #0000008c;
     position: absolute;

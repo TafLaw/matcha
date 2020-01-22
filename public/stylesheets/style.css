@@ -1,8 +1,78 @@
 body {
-  padding: 50px;
+  padding: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+#r_pass{
+  color: white;
+  background-color: #ec2626c9;
+  max-width: max-content;
+  height: 44px;
+
+}
+
+.loop {
+  margin-top: 2%;
+  width: 50%;
+}
+
+.user_d {
+  display: -webkit-flex;
+  padding: 1.5%;
+}
+
+#notif_div {
+  background-color: red;
+  width: 50px;
+  height: 50px;
+}
+
+#s_prfl {
+  border: 1px solid;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background-color: rgb(65, 59, 59);
+}
+
+.unl{
+  margin-left: 2%;
+}
+
+.l_btn {
+  position: absolute;
+  right: 50%;
+}
+
+.pending {
+  color: red;
+  position: absolute;
+  right: 56%;
+}
+
+.connected {
+  color: rgb(15, 233, 15);
+  position: absolute;
+  right: 56%;
+}
+
+.noti_loop {
+  margin-top: 2%;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.n_block {
+  background-color: rgba(158, 199, 201, 0.31);
+  margin-bottom: -15px;
+}
+
+.n_el_block {
+  background-color: rgba(158, 199, 201, 0.08);
+  margin-bottom: -15px;
 }
