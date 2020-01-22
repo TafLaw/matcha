@@ -648,7 +648,7 @@ router.get("/", function (req, res) {
                     texta = '';
                 }
                 else if (img == null) {
-                    img = '';
+                    img = 'images/profile.jpg';
                 }
                 else if (username1 == null) {
                     username1 = '';
