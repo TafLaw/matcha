@@ -14,6 +14,7 @@
     "express-session": "^1.17.0",
     "formidable": "^1.2.1",
     "http-errors": "^1.6.3",
+    "is-image": "^3.0.0",
     "mongodb": "^3.4.0",
     "morgan": "^1.9.1",
     "node-session": "^1.2.1",
@@ -23,5 +24,18 @@
     "path": "^0.12.7",
     "socket.io": "^2.3.0",
     "sync": "^0.2.5"
-  }
+  },
+  "description": "Dating website",
+  "main": "app.js",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TafLaw/matcha.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TafLaw/matcha/issues"
+  },
+  "homepage": "https://github.com/TafLaw/matcha#readme"
 }
