@@ -16,28 +16,26 @@ MongoClient.connect(ur, function(err, db) {
     if (err) throw err;
     console.log("Collection created!");
   });
+
+  dbo.createCollection("connections", function(err, res) {
+    if (err) throw err;
+    console.log("Connections Collection created!");
+  });
+
+  dbo.createCollection("notifications", function(err, res) {
+    if (err) throw err;
+    console.log("notifications Collection created!");
+  });
+
   dbo.createCollection("profiletext", function(err, res) {
     if (err) throw err;
     console.log("profiletext created!");
   });
+
   dbo.createCollection("profileimages", function(err, res) {
     if (err) throw err;
     console.log("profileimages created!");
   });
-  dbo.createCollection("profiletags", function(err, res) {
-    if (err) throw err;
-    console.log("profiletags created!");
-  });
-  dbo.createCollection("profileGeo", function(err, res) {
-    if (err) throw err;
-    console.log("profileGeo created!");
-  });
-
-  dbo.createCollection("profileGallery", function(err, res) {
-    if (err) throw err;
-    console.log("profileGallery created!");
-  });
-  
   dbo.createCollection("profile", function(err,res)
   {
     if(err) throw err;
