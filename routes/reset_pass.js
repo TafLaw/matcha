@@ -8,6 +8,8 @@ var url = "mongodb://localhost:27017/";
 
 
 router.get("/", function(req, res){
+  var errorType = '';
+  var successful = '';
     console.log('reset password working!');
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -21,8 +23,11 @@ router.get("/", function(req, res){
         var dbo = db.db("matcha");
         var email = req.query.email;
         dbo.collection('users').findOne({email: email}, function(err, user) {
-            if (user === null)
-                console.log("user not found!");
+            if (user === null){
+              errorType = "email not found!";
+              console.log("email not found!");
+              res.render('forgot_pass',{errorType:errorType});
+            }
             else{
                 console.log("found");
                 function message(){
@@ -45,8 +50,9 @@ router.get("/", function(req, res){
                       console.log('Email sent: ' + info.response);
                     }
                   });
+                  errorType = 'Success';
                 // res.redirect('http://localhost:8080/reset_pass?email={email}')
-                res.render('forgot_pass');
+                res.render('forgot_pass',{errorType:errorType});
             }
         });
     });
