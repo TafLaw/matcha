@@ -1,26 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
-
+<!-- must input field for the city loation of a person -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>About</title>
-    <h1>Edit Profile Information</h1>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Matcha</a>
+        <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
+        <a class="nav-link" href="http://localhost:8080/profile"><%= username %></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                </li>
+                
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Notifications</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
+                </li><!-- 
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li> -->
+                </ul>
+                <a href="http://localhost:8080/logout">Logout</a>
+                <form class="form-inline" action="http://localhost:8080/search">
+                    <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+                </form>
+            </div>
+        </nav>
+        <div>
+            <h1>Edit Profile Information</h1>
+            <h3>Edit Your Name</h3>
+            <div>
+                    <%= username %>
+                    <form method="post">
+                            <input type="text" name="username" placeholder="Please enter your name">
+                            <input type="submit" name="updateName" value="updateName">
+                        </form>
+            </div>
+            <h3>Edit Your Surname</h3>
+            <div>
+                    <%= surname %>
+                    <form method="post">
+                            <input type="text" name="surname" placeholder="Please enter your surname">
+                            <input type="submit" name="updateSurname" value="updateSurname">
+                        </form>
+            </div>
+            <h3>Edit Your Email</h3>
+            <div>
+                    <%= email %>
+                    <form method="post">
+                            <input type="text" name="email" placeholder="Please enter your email">
+                            <input type="submit" name="updateEmail" value="updateEmail">
+                        </form>
+            </div>
+    </div>
     <div>
         <!-- page 1 -->
-        <h3>Insert Information About Youself</h3>
+        <h3>Update About Message</h3>
         <form method="post">
-            <textarea style="width: 800px;height: 100px;" name="aboutprofile">
-            </textarea>
+            <input type="text" name="aboutprofile" placeholder="Please enter your about">
             <input type="submit" name="updateAbout" value="updateAbout">
         </form>
     </div>
     <!-- page 2 -->
-    <h3>Insert Profile Information</h3>
+    <h3>Update Profile Information</h3>
     <form method="post">
         <div style="margin-bottom: 20px;">
             <div style="margin-bottom: 20px;">
@@ -31,6 +91,14 @@
                     <option name="Custom" value="Custom">Custom</option>
                 </select>
             </div>
+            <div style="margin-bottom: 20px;">
+                    Sexual Preference :
+                    <select name="sex">
+                        <option name="male" value="male">Male</option>
+                        <option name="Female" value="Female">Female</option>
+                        <option name="Biosexual" value="Biosexual">Biosexual</option>
+                    </select>
+                </div>
             <div style="margin-bottom: 20px;">
                 ethnicity :
                 <select name="race">
@@ -43,20 +111,50 @@
             </div>
             <div style="margin-bottom: 20px;">
                 height :
-                    <input style="width: 40px;" name="height" type="text">
-                    &nbsp;Metres
-            </div>
-            <div style="margin-bottom: 20px;">
-                Diet :
-                <select name="diet">
-                    <option name="vegetarian" value="vegetarian">vegetarian</option>
-                    <option name="vegan" value="vegan">vegan</option>
-                    <option name="Gluten_free" value="Gluten_free">Gluten_free</option>
-                    <option name="Whole_food" value="Whole_food">Whole_food</option>
+                <select name="height">
+                    <option name="Short" value="Short">Short</option>
+                    <option name="Average" value="Average">Average</option>
+                    <option name="Tall" value="Tall">Tall</option>
                 </select>
+                    <!-- <input style="width: 40px;" name="height" type="text"> -->        
             </div>
             <input type="submit" name="saveAbout" value="saveAbout">
         </div>
     </form>
+    <div>
+        <h3>Add your Geolocation</h3>
+        <form method="post">
+                <input type="text" name="city" placeholder="Please enter City Name">
+                <input type="submit" name="updateCity" value="updateCity">
+            </form>
+    </div>
+    <div>
+        <h3>Choose your Interests</h3>
+        <div style="margin-bottom: 20px;">
+                <form action="http://localhost:8080/profile/Music">
+                    <input type="submit" name="Music" value="#Music">
+                </form>
+        </div>
+        <div style="margin-bottom: 20px;">
+                <form action="http://localhost:8080/profile/Sports">
+                        <input type="submit" name="Sports" value="#Sports">
+                    </form>
+        </div>
+        <div style="margin-bottom: 20px;">
+                <form action="http://localhost:8080/profile/Food">
+                        <input type="submit" name="vegan" value="#Food">
+                    </form>
+        </div>
+        <div style="margin-bottom: 20px;">
+                <form action="http://localhost:8080/profile/Reading">
+                        <input type="submit" name="reading" value="#Reading">
+                    </form>
+        </div>
+        <div style="margin-bottom: 20px;">
+                <form action="http://localhost:8080/profile/Gaming">
+                        <input type="submit" name="gaming" value="#Gaming">
+                    </form>
+        </div>
+    </div>
 </body>
 </html>
