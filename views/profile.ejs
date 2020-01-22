@@ -117,7 +117,7 @@
               </nav>
     <div class="topcontainer">
         <div class="picbod">
-            <img class="proimage" src='<%= imageu %>'  alt="prifile picture">
+            <img class="proimage" src='<% if(imageu == undefined){ %> <%= imageu %><% }else{%> <%= def %><%}%>'  alt="prifile picture">
             <div style="display: flex;">
                 <div>
                     <form method="post" enctype="multipart/form-data">
