@@ -669,9 +669,9 @@ router.get("/", function (req, res) {
                 if (texta == null) {
                     texta = '';
                 }
-                else if (img == null) {
-                    //img = 'images/profile.jpg';
-                    img = '';
+                else if (img == null || img == undefined) {
+                    img = 'images/profile.jpg';
+                    //img = '';
                 }
                 else if (username1 == null) {
                     username1 = '';
