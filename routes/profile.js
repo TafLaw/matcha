@@ -4,8 +4,18 @@ const bodyparser = require('body-parser');
 const formidable = require('formidable');
 const fs = require('fs');
 const isImage = require('is-image');
+var nodemailer = require("nodemailer");
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
+
+//for sending an email
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'jj646019@gmail.com',
+        pass: 'matchaproject'
+    }
+});
 
 
 //router.use(express.static("profimages"));
@@ -123,7 +133,7 @@ router.post("/", function (req, res) {
                     dbo.collection("users").findOne(user, newname, function (err, user) {
                         if (err) throw err;
                         console.log("New Session");
-                        req.session.user = user;
+                        //req.session.user = user;
                     });
                     /*  req.session.save( function(err)
                      {
@@ -168,9 +178,137 @@ router.post("/", function (req, res) {
             console.log("updateEmail");
             var string4 = req.body.email.trim();
             if (string4.length == 0) {
-                console.log("The City field is empty");
+                console.log("The email field is empty");
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
+            else{
+                MongoClient.connect(url, function(err, db)
+                {
+                    if(err) throw err;
+                    var dbo = db.db("matcha");
+                    var check_e_u = {email: req.body.email};
+
+                    dbo.collection("users").findOne(check_e_u, function(err, res)
+                    {
+                        if(err) throw err;
+                        console.log("Looking for email in users");
+                        if(res == undefined)
+                        {
+                            MongoClient.connect(url, function(err, db)
+                            {
+                                if(err) throw err;
+                                var dbo = db.db("matcha");
+                                var search = {email: req.session.user.email};
+                                var search1 = {name : req.session.user.email};
+                                var eupdate = {$set: {email: req.body.email}};
+                                var usupdate = {$set: {email: req.body.email, verify: 0}};
+
+                                dbo.collection("users").findOne(search, function(err, res12)
+                                {
+                                    if(err) throw err;
+
+                                    console.log("res12");
+                                    console.log(res12);
+
+                                    hashedPassword = res12.password;
+                                    email = req.body.email;
+                                    code = res12.code;
+                                    
+                                    //sending email
+                                    function message(){
+                                        var l1 = 'Your verification Code is ';
+                                        var code = hashedPassword.substr(0, 9);
+                                        var l3 = ', Please Click On ';
+                                        var link = '<a href="http://localhost:8080/verify?email=' + email + '&code=' + code +'">this link</a>';//{}&code=">this link</a>';
+                                        var l4 = ' to activate your account.';
+                                        return l1 + code + l3 + link + l4;
+                                      }
+                                
+                                      var mailOptions = {
+                                        from: 'auth@matcha.com',
+                                        to: email,
+                                        subject: 'Matcha Verification',
+                                        html: message()
+                                      };
+                                      transporter.sendMail(mailOptions, function(error, info){
+                                        if (error) {
+                                          console.log(error);
+                                        } else {
+                                          console.log('Email sent: ' + info.response);
+                                        }
+                                      });
+                                })
+
+                                dbo.collection("connections").updateMany({user_mail: req.session.user.email}, {$set: {user_mail: req.body.email}}, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email connections updated");
+                                });
+
+                                dbo.collection("notifications").updateMany({user: req.session.user.email}, {$set: {user: req.body.email}}, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email notifications updated");
+                                });
+
+                                dbo.collection("profile").updateOne(search,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email profile updated");
+                                });
+            
+                                dbo.collection("profileGallery").updateMany(search1,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email profile Gallery updated");
+                                });
+            
+                                dbo.collection("profileGeo").updateOne(search,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email profile Geo updated");
+                                });
+            
+                                dbo.collection("profiletags").updateMany(search,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email profile tags updated");
+                                });
+            
+                                dbo.collection("profileimages").updateOne(search1,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email profile images updated");
+                                });
+            
+                                dbo.collection("profiletext").updateOne(search,eupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email text updated");
+                                });
+            
+                                dbo.collection("users").updateOne(search,usupdate, function(err, res)
+                                {
+                                    if(err) throw err;
+                                    console.log("user email updated");
+                                });
+                            });
+                            /* req.session.destroy(function(err)
+                            {
+                                if(err) throw err;
+                            }); */
+                            //res.redirect('http://localhost:8080/');
+                            //session destroy and redirect to login;;;;;
+                        }
+                        else
+                        {
+                            console.log("Email already in use");
+                            res.redirect('http://localhost:8080/profile');
+                        }
+                    });
+                });
+            }
+            res.redirect('http://localhost:8080/');
         }
         else if (req.body.saveAbout == "saveAbout") {
             console.log("updating inputs");
@@ -531,11 +669,13 @@ router.get("/", function (req, res) {
     var race = null;
     var gender = null;
     var height = null;
-    var img = null;
+    img = 'images/profile.jpg';
     var birthday = null;
     var cityn = null;
     var tags = new Array();
     var gallery = new Array();
+    var loves = new Array();
+    var rate = 0;
 
     if (req.session.user == undefined) {
         res.redirect('http://localhost:8080/');
@@ -545,6 +685,63 @@ router.get("/", function (req, res) {
             if (err) throw err;
             //console.log("connecting for profile");
             var dbo = db.db('matcha');
+
+            var l_user = {liked_user_mail: req.session.user.email};
+
+            dbo.collection("connections").find(l_user).toArray( function(err, ress)
+            {
+                if(err) throw err;
+                var x = 0;
+
+                ress.forEach(function(love)
+                {
+                    loves[x] = love.liked_user_mail;
+                    x++;
+                })
+                if(loves.length >= 10)
+                {
+                    rate = Number(10);
+                }
+                else
+                {
+                    rate = loves.length;
+                }
+                //console.log("love");
+                //console.log(rate);
+                /* console.log("rate");
+                console.log(rate); */
+            });
+
+            //Still Needs a fix;;;
+            /* dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
+            {
+                    if(err) throw err;
+                    console.log("rating updated");
+            }); */
+
+            /* 
+            dbo.collection("rating").find({email: req.session.user.email}, function(err, res0)
+            {
+                if(err) throw err;
+                var user = {email: req.session.user.email, rating: (rate/10) * 100};
+
+                if(res0 == undefined)
+                {
+                    dbo.collection("rating").insertOne(user, function(err, res)
+                    {
+                        if(err) throw err;
+                        console.log("rating added");
+                    })
+                }
+                else
+                {
+                    dbo.collection("connections").updateOne({email: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
+                    {
+                        if(err) throw err;
+                        console.log("rating updated");
+                    })
+                } 
+            }) */
 
             var checkcity = { email: req.session.user.email };
 
@@ -665,14 +862,16 @@ router.get("/", function (req, res) {
                 });
                 //console.log(result3);
 
+
+
                 console.log(username1 + "the nigga");
                 if (texta == null) {
                     texta = '';
                 }
-                else if (img == null || img == undefined) {
+                /* else if (img == null || img === undefined) {
                     img = 'images/profile.jpg';
                     //img = '';
-                }
+                } */
                 else if (username1 == null) {
                     username1 = '';
                 }
@@ -717,53 +916,18 @@ router.get("/", function (req, res) {
                 console.log("This is the new sesssion check the session");
                 console.log(req.session); */
                 //console.log(req.session);
-
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, def: "images/profile.jpg"});
+                //console.log("rate");
+                //console.log(rate);
+                dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
+                {
+                        if(err) throw err;
+                        console.log("rating updated");
+                });
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
-            db.close();
+           // db.close();
         });
-
-        /*  var geolocation = require('geolocation')
-        
-        geolocation.getCurrentPosition(function (err, position) {
-            if (err) throw err
-            console.log(position)
-        }) */
-        /* if (texta == null) {
-            console.log("whats wrong");
-            console.log(username1);
-        }
-        if (username1 == null)
-        {
-            username1 = '';
-        }
-        else if(sex == null)
-        {
-            sex = '';
-        }
-        else if (race == null)
-        {
-            race = '';
-        }
-        else if(gender == null)
-        {
-            gender = '';
-        }
-        else if (height == null)
-        {
-            height = '';
-        }
-        else if(text == null)
-        {
-            text = '';
-        }*/
-        //  username1 = "Mthokozisi";
     }
 });
 
-/*
-router.listen(3000, function () {
-    console.log("Server Runnning on Port 3000");
-}
-); */
 module.exports = router;
