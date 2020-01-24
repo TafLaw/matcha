@@ -39,6 +39,18 @@ a {
   padding-left: 3%;
 }
 
+.fil_head {
+  display: -webkit-flex;
+}
+
+.clr {
+  margin-left: 9%;
+  border: none;
+  outline-style: none;
+  background: transparent;
+  background-color: rgba(158, 199, 201, 0.31);
+}
+
 #notif_div {
   background-color: red;
   width: 50px;
