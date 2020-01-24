@@ -134,7 +134,7 @@ router.get("/search", function(req, res){
   }); */
   function checkLiked(results, mail, email, liked){
     var len = results.length;
-    console.log(liked);
+    // console.log(liked);
     
     for (i = 0; i < len; i++) {
       if (mail[i] === email){
@@ -143,6 +143,8 @@ router.get("/search", function(req, res){
         lik = liked[i];
       }
     }
+    // console.log('lik=', lik);
+    
     return lik;
   }
   
@@ -212,7 +214,7 @@ router.get("/search", function(req, res){
         var a = Number(spf[0]);
         var b = Number(spf[1]);
         var query = { $or: [ { qName:qn, age:{"$gte": a, "$lte": b}}, { qSurname:qn, age:{"$gte": 20, "$lte": 30}}] };
-      }
+      } 
       else
         var query = { $or: [ { qName:qn}, { qSurname:qn} ] };
     }
@@ -248,14 +250,9 @@ router.get("/search", function(req, res){
       // res.render('search',{results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request});
       var finishRequest = function(no) {
         if (fil2 == 'none'&& fil3 != 'none'){
-          console.log('sila');
-          // console.log(fliked_bck, 'and this lback');
-          // console.log(fliked, 'and this ld');
-          // console.log(conn, 'and this conn');
-          
+          liked = fliked;
+          liked_back = fliked_bck;
           len = fTag.length;
-          console.log(len, "and that");
-          
           if (!fTag.length)
             len = 0;
                       
@@ -292,24 +289,26 @@ router.get("/search", function(req, res){
             var u_mail = mail[i];
             var qry = {email:u_mail, tag:fil3}
             var j = 0;
-            console.log(fil3);
+            // console.log(fil3);
             
             await dbo.collection("profiletags").find(qry).toArray(function(err, resu) {
               if (err) throw err;
-              console.log(resu.length);
+              // console.log('len = ',resu.length);
               resu.forEach(function(tag) {
                 fTag[j] = getName(results, mail, tag.email);
                 fTagMail[j] = tag.email;
                 conn[j] = checkConnection(results, mail, tag.email, connected);
                 fliked[j] = checkLiked(results, mail, tag.email, liked);
-                fliked_bck[j] = checkLiked(results, mail, tag.email, liked_back);
+                fliked_bck[j] = checkLiked_back(results, mail, tag.email, liked_back);
+                // console.log('in the for')
                 j++;
               });
               rlen++;
-              console.log(len);
+              // console.log(len);
               
-              if (rlen === len - 1){
-                console.log('here');
+              if (j){
+                // console.log('dvd');
+                // console.log(liked);
                 finishRequest();
               }
             });
@@ -330,23 +329,24 @@ router.get("/search", function(req, res){
               result.forEach(function(user) {
                 j = pos(mail, user.liked_user_mail);
                 liked[j] = user.liked;
-                console.log(liked[j]);
+                // console.log(liked[j]);
                 liked_back[j] = user.liked_back;
                 connected[j] = user.connected;
               });
               lock--;
-              if (!lock){
+              if (fil3 != 'none' && !lock)
+              {
+                // console.log('We are here');
+                // console.log(liked);
+                tags();
+              }
+              else if (!lock){
                 finishRequest(no);
               }
             });
           }
           if (!lock)
             finishRequest(no);
-      }
-      if (fil3 != 'none' && !lock)
-      {
-        console.log('We are here');
-        tags();
       }
       data();
       // db.close();
