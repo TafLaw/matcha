@@ -15,6 +15,10 @@ a {
 
 }
 
+.main_search {
+  display: flex;
+}
+
 .loop {
   margin-top: 2%;
   width: 50%;
@@ -23,6 +27,16 @@ a {
 .user_d {
   display: -webkit-flex;
   padding: 1.5%;
+}
+
+.filter {
+  margin-left: 111px;
+  border: 0.016px solid lightgrey;
+  width: 50%;
+}
+
+.a_filter {
+  padding-left: 3%;
 }
 
 #notif_div {
