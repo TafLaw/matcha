@@ -69,7 +69,8 @@ router.get('/', function(req, res){
             "liked_user_mail": mail,
             "liked": 1,
             "liked_back": 0,
-            "connected": 0
+            "connected": 0,
+            "rating": 0
         }
         var query = {user_mail:req.session.email, liked_user_mail:mail}
         
