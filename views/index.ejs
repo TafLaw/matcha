@@ -32,11 +32,11 @@
         <h1>Join Now</h1>
         <div id="signupcont">
             <form action="" id="signup-form" method="POST">
-                <input class="signup-in" type="text" minlength="1" title="must contain at least 1 character" name="firstname" placeholder="first name" required><br>
-                <input class="signup-in" type="text" minlength="1" title="must contain at least 1 character" name="secondname" placeholder="second name" required><br>
+                <input class="signup-in" type="text" minlength="2" title="must contain at least 1 character" name="firstname" placeholder="first name" required><br>
+                <input class="signup-in" type="text" minlength="2" title="must contain at least 1 character" name="secondname" placeholder="second name" required><br>
                 <input class="signup-in" type="email" name="email" placeholder="email" required><br>
-                <input class="signup-in" type="password" name="password" placeholder="password" required><br>
-                <input class="signup-in" type="password" name="confirmpass" placeholder="confirm password" required><br>
+                <input class="signup-in" minlength="6" pattern="(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])\S*" title="password must contain at least 1 uppercase, lowercase, digit, special character" type="password" name="password" placeholder="password" required><br>
+                <input class="signup-in" type="password" minlength="6" pattern="(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])\S*" title="password must contain at least 1 uppercase, lowercase, digit, special character" name="confirmpass" placeholder="confirm password" required><br>
                 <!-- Birthday -->
                 <div class="_bd">
                     <h3 id="bd_wrp">Birthday</h3>
