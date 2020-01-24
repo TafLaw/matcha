@@ -925,7 +925,7 @@ router.get("/", function (req, res) {
                 });
                 res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
-           // db.close();
+            //db.close();
         });
     }
 });
