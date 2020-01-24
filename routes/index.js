@@ -44,7 +44,6 @@ router.get('/home', function(req, res){
           resu.forEach(function(number){
             no = number.read;
             finishRequest(no);
-            console.log(no);
           });
         })
       );
@@ -69,8 +68,111 @@ router.get("/search", function(req, res){
   var request = req.query.name;
   var liked = new Array();
   var liked_back = new Array();
+  var fliked = new Array();
+  var fliked_bck = new Array();
+  var conn = new Array();
   var lock = 2;
+
+  //filters
+  var fil1 = req.query.Option1;
+  var fil2 = req.query.Option2;
+  var fil3 = req.query.Option3;
   
+  /* if (fil3 != 'none'){
+    function interest(mail){
+      MongoClient.connect(url, function(err, db){
+        var dbo = db.db("matcha");
+        dbo.collection("profiletags").find(query).toArray(function(err, result) {
+          
+          console.log(results);
+        });
+      });
+    }
+  } */
+/*   MongoClient.connect(url, function(err, db){
+    var dbo = db.db("matcha");
+    
+    if(fil1 != 'none'){
+      dbo.collection("").find(query).toArray(function(err, result) {
+        if (err) throw err;
+  
+        result.forEach(function(user) {
+          results[i] = user.name + ' ' + user.surname;
+          mail[i] = user.email;
+          // console.log(user.name, user.surname);
+          
+          i++;
+        });
+      });
+    }
+    if(fil2 != 'none'){
+      dbo.collection("").find(query).toArray(function(err, result) {
+        if (err) throw err;
+  
+        result.forEach(function(user) {
+          results[i] = user.name + ' ' + user.surname;
+          mail[i] = user.email;
+          // console.log(user.name, user.surname);
+          
+          i++;
+        });
+      });
+    }
+    if(fil3 != 'none'){
+      dbo.collection("").find(query).toArray(function(err, result) {
+        if (err) throw err;
+  
+        result.forEach(function(user) {
+          results[i] = user.name + ' ' + user.surname;
+          mail[i] = user.email;
+          // console.log(user.name, user.surname);
+          
+          i++;
+        });
+      });
+    }
+  }); */
+  function checkLiked(results, mail, email, liked){
+    var len = results.length;
+    console.log(liked);
+    
+    for (i = 0; i < len; i++) {
+      if (mail[i] === email){
+        // console.log('this is it,', i, email);
+        
+        lik = liked[i];
+      }
+    }
+    return lik;
+  }
+  
+  function checkLiked_back(results, mail, email, liked_back){
+    var len = results.length;
+    for (i = 0; i < len; i++) {
+      if (mail[i] === email)
+        lik_bck = liked_back[i];
+    }
+    return lik_bck;
+  }
+  
+  function checkConnection(results, mail, email, connect){
+    var len = results.length;
+    for (i = 0; i < len; i++) {
+      if (mail[i] === email)
+        conn = connect[i];
+    }
+    return conn;
+  }
+  
+  function getName(results, mail, email){
+    var len = results.length;
+
+    for (i = 0; i < len; i++){
+      if (mail[i] === email)
+        return results[i];
+    }  
+  }
+
   function pos(arr, umail){
     var c = 0;
     var d;
@@ -98,19 +200,37 @@ router.get("/search", function(req, res){
     var dbo = db.db("matcha");
     var results = new Array();
     var mail = new Array();
+    var fTag = new Array();
+    var fTagMail = new Array();
+    
     var connected = new Array();
     var i = 0;
     
     if (qn && !qs){
-      var query = { $or: [ { qName:qn}, { qSurname:qn} ] };
+      if (fil1 != 'none'){
+        var spf = fil1.split("-");
+        var a = Number(spf[0]);
+        var b = Number(spf[1]);
+        var query = { $or: [ { qName:qn, age:{"$gte": a, "$lte": b}}, { qSurname:qn, age:{"$gte": 20, "$lte": 30}}] };
+      }
+      else
+        var query = { $or: [ { qName:qn}, { qSurname:qn} ] };
     }
     else if(!qn && qs){
       var name = qs;
       var query = {qSurname:name};
     }
     else{
-      // var query = {qName:qn, qSurname:qs};
-      var query = { $or: [ { qName:qn, qSurname:qs}, { qSurname:qs, qName:qn}, {qName:qs, qSurname:qn}, {qSurname:qn, qName:qs} ] };
+      // var query = {qName:qn, qSurname:qs };
+      if (fil1 != 'none'){
+        var spf = fil1.split("-");
+        var a = Number(spf[0]);
+        var b = Number(spf[1]);
+        console.log('here');
+        var query = { $or: [ { qName:qn, qSurname:qs, age:{"$gte": a, "$lte": b}}, { qSurname:qs, qName:qn, age:{"$gte": a, "$lte": b}}, {qName:qs, qSurname:qn, age:{"$gte": a, "$lte": b}}, {qSurname:qn, qName:qs, age:{"$gte": a, "$lte": b}}]};
+      }
+      else
+        var query = { $or: [ { qName:qn, qSurname:qs}, { qSurname:qs, qName:qn}, {qName:qs, qSurname:qn}, {qSurname:qn, qName:qs} ] };
     }
     
     dbo.collection("users").find(query).toArray(function(err, result) {
@@ -119,8 +239,6 @@ router.get("/search", function(req, res){
       result.forEach(function(user) {
         results[i] = user.name + ' ' + user.surname;
         mail[i] = user.email;
-        // console.log(user.name, user.surname);
-        
         i++;
       });
       lock -= 1;
@@ -129,9 +247,24 @@ router.get("/search", function(req, res){
       
       // res.render('search',{results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request});
       var finishRequest = function(no) {
-        res.render('search',{results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no});
+        if (fil2 == 'none'&& fil3 != 'none'){
+          console.log('sila');
+          // console.log(fliked_bck, 'and this lback');
+          // console.log(fliked, 'and this ld');
+          // console.log(conn, 'and this conn');
+          
+          len = fTag.length;
+          console.log(len, "and that");
+          
+          if (!fTag.length)
+            len = 0;
+                      
+          res.render('search',{results:fTag, len:len, name:user, mail:fTagMail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
+        }
+        else
+          res.render('search',{results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
       }
-  
+      
       
       for (i = 0; i < len; i++){
         liked[i] = 0;
@@ -150,31 +283,70 @@ router.get("/search", function(req, res){
             no = number.read;         
           });
         })
-      );
-      lock += (len - 1);
-      async function data(){
+        );
+        lock += (len - 1);
 
-        for (i = 0; i < len; i++){
-          
-          var u_mail = mail[i];
-          var qry = {user_mail:req.session.user.email, liked_user_mail:u_mail}
-          j = -1;
-          await dbo.collection("connections").find(qry).toArray(function(err, result) {           
-            if (err) throw err;
+        async function tags(){
+          var rlen = 0;
+          for (i = 0; i < len; i++){
+            var u_mail = mail[i];
+            var qry = {email:u_mail, tag:fil3}
+            var j = 0;
+            console.log(fil3);
             
-            result.forEach(function(user) {
-              j = pos(mail, user.liked_user_mail);
-                
-              liked[j] = user.liked;
-              liked_back[j] = user.liked_back;
-              connected[j] = user.connected;
+            await dbo.collection("profiletags").find(qry).toArray(function(err, resu) {
+              if (err) throw err;
+              console.log(resu.length);
+              resu.forEach(function(tag) {
+                fTag[j] = getName(results, mail, tag.email);
+                fTagMail[j] = tag.email;
+                conn[j] = checkConnection(results, mail, tag.email, connected);
+                fliked[j] = checkLiked(results, mail, tag.email, liked);
+                fliked_bck[j] = checkLiked(results, mail, tag.email, liked_back);
+                j++;
+              });
+              rlen++;
+              console.log(len);
+              
+              if (rlen === len - 1){
+                console.log('here');
+                finishRequest();
+              }
             });
-            lock--;
-            if (!lock){
-              finishRequest(no);
-            }
-          });
+
+          }
         }
+        async function data(){
+          
+          for (i = 0; i < len; i++){
+            
+            var u_mail = mail[i];
+            var qry = {user_mail:req.session.user.email, liked_user_mail:u_mail}
+            j = -1;
+            await dbo.collection("connections").find(qry).toArray(function(err, result) {           
+              if (err) throw err;
+              console.log(result);
+              
+              result.forEach(function(user) {
+                j = pos(mail, user.liked_user_mail);
+                liked[j] = user.liked;
+                console.log(liked[j]);
+                liked_back[j] = user.liked_back;
+                connected[j] = user.connected;
+              });
+              lock--;
+              if (!lock){
+                finishRequest(no);
+              }
+            });
+          }
+          if (!lock)
+            finishRequest(no);
+      }
+      if (fil3 != 'none' && !lock)
+      {
+        console.log('We are here');
+        tags();
       }
       data();
       // db.close();
@@ -258,6 +430,7 @@ router.post('/', function(req, res){
     else if(pass === confirmPass){
       console.log(birthday_year);
       var hashedPassword = passwordHash.generate(pass);
+      var age = 2020 - birthday_year;
       var data = { 
         "name": name,
         "surname": surname,
@@ -268,6 +441,7 @@ router.post('/', function(req, res){
         "birthday_day":birthday_day,
         "birthday_month":birthday_month,
         "birthday_year":birthday_year,
+        "age":age,
         "verify": 0,
         "notifications": 1,
         "code":hashedPassword.substr(0, 9)

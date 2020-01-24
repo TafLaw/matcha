@@ -52,6 +52,10 @@ router.get('/', function(req, res){
     var liked_user_name = spl[0];
     var liked_user_sname = spl[1];
     
+    var op1 = req.query.Option1;
+    var op2 = req.query.Option2;
+    var op3 = req.query.Option3;
+
     console.log('inside like', mail);
     console.log(liked_user_name);
     console.log(liked_user_sname);
@@ -92,7 +96,10 @@ router.get('/', function(req, res){
           var sub = 'YOU HAVE A NEW LIKE';
           send(sub, message, mail);
           notify(dbo, db, notif, mail);
-          var red = 'http://localhost:8080/search?name=' + request ;
+          op3 = op3.slice(1, op3.length);
+          console.log(op3);
+          
+          var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + '%23' + op3;
           //   res.render('search', {liked:liked, liked_back}); 
           res.redirect(red);       
         });
@@ -104,6 +111,10 @@ router.get('/', function(req, res){
         var u_email = req.session.user.email;
         var query = {user_mail:u_email, liked_user_mail:mail}
         var request = req.query.request;
+        
+        var op1 = req.query.Option1;
+        var op2 = req.query.Option2;
+        var op3 = req.query.Option3;
         
         MongoClient.connect(url, function(err, db) {
             var dbo = db.db("matcha"); 
@@ -126,7 +137,11 @@ router.get('/', function(req, res){
               var sub = 'YOU HAVE AN UNLIKE';
               send(sub, message, mail);
               notify(dbo, db, notif, mail);
-              var red = 'http://localhost:8080/search?name=' + request ;
+              
+              op3 = op3.slice(1, op3.length);
+              console.log(op3);
+              
+              var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + '%23' + op3;
               res.redirect(red);       
         });
 });
