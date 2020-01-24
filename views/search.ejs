@@ -10,7 +10,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-</head>
+  </head>
 <body>
     <!-- nav bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -40,60 +40,140 @@
           <a href="http://localhost:8080/logout">Logout</a>
           <form class="form-inline" action="http://localhost:8080/search">
             <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
+            <input type="hidden" name="Option1" value="none">
+            <input type="hidden" name="Option2" value="none">
+            <input type="hidden" name="Option3" value="none">
             <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
           </form>
         </div>
       </nav>
 <!-- nav bar ends here -->
-
-<div class="loop">
-    <%  
-        for (i = 0; i < len; i++) { %>
-            <div class="user_d">
-                <div id="s_prfl"></div>
-                <!-- user details: name, surname, location -->
-                <div class="unl">
-                    <h5><%= results[i] %></h5>
-                    <%= liked[i] %>
-                    <%= liked_back[i] %>
-                    <%= connected[i] %>
-                    <i>Johannesburg</i>
-                </div>
-
-                <div>
-                  <% if(!liked_back[i]) { 
-                    if(liked[i]) {%>
-                    <i class="pending">Request Pending</i>
-                    <% } %>
-                  <% } %>
-                  <% if (connected[i]) { %>
-                    <i class="connected">Connected</i>
-                  <% } %>
+<%= op1 %> <br>
+<%= op2 %> <br>
+<%= op3 %> <br>
+<div class="main_search">
+  <div class="loop">
+      <%  
+          for (i = 0; i < len; i++) { %>
+              <div class="user_d">
+                  <div id="s_prfl"></div>
+                  <!-- user details: name, surname, location -->
+                  <div class="unl">
+                      <h5><%= results[i] %></h5>
+                      <%= liked[i] %>
+                      <%= liked_back[i] %>
+                      <%= connected[i] %>
+                      <i>Johannesburg</i>
                   </div>
-
   
-                <div>
-                  <% if (!liked[i]){ %>
-                    <form action="http://localhost:8080/like" method="get">
-                      <input type="hidden" name="mail" value=<%= mail[i] %>>
-                      <input type="hidden" name="request" value="<%= request %>">
-                      <input type="hidden" name="liked_user" value="<%= results[i] %>">
-                      <input class="l_btn" type="submit" value="like">
-                    </form>
-                  <% }
-                  else{ %>
-                    <form action="http://localhost:8080/like/dislike" method="get">
-                      <input type="hidden" name="mail" value=<%= mail[i] %>>
-                      <input type="hidden" name="request" value="<%= request %>">
-                      <input type="hidden" name="unliked_user" value="<%= results[i] %>">
-                      <input class="l_btn" type="submit" value="unlike">
-                    </form>
-                  <% } %>
-                    
-                </div>
-            </div>
-            <hr>
-    <% } %>
+                  <div>
+                    <% if(!liked_back[i]) { 
+                      if(liked[i]) {%>
+                      <i class="pending">Request Pending</i>
+                      <% } %>
+                    <% } %>
+                    <% if (connected[i]) { %>
+                      <i class="connected">Connected</i>
+                    <% } %>
+                    </div>
+  
+    
+                  <div>
+                    <% if (!liked[i]){ %>
+                      <form action="http://localhost:8080/like" method="get">
+                        <input type="hidden" name="mail" value=<%= mail[i] %>>
+                        <input type="hidden" name="Option1" value="<%= op1 %>">
+                        <input type="hidden" name="Option2" value="<%= op2 %>">
+                        <input type="hidden" name="Option3" value="<%= op3 %>">
+                        <input type="hidden" name="request" value="<%= request %>">
+                        <input type="hidden" name="liked_user" value="<%= results[i] %>">
+                        <input class="l_btn" type="submit" value="like">
+                      </form>
+                    <% }
+                    else{ %>
+                      <form action="http://localhost:8080/like/dislike" method="get">
+                        <input type="hidden" name="mail" value=<%= mail[i] %>>
+                        <input type="hidden" name="Option1" value="<%= op1 %>">
+                        <input type="hidden" name="Option2" value="<%= op2 %>">
+                        <input type="hidden" name="Option3" value="<%= op3 %>">
+                        <input type="hidden" name="request" value="<%= request %>">
+                        <input type="hidden" name="unliked_user" value="<%= results[i] %>">
+                        <input class="l_btn" type="submit" value="unlike">
+                      </form>
+                    <% } %>
+                      
+                  </div>
+              </div>
+              <hr>
+      <% } %>
+  </div>
+  
+  <div class="filter">
+    <div class="a_filter">
+      <h1>Filters</h1>
+      <h4>Age</h4>
+      <form action="http://localhost:8080/search" class="age_ftr">
+        <input type="hidden" name="name" value="<%= request %>">
+        <input type="hidden" name="Option2" value="<%= op2 %>">
+        <input type="hidden" name="Option3" value="<%= op3 %>">
+        <fieldset>
+        <label><input type="radio" name="Option1" value="10-20" >10-20</label><br>
+        <label><input type="radio" name="Option1" value="21-30" >21-30</label><br>
+        <label><input type="radio" name="Option1" value="31-40" checked="checked" >31-40</label><br>
+        <label><input type="radio" name="Option1" value="41-50" >41-50</label><br>
+        <label><input type="radio" name="Option1" value="51-60" >51-60</label><br>
+        </fieldset>
+      </form>
+<script>
+  $('input[type=radio]').on('change', function() {
+    $(this).closest("form").submit();
+});
+</script>
+      <h4>Rating</h4>
+      <form action="http://localhost:8080/search" class="rating_ftr">
+        <input type="hidden" name="name" value="<%= request %>">
+        <input type="hidden" name="Option1" value="<%= op1 %>">
+        <input type="hidden" name="Option3" value="<%= op3 %>">
+        <fieldset>
+        <label><input type="radio" name="Option2" value="0-20" >0-20 %  </label><br>
+        <label><input type="radio" name="Option2" value="21-40" >21-40 %</label><br>
+        <label><input type="radio" name="Option2" value="41-60" checked="checked" >41-60 %</label><br>
+        <label><input type="radio" name="Option2" value="61-80" >61-80 %</label><br>
+        <label><input type="radio" name="Option2" value="81-100" >81-100 %</label><br>
+      </fieldset>
+    </form>
+<script>
+  $('input[type=radio]').on('change', function() {
+    $(this).closest("form").submit();
+});
+</script>    
+    <h4>Location</h4>
+    <form action="#" class="rating_ftr">
+      <fieldset>
+        <label><input type="radio" name="Option0" value="johannesburg" >Near me</label><br>
+      </fieldset>
+    </form>
+    
+    <h4>Interest</h4>
+    <form action="http://localhost:8080/search" class="rating_ftr">
+      <input type="hidden" name="name" value="<%= request %>">
+      <input type="hidden" name="Option1" value="<%= op1 %>">
+      <input type="hidden" name="Option2" value="<%= op2 %>">
+      <fieldset>
+        <label><input type="radio" name="Option3" value="#music" >#music</label><br>
+        <label><input type="radio" name="Option3" value="#Sports" >#sports</label><br>
+        <label><input type="radio" name="Option3" value="#Food"  >#food</label><br>
+        <label><input type="radio" name="Option3" value="#Reading" >#reading</label><br>
+        <label><input type="radio" name="Option3" value="#Gaming" >#gaming</label><br>
+        </fieldset>
+      </form>
+    
+    </div>
+    <script>
+      $('input[type=radio]').on('change', function() {
+    $(this).closest("form").submit();
+});
+    </script>
 </div>
 </body>
 </html>
