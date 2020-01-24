@@ -96,10 +96,11 @@ router.get('/', function(req, res){
           var sub = 'YOU HAVE A NEW LIKE';
           send(sub, message, mail);
           notify(dbo, db, notif, mail);
-          op3 = op3.slice(1, op3.length);
+          if (op3 != 'none')
+            op3 = '#' + op3.slice(1, op3.length);
           console.log(op3);
           
-          var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + '%23' + op3;
+          var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + op3;
           //   res.render('search', {liked:liked, liked_back}); 
           res.redirect(red);       
         });
@@ -138,10 +139,11 @@ router.get('/', function(req, res){
               send(sub, message, mail);
               notify(dbo, db, notif, mail);
               
-              op3 = op3.slice(1, op3.length);
+              if (op3 != 'none')
+                op3 = '#' + op3.slice(1, op3.length);
               console.log(op3);
               
-              var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + '%23' + op3;
+              var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + op3;
               res.redirect(red);       
         });
 });

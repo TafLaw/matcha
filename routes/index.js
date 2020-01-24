@@ -74,6 +74,7 @@ router.get("/search", function(req, res){
   var lock = 2;
 
   //filters
+  var rlen = 0;
   var fil1 = req.query.Option1;
   var fil2 = req.query.Option2;
   var fil3 = req.query.Option3;
@@ -132,6 +133,19 @@ router.get("/search", function(req, res){
       });
     }
   }); */
+  function takeValues(fTag, result, len, user, mail, liked, liked_back, request, connected, no, fil1, fil2, fil3){
+    rlen++;
+    
+    if (rlen === result.length){
+      console.log('stop');
+      len = 0;
+      res.render('search',{results:fTag, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
+    }
+      
+    console.log('taken values');
+    
+  }
+
   function checkLiked(results, mail, email, liked){
     var len = results.length;
     // console.log(liked);
@@ -249,13 +263,13 @@ router.get("/search", function(req, res){
       
       // res.render('search',{results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request});
       var finishRequest = function(no) {
+        rlen = 0;         
         if (fil2 == 'none'&& fil3 != 'none'){
           liked = fliked;
           liked_back = fliked_bck;
           len = fTag.length;
           if (!fTag.length)
             len = 0;
-                      
           res.render('search',{results:fTag, len:len, name:user, mail:fTagMail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
         }
         else
@@ -284,14 +298,13 @@ router.get("/search", function(req, res){
         lock += (len - 1);
 
         async function tags(){
-          var rlen = 0;
           for (i = 0; i < len; i++){
             var u_mail = mail[i];
             var qry = {email:u_mail, tag:fil3}
-            var j = 0;
             // console.log(fil3);
             
             await dbo.collection("profiletags").find(qry).toArray(function(err, resu) {
+              var j = 0;
               if (err) throw err;
               // console.log('len = ',resu.length);
               resu.forEach(function(tag) {
@@ -302,8 +315,8 @@ router.get("/search", function(req, res){
                 fliked_bck[j] = checkLiked_back(results, mail, tag.email, liked_back);
                 // console.log('in the for')
                 j++;
+                // rlen++;
               });
-              rlen++;
               // console.log(len);
               
               if (j){
@@ -311,11 +324,14 @@ router.get("/search", function(req, res){
                 // console.log(liked);
                 finishRequest();
               }
+              else
+                takeValues(fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
             });
 
           }
         }
         async function data(){
+          // console.log('herer');
           
           for (i = 0; i < len; i++){
             
@@ -324,7 +340,7 @@ router.get("/search", function(req, res){
             j = -1;
             await dbo.collection("connections").find(qry).toArray(function(err, result) {           
               if (err) throw err;
-              console.log(result);
+              // console.log(result);
               
               result.forEach(function(user) {
                 j = pos(mail, user.liked_user_mail);
@@ -334,6 +350,7 @@ router.get("/search", function(req, res){
                 connected[j] = user.connected;
               });
               lock--;
+              
               if (fil3 != 'none' && !lock)
               {
                 // console.log('We are here');
@@ -343,6 +360,7 @@ router.get("/search", function(req, res){
               else if (!lock){
                 finishRequest(no);
               }
+              console.log('hereeer')
             });
           }
           if (!lock)
@@ -399,15 +417,15 @@ router.get('/notifications', function(req, res){
 });
 
 router.post('/', function(req, res){
-  var name = req.body.firstname;
-  var surname = req.body.secondname;
+  var name = req.body.firstname.trim();
+  var surname = req.body.secondname.trim();
   
   if (name && surname){
     var qName = name.toLowerCase(); //for searching purposes 
     var qSurname = surname.toLowerCase(); //for searching purposes 
   }
   
-  var email = req.body.email;
+  var email = req.body.email.trim();
   var pass = req.body.password;
   var confirmPass = req.body.confirmpass;
   var birthday_day = req.body.birthday_day;
