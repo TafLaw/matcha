@@ -120,10 +120,12 @@
             <img class="proimage" src='<%= imageu %>'  alt="profile picture">
             <div style="display: flex;">
                 <div>
+                    <% if(mail == 1){ %>
                     <form method="post" enctype="multipart/form-data">
                         <input style="margin-top: 20px;" type="file" name="fileuploaded">
                         <input type="submit" name="upload" value="upload">
-                    </form>       
+                    </form>
+                    <% } %>    
                 </div>
             </div>
         </div>
@@ -146,6 +148,12 @@
             <p
                 style="font-size: 35px;color:lightcoral;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
                 Match</p>
+                <div>
+                    Last Seen:
+                </div>
+                <div>
+                    <%= activity %>
+                </div>
         </div>
     </div>
     <hr style="width: 900px">
@@ -155,9 +163,11 @@
                 style="font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
                 About MySelf
             </p>
+            <% if(mail == 1){ %>
             <form method="post">
                 <input type="submit" name="About" value="About">
             </form>
+            <% } %>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Veerdana, sans-serif;">
                 <%= text %>
@@ -167,9 +177,11 @@
             <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
                 My Details
             </p>
+            <% if(mail == 1){ %>
             <form method="post">
                 <input type="submit" name="Details" value="Details">
             </form>
+            <% } %>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
                 Birthday&nbsp;&nbsp;<%= birthday %>
@@ -193,19 +205,21 @@
             <hr>
         </div>
         <div>
-            <h3 class="location" >Your Geolocation</h3>
+            <h3 class="location" >Geolocation</h3>
             <div id="map" class="map">
             </div>
             <p id="location"></p>
+            <% if(mail == 1){ %>
             <button name="getlocation" onclick="getGeoLocation()">Get Your location</button>
+            <% } %>
             <div>
-                <img style="width:65px; height: 65px" src="images/marker.png" alt="marker">
+                <img style="width:65px; height: 65px" src='<%= marker %>' alt="marker">
                 <%= cityn %>
             </div>
             <!-- <form action="/profile.html" method="post"></form>
                 <input type="submit" name="Geolocation" value="Geolocation">
             </form> -->
-            <h3 class="gallery">Your gallery</h3>
+            <h3 class="gallery">gallery</h3>
             <div class="imagegallery">
                 <div class="galleryform">
                     <div style="display: flex;">
@@ -216,21 +230,25 @@
                                 <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= gallery[x] %>' alt=gallery>
                                 <input type="hidden" name="pathr" value="<%= gallery[x] %>">
                                 <div>
+                                    <% if(mail == 1){ %>
                                 <input type="submit" name="delete" value="delete">
+                                    <% } %>   
                                 </div>
                                 </form>
                             </div>
                         <% } %>
                     </div>
                     <div>
+                        <% if(mail == 1){ %>
                     <form method="post" enctype="multipart/form-data" action="http://localhost:8080/profile/gallery">
                         <input style="margin-top: 20px;" type="file" name="fileuploaded">
                         <input type="submit" name="Saveupload" value="Saveupload">
                     </form>
+                        <% } %>
                     </div>
                 </div>
             </div>
-            <h3 class="profileinterests">Your Interests</h3>
+            <h3 class="profileinterests">Interests</h3>
             <div>
                     <%for(x = 0; x < tags.length; x++) 
                         {%>
@@ -238,6 +256,15 @@
                     <% } %>
                     <!-- <%= tags[0] %> -->
             </div>
+            <% if(mail == 1){ %>
+            <h3>Profile Views</h3>
+            <div>
+                <%for(x = 0; x < vies.length; x++) 
+                        {%>
+                            <%= vies[x] + ' ' %>
+                    <% } %>
+            </div>
+            <% } %>
         </div>
     </div>
 </body>
