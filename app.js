@@ -12,6 +12,7 @@ var resetRouter = require('./routes/reset_pass');
 var chatRouter = require('./routes/chatbe');
 var profileRouter = require('./routes/profile');
 var likeRouter = require('./routes/like');
+var likesRouter = require('./routes/likes');
 
 var app = express();
 
@@ -48,6 +49,7 @@ app.use('/reset_pass',resetRouter);
 app.use('/chatbe',chatRouter);
 app.use('/profile', profileRouter);
 app.use('/like', likeRouter);
+app.use('/likes', likesRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
