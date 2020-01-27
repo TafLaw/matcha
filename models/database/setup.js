@@ -37,6 +37,11 @@ MongoClient.connect(ur, function(err, db) {
     console.log("rating created!");
   });
 
+  dbo.createCollection("profileviews", function(err, res) {
+    if (err) throw err;
+    console.log("profileviews created!");
+  });
+
   dbo.createCollection("profileimages", function(err, res) {
     if (err) throw err;
     console.log("profileimages created!");
