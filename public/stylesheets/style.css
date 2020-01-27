@@ -57,11 +57,14 @@ a {
   height: 50px;
 }
 
-#s_prfl {
-  border: 1px solid;
-  border-radius: 50%;
+.s_prfl {
+  background-image: URL('/images/profile.jpg');
+  background-size: contain;
+  background-size: cover;
   width: 50px;
   height: 50px;
+  border: 1px solid;
+  border-radius: 50%;
   background-color: rgb(65, 59, 59);
 }
 
@@ -101,4 +104,13 @@ a {
 .n_el_block {
   background-color: rgba(158, 199, 201, 0.08);
   margin-bottom: -15px;
+}
+
+#mail_snt {
+  padding: 13%;
+  display: flex;
+}
+
+#mail_txt {
+  padding: 2%;
 }
