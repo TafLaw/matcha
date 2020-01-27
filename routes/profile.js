@@ -200,6 +200,7 @@ router.post("/", function (req, res) {
                                 var dbo = db.db("matcha");
                                 var search = {email: req.session.user.email};
                                 var search1 = {name : req.session.user.email};
+                                var eupdate1 = {$set: {email: req.body.email}}
                                 var eupdate = {$set: {email: req.body.email}};
                                 var usupdate = {$set: {email: req.body.email, verify: 0}};
 
@@ -257,7 +258,7 @@ router.post("/", function (req, res) {
                                     console.log("user email profile updated");
                                 });
             
-                                dbo.collection("profileGallery").updateMany(search1,eupdate, function(err, res)
+                                dbo.collection("profileGallery").updateMany(search1, eupdate1, function(err, res)
                                 {
                                     if(err) throw err;
                                     console.log("user email profile Gallery updated");
@@ -275,7 +276,7 @@ router.post("/", function (req, res) {
                                     console.log("user email profile tags updated");
                                 });
             
-                                dbo.collection("profileimages").updateOne(search1,eupdate, function(err, res)
+                                dbo.collection("profileimages").updateOne(search1, eupdate1, function(err, res)
                                 {
                                     if(err) throw err;
                                     console.log("user email profile images updated");
@@ -485,6 +486,244 @@ router.post("/gallery", function (req, res) {
     });
 });
 
+//Profiles view Point/////////
+router.post("/view", function (req, res) {
+    /* copy the code from the profile and set email according to hidden input and make the if conditioin for mail to be visible in certain conditions */
+    var username1 = null;
+    var texta = null;
+    var age = null;
+    var sex = null;
+    var race = null;
+    var gender = null;
+    var height = null;
+    var img = '/images/profile.jpg';
+    var marker = '/images/marker.png';
+    var activity = null;
+    var birthday = null;
+    var cityn = null;
+    var tags = new Array();
+    var gallery = new Array();
+    var loves = new Array();
+    var vies = new Array();
+    var rate = 0;
+    var mail = 1;
+
+    if (req.session.user == undefined) {
+        res.redirect('http://localhost:8080/');
+    }
+    else {
+        if(req.session.user.email != req.body.hmail)
+        {
+            mail = 0;
+        }
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            //console.log("connecting for profile");
+            var dbo = db.db('matcha');
+
+            /* write code to check where user is already in users if not insert else continue to other queries */
+
+            var li_user = {user_view: req.session.user.email, user_account: req.body.hmail};
+
+            dbo.collection("profileviews").findOne(li_user, function(err,vie)
+            {
+                if(err) throw err;
+                if(vie == undefined)
+                {
+                    dbo.collection("profileviews").insertOne({user_view_name: req.session.user.name + ' ' + req.session.user.surname, user_view: req.session.user.email, user_account:req.body.hmail}, function(err, succ)
+                    {
+                        if(err) throw err;
+                    })
+                }
+            });
+
+            var l_user = {liked_user_mail: req.body.hmail};
+
+            dbo.collection("connections").find(l_user).toArray( function(err, ress)
+            {
+                if(err) throw err;
+                var x = 0;
+
+                ress.forEach(function(love)
+                {
+                    loves[x] = love.liked_user_mail;
+                    x++;
+                })
+                if(loves.length >= 10)
+                {
+                    rate = Number(10);
+                }
+                else
+                {
+                    rate = loves.length;
+                }
+                //console.log("love");
+                //console.log(rate);
+                /* console.log("rate");
+                console.log(rate); */
+            });
+
+
+            var checkcity = { email: req.body.hmail };
+
+            dbo.collection("profileGeo").find(checkcity).toArray(function (err, result5) {
+                if (err) throw err;
+                result5.forEach(function (cityname) {
+                    cityn = cityname.City;
+                })
+            })
+
+            var checkgall = { name: req.body.hmail };
+
+            dbo.collection("profileGallery").find(checkgall).toArray(function (err, result7) {
+                if (err) throw err;
+                // console.log(result6[0]);
+                //i = 0;
+                //var res0 = new Array(result6[0]);
+                console.log("Gallery");
+                console.log(result7);
+                var i = 0;
+
+                result7.forEach(function (gname) {
+                    gallery[i] = gname.pathinfo;
+                    i++;
+                    //console.log(tname.length);
+                    //console.log("tags");
+                    //console.log(tags);
+                });
+                console.log(gallery);
+            })
+
+            var checktags = { email: req.body.hmail };
+
+            dbo.collection("profiletags").find(checktags).toArray(function (err, result6) {
+                if (err) throw err;
+                // console.log(result6[0]);
+                //i = 0;
+                //var res0 = new Array(result6[0]);
+                console.log("tags");
+                var i = 0;
+
+                result6.forEach(function (tname) {
+                    tags[i] = tname.tag;
+                    i++;
+                    //console.log(tname.length);
+                    //console.log("tags");
+                    //console.log(tags);
+                });
+                console.log(tags);
+            })
+
+            var query = { email: req.body.hmail };
+
+            dbo.collection("users").find(query).toArray(function (err, result) {
+                if (err) throw err;
+                //console.log(result);
+                //console.log("Myname");
+                result.forEach(function (user) {
+                    username1 = user.name + ' ' + user.surname;
+                    birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
+                    age = user.age;
+                    activity = user.activity;
+                })
+                //console.log(username1);
+            }
+            );
+
+            var query1 = { email: req.body.hmail }
+
+            dbo.collection("profile").find(query1).toArray(function (err, result2) {
+                if (err) throw err;
+                result2.forEach(function (userabout) {
+                    sex = userabout.sex;
+                    race = userabout.race;
+                    gender = userabout.gender;
+                    height = userabout.height;
+                });
+                console.log(result2);
+            }
+            );
+
+            var query4 = { name: req.body.hmail }
+
+            dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
+                if (err) throw err;
+                result4.forEach(function (image) {
+                    img = image.pathinfo;
+                    //console.log("mthomega" + image.pathinfo)
+                });
+                console.log("profile images");
+                console.log(result4);
+            }
+            );
+
+            var query2 = { email: req.body.hmail }
+
+            dbo.collection("profiletext").find(query2).toArray(function (err, result3) {
+                if (err) throw err;
+                //console.log("result3"); 
+                //console.log(result3);
+                result3.forEach(function (textb) {
+                    texta = textb.about;
+                    console.log(texta);
+                });
+                //console.log(result3);
+
+
+
+                console.log(username1 + "the nigga");
+                if (texta == null) {
+                    texta = '';
+                }
+                /* else if (img == null || img === undefined) {
+                    img = 'images/profile.jpg';
+                    //img = '';
+                } */
+                else if (username1 == null) {
+                    username1 = '';
+                }
+                else if (birthday == null) {
+                    birthday = '';
+                }
+                else if (sex == null) {
+                    sex = '';
+                }
+                else if (race == null) {
+                    race = '';
+                }
+                else if (gender == null) {
+                    gender = '';
+                }
+                else if (height == null) {
+                    height = '';
+                }
+                else if (cityn == null) {
+                    cityn = '';
+                }
+                else if (tags == null) {
+                    tags = '';
+                }
+                else if (gallery == null)
+                {
+                    gallery = '';
+                }
+                console.log("This the user information");
+                console.log(req.session);
+                console.log(img);
+    
+               /*  dbo.collection("connections").updateMany({liked_user_mail: req.body.hmail },{$set: { rating: (rate/10) * 100}}, function(err, res)
+                {
+                        if(err) throw err;
+                        console.log("rating updated");
+                }); */
+
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
+            });
+            //db.close();
+        });
+    }
+}); 
+
 router.get("/music", function (req, res) {
     console.log("Umoya Wami uyavuma, Ewe moya Wami");
     MongoClient.connect(url, function (err, db) {
@@ -636,32 +875,9 @@ router.get("/Gaming", function (req, res) {
     res.redirect('http://localhost:8080/profile');
 });
 
-/* router.post("/gallery", function(req, res)
-{
-   if (req.body.saveupload == null)
-   {
-       console.log("The gallery images are being fixed");
-       res.redirect('http://localhost:8080/profile');
-   }
-}) */
-
-/* router.post("/uploadprofile", function (req, res) {
-   var form = new formidable.IncomingForm();
-
-   form.parse(req, function (err, fields, files) {
-       var oldpath = files.fileuploaded.path;
-       var newpath = __dirname.replace("routes", "public") + "/images/" + files.fileuploaded.name;
-       fs.rename(oldpath, newpath, function (err) {
-           if (err) throw err;
-           console.log(newpath);
-           console.log("file has been moved");
-       }
-       );
-       res.end();
-   }); 
-});*/
 
 router.get("/", function (req, res) {
+    /* copy start here */
     var username1 = null;
     var texta = null;
     var age = null;
@@ -669,13 +885,17 @@ router.get("/", function (req, res) {
     var race = null;
     var gender = null;
     var height = null;
-    img = 'images/profile.jpg';
+    var img = 'images/profile.jpg';
+    var marker = 'images/marker.png';
+    var activity = "Online";
     var birthday = null;
     var cityn = null;
     var tags = new Array();
     var gallery = new Array();
     var loves = new Array();
+    var vies = new Array();
     var rate = 0;
+    var mail = 1;
 
     if (req.session.user == undefined) {
         res.redirect('http://localhost:8080/');
@@ -685,6 +905,24 @@ router.get("/", function (req, res) {
             if (err) throw err;
             //console.log("connecting for profile");
             var dbo = db.db('matcha');
+
+            /* query the views table and turn names into an array to read at the front end */
+
+            dbo.collection("profileviews").find({user_account: req.session.user.email}).toArray(function(err, bean)
+            {
+                if(err) throw err;
+                var f = 0;
+                
+                bean.forEach(function(mr)
+                {
+                    vies[f] = mr.user_view_name;
+                    f++;
+                });
+                //console.log("vies");
+                //console.log(vies);
+            });
+         
+        
 
             var l_user = {liked_user_mail: req.session.user.email};
 
@@ -712,36 +950,6 @@ router.get("/", function (req, res) {
                 console.log(rate); */
             });
 
-            //Still Needs a fix;;;
-            /* dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
-            {
-                    if(err) throw err;
-                    console.log("rating updated");
-            }); */
-
-            /* 
-            dbo.collection("rating").find({email: req.session.user.email}, function(err, res0)
-            {
-                if(err) throw err;
-                var user = {email: req.session.user.email, rating: (rate/10) * 100};
-
-                if(res0 == undefined)
-                {
-                    dbo.collection("rating").insertOne(user, function(err, res)
-                    {
-                        if(err) throw err;
-                        console.log("rating added");
-                    })
-                }
-                else
-                {
-                    dbo.collection("connections").updateOne({email: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
-                    {
-                        if(err) throw err;
-                        console.log("rating updated");
-                    })
-                } 
-            }) */
 
             var checkcity = { email: req.session.user.email };
 
@@ -802,26 +1010,11 @@ router.get("/", function (req, res) {
                 result.forEach(function (user) {
                     username1 = user.name + ' ' + user.surname;
                     birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
-                    age = Number(17);
+                    age = user.age;
                 })
                 //console.log(username1);
             }
             );
-
-            //the about text reqiures sessions
-
-            /* var q = {_id: "5dfa32768d809f7317c01cf8"};
-            {about:}
-            
-             dbo.collection("profile").find(q).toArray(function (err, result1) {
-                if (err) throw err;
-                result1.forEach(function (about) {
-                    text = about.text;
-                });
-                console.log("result1")
-                console.log(result1);
-            }
-            );  */
 
             var query1 = { email: req.session.user.email }
 
@@ -903,31 +1096,19 @@ router.get("/", function (req, res) {
                 console.log("This the user information");
                 console.log(req.session);
                 console.log(img);
-                /*  dbo.collection("users").findOne({code: req.session.user.code}, function(err, user)
-                 {
-                     if(err) throw err;
-                     //req.session.user = user;
-                     console.log("rendered New session");
-                 }) */
-                /* req.session.regenerate(function(err)
-                {
-                    if (err) throw err;
-                })
-                console.log("This is the new sesssion check the session");
-                console.log(req.session); */
-                //console.log(req.session);
-                //console.log("rate");
-                //console.log(rate);
-                dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
+    
+               /*  dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
                 {
                         if(err) throw err;
                         console.log("rating updated");
-                });
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, rating: (rate/10) * 100, def: "images/profile.jpg"});
+                }); */
+
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
             //db.close();
         });
     }
+    /* copy must end here */
 });
 
 module.exports = router;

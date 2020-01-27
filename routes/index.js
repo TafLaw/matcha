@@ -22,11 +22,162 @@ router.get("/", function(req, res){
 });
 
 router.get('/home', function(req, res){
-  var no = 2;
+          //var no = 2;
+  var userinfo = new Array();
+  var profiles = new Array();
+  var locals = new Array();
+  var initials = new Array();
+  var no;
+
   if (!req.session.user)
     res.redirect('http://localhost:8080/');
   else{
-    var name = req.session.user.name;
+
+    MongoClient.connect(url, function(err, db)
+    {
+      var dbo = db.db("matcha");
+      var image;
+      //profile image query
+
+      /* dbo.collection("profileimages").find({}).toArray(function(err, ress1)
+      {
+          if(err) throw err;
+
+          if(ress1 == undefined)
+          {
+              image = "images/profile.jpg";
+          }
+          else
+          {
+              image = ress1.pathinfo;
+          }
+      }); */
+      async function userscall(){
+      
+      await dbo.collection("users").find({}).toArray(function(err, ress2)
+      {
+        if(err) throw err;
+        console.log(ress2.length);
+        var x = 0;
+        var y = 0;
+        var z = 0;
+        var a = 0;
+
+        ress2.forEach(function(base)
+        {
+          bang = base.email;
+          bang1 = base.name + ' ' + base.surname;
+          dbo.collection("profileimages").findOne({name: bang}, function(err, rassi)
+          {
+             if(err) throw err;
+
+             if(rassi == undefined)
+             {
+                 image = "images/profile.jpg";
+             }
+             else
+             {
+                 image = rassi.pathinfo;
+             }
+             if(base.email != req.session.user.email)
+             {
+                profiles[y] = image;
+                y++;
+             }
+              //console.log("Image profile Paths");
+             // console.log(profiles);
+            });
+            
+            dbo.collection("profileGeo").findOne({email: bang}, function(err, ress3)
+            {
+              if(err) throw err;
+              if(ress3 == undefined)
+              {
+                city = '';
+              }
+              else
+              {
+                city = ress3.City;
+              }
+              if(base.email != req.session.user.email)
+              {
+                locals[z] = city;
+                z++;
+              }
+             // console.log("City location");
+             // console.log(locals);
+            });
+            
+            if(base.email != req.session.user.email)
+            {
+              userinfo[x] = bang;
+              initials[a] = bang1;
+              a++;
+              x++;
+            }
+          });
+          //console.log(a);
+          if(a == ress2.length - 1 )
+          {
+            callno();
+          }
+        })
+      }
+        
+        //City filter
+        
+        /* dbo.collection("profileGeo").findOne(search, function(err, ress3)
+        {
+          if(err) throw err;
+          if(ress3 == undefined)
+          {
+            city = '';
+          }
+          else
+          {
+            city = ress3.City;
+          }
+        }); */
+        
+        //notifications query correct
+        async function callno(){
+          console.log("this is where it goes");
+          var b = 0;
+          await dbo.collection('notifications').find({User:req.session.user.email}).toArray(function(err, resu) {
+            if (err) throw err;
+            // console.log(resu);
+            if (!resu.length){
+              no = 2;
+              b = 1;
+            }
+        resu.forEach(function(number){
+          no = number.read;
+          b = 1;
+        });
+
+        if(b == 1)
+        {
+          finishRequest()
+        }
+        //console.log("no");
+        //console.log(profiles);
+      })
+      }
+      
+     // console.log("Users LoG!!");
+     // console.log(profiles);
+
+      function finishRequest(){
+        console.log("profiles");
+        console.log(initials);
+        res.render('home', {name: req.session.user.name , no: no, initials:initials, locals:locals, userinfo:userinfo, profiles:profiles });
+      }
+
+      userscall();
+      
+    });
+
+    /* var name = req.session.user.name;
     function finishRequest(no){
       res.render('home', {name:name, no:no});
     }
@@ -48,7 +199,7 @@ router.get('/home', function(req, res){
         })
       );
         // finishRequest(no)
-    });
+    });*/
   }
 });
 
@@ -58,8 +209,20 @@ router.get("/reset", function(req, res){
 });
 
 router.get("/logout", function(req, res){
-  req.session.destroy();
+  MongoClient.connect(url, function(err, db)
+  {
+    var dbo = db.db("matcha");
+    if(err) throw err;
+    var t = new Date();
+    dbo.collection("users").updateOne({email: req.session.user.email},{$set: {activity: t}},function(err, act)
+    {
+      if(err) throw err;
+    });
+    req.session.destroy();
+  });
+  
   res.redirect('http://localhost:8080');
+  // res.render('index');
 });
 
 router.get("/search", function(req, res){
@@ -509,7 +672,8 @@ router.post('/', function(req, res){
         "verify": 0,
         "notifications": 1,
         "code":hashedPassword.substr(0, 9),
-        "rating": 0
+        "rating": 0,
+        "activity":"offline"
       }
       
         MongoClient.connect(url, function(err, db) {
@@ -532,7 +696,7 @@ router.post('/', function(req, res){
                 if (err) throw err;
                 console.log("record inserted successfully!");
                 console.log(hashedPassword);
-                db.close();
+                //db.close();
               });
               //send email
               function message(){
@@ -610,7 +774,7 @@ router.post('/', function(req, res){
           console.log(verified);
         });
         // console.log(result);
-        db.close();
+       // db.close();
       });
 
       dbo.collection('users').findOne({email: email}, function(err, user) {
@@ -631,8 +795,12 @@ router.post('/', function(req, res){
           //create a user session
           req.session.user = user;
           /* global.variable = req.session.user;*/
+          dbo.collection("users").updateOne({email: req.session.user.email},{$set: {activity: "Online"}},function(err, act)
+          {
+            if(err) throw err;
+          })
           console.log("logged in successfully!");
-          db.close();
+          //db.close();
           if (req.session.user.email)
             res.render('home', {name: req.session.user.name, no:''});
         }
