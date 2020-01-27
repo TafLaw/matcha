@@ -40,7 +40,33 @@ var notify = function(dbo, db, message, email){
   dbo.collection('notifications').insertOne(data, function(err, res) {
     if (err) throw err;
     console.log("notification inserted!");
-    db.close();
+    // db.close();
+  });
+}
+
+var rating = function(dbo,db,mail){
+  var l_user = {liked_user_mail: mail};
+  var rate = 0;
+  var loves = new Array();
+  dbo.collection("connections").find(l_user).toArray( function(err, ress)
+  {
+      if(err) throw err;
+      var x = 0;
+      ress.forEach(function(love)
+      {
+          loves[x] = love.liked_user_mail;
+          x++;
+      });
+      if(loves.length >= 10)
+        rate = Number(10);
+      else
+        rate = loves.length;
+
+      dbo.collection("users").updateOne({email: mail},{$set: { rating: (rate/10) * 100}}, function(err, res)
+      {
+              if(err) throw err;
+              console.log("rating updated");
+      });
   });
 }
 
@@ -81,7 +107,7 @@ router.get('/', function(req, res){
         dbo.collection('connections').insertOne(data, function(err, res) {
             if (err) throw err;
             console.log("user liked successfully!");
-            db.close();
+            // db.close();
           });
           
           function message(){
@@ -95,6 +121,7 @@ router.get('/', function(req, res){
           var notif = req.session.user.name + ' ' +  req.session.user.surname + " liked you";
           var sub = 'YOU HAVE A NEW LIKE';
           send(sub, message, mail);
+          rating(dbo, db, mail);
           notify(dbo, db, notif, mail);
           if (op3 != 'none')
             op3 = '#' + op3.slice(1, op3.length);
@@ -110,7 +137,8 @@ router.get('/', function(req, res){
         console.log('found');
         var mail = req.query.mail;
         var u_email = req.session.user.email;
-        var query = {user_mail:u_email, liked_user_mail:mail}
+        var query = {user_mail:u_email, liked_user_mail:mail};
+        var query1 = {user_mail:mail, liked_user_mail:u_email};
         var request = req.query.request;
         
         var op1 = req.query.Option1;
@@ -119,6 +147,12 @@ router.get('/', function(req, res){
         
         MongoClient.connect(url, function(err, db) {
             var dbo = db.db("matcha"); 
+
+            dbo.collection('connections').deleteOne(query1, function(err, res) {
+              if (err) throw err;
+              console.log("deleted u2 successfully!");
+              db.close();
+            });
             
             dbo.collection('connections').deleteOne(query, function(err, res) {
                 if (err) throw err;
@@ -146,6 +180,62 @@ router.get('/', function(req, res){
               var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + op3;
               res.redirect(red);       
         });
+});
+
+router.get('/accept', function(req, res){
+  var mail = req.query.mail;
+  var details = req.query.name.split(" ");
+  var liked_user_name = details[0];
+  var liked_user_sname = details[1];
+  
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("matcha");
+    var data = {
+      "user_name": req.session.user.name,
+      "user_sname": req.session.user.surname,
+      "liked_user_name": liked_user_name,
+      "liked_user_sname": liked_user_sname,
+      "user_mail": req.session.user.email,
+      "liked_user_mail": mail,
+      "liked": 1,
+      "liked_back": 1,
+      "connected": 1,
+      "rating": 0
+  }
+  
+    // var query = {user_mail:mail, liked_user_mail:req.session.user.email};
+    dbo.collection('connections').insertOne(data, function(err, res) {
+      if (err) throw err;
+      console.log("likedback successfully!");
+      db.close();
+    });
+
+    dbo.collection('connections').updateOne({user_mail:mail, liked_user_mail:req.session.user.email},{$set:{liked_back:1, connected:1}}, function(err, res) {
+        if (err) throw err;
+        console.log(mail, req.session.user.email);
+        
+        console.log("updated successfully!");
+        db.close();
+      });
+
+      function message(){
+        var l1 = req.session.user.name + ' ';
+        var l2 = req.session.user.surname;
+        var l3 = " liked you back, <br>";
+        var link = 'You are now connected.';
+        
+        return l1 + l2 + l3 + link;
+      }
+      var notif = req.session.user.name + ' ' + req.session.user.surname + " accepted your like.";
+      var sub = 'YOU HAVE A NEW CONNECTION';
+      send(sub, message, mail);
+      notify(dbo, db, notif, mail);
+  
+      //var red = 'http://localhost:8080/search?name=' + request + '&Option1=' + op1 + '&Option2=' + op2 + '&Option3=' + op3;
+      res.redirect('http://localhost:8080/likes');       
+});
+  // console.log(mail);
+  
 });
 
 
