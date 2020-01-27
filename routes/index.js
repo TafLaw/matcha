@@ -802,7 +802,7 @@ router.post('/', function(req, res){
           console.log("logged in successfully!");
           //db.close();
           if (req.session.user.email)
-            res.render('home', {name: req.session.user.name, no:''});
+          res.redirect('http://localhost:8080/home');
         }
         else{
           errorType = "Incorrect password!"
