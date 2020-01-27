@@ -30,6 +30,11 @@
             <li class="nav-item">
               <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
             </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8080/likes">Likes</a>
+            </li>
+
             <li class="nav-item">
               <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
             </li><!-- 
@@ -48,21 +53,19 @@
         </div>
       </nav>
 <!-- nav bar ends here -->
-<%= op1 %> <br>
-<%= op2 %> <br>
-<%= op3 %> <br>
 <div class="main_search">
   <div class="loop">
       <%  
           for (i = 0; i < len; i++) { %>
               <div class="user_d">
-                  <div id="s_prfl"></div>
+                  <div class="s_prfl" 
+                  <% if(image[i]!=0) {%> 
+                    style="background-image: URL('<%=image[i]%>');"
+                  <% } %>></div>
                   <!-- user details: name, surname, location -->
                   <div class="unl">
                       <h5><%= results[i] %></h5>
-                      <%= liked[i] %>
-                      <%= liked_back[i] %>
-                      <%= connected[i] %>
+                      <%= active %>
                       <i>Johannesburg</i>
                   </div>
   
@@ -78,7 +81,7 @@
                     </div>
   
     
-                  <div>
+                  <div <% if(image[i] == 0) {%> style="display: none;" <%} if(mail[i] == active){%> style="display: none;" <% }%>>
                     <% if (!liked[i]){ %>
                       <form action="http://localhost:8080/like" method="get">
                         <input type="hidden" name="mail" value=<%= mail[i] %>>
@@ -121,11 +124,11 @@
         <input type="hidden" name="Option2" value="<%= op2 %>">
         <input type="hidden" name="Option3" value="<%= op3 %>">
         <fieldset>
-        <label><input type="radio" name="Option1" value="10-20" >10-20</label><br>
-        <label><input type="radio" name="Option1" value="21-30" >21-30</label><br>
-        <label><input type="radio" name="Option1" value="31-40" checked="checked" >31-40</label><br>
-        <label><input type="radio" name="Option1" value="41-50" >41-50</label><br>
-        <label><input type="radio" name="Option1" value="51-60" >51-60</label><br>
+        <label><input type="radio" name="Option1" value="10-20" <% if(op1=='10-20') {%> checked="checked" <% } %>>10-20</label><br>
+        <label><input type="radio" name="Option1" value="21-30" <% if(op1=='21-30') {%> checked="checked" <% } %>>21-30</label><br>
+        <label><input type="radio" name="Option1" value="31-40" <% if(op1=='31-40') {%> checked="checked" <% } %>>31-40</label><br>
+        <label><input type="radio" name="Option1" value="41-50" <% if(op1=='41-50') {%> checked="checked" <% } %>>41-50</label><br>
+        <label><input type="radio" name="Option1" value="51-60" <% if(op1=='51-60') {%> checked="checked" <% } %>>51-60</label><br>
         </fieldset>
       </form>
 <script>
@@ -139,11 +142,11 @@
         <input type="hidden" name="Option1" value="<%= op1 %>">
         <input type="hidden" name="Option3" value="<%= op3 %>">
         <fieldset>
-        <label><input type="radio" name="Option2" value="0-20" >0-20 %  </label><br>
-        <label><input type="radio" name="Option2" value="21-40" >21-40 %</label><br>
-        <label><input type="radio" name="Option2" value="41-60" checked="checked" >41-60 %</label><br>
-        <label><input type="radio" name="Option2" value="61-80" >61-80 %</label><br>
-        <label><input type="radio" name="Option2" value="81-100" >81-100 %</label><br>
+        <label><input type="radio" name="Option2" value="0-20"   <% if(op2=='0-20') {%> checked="checked" <% } %>>0-20 %  </label><br>
+        <label><input type="radio" name="Option2" value="21-40"  <% if(op2=='21-40') {%> checked="checked" <% } %>>21-40 %</label><br>
+        <label><input type="radio" name="Option2" value="41-60"  <% if(op2=='41-60') {%> checked="checked" <% } %>>41-60 %</label><br>
+      <label><input type="radio" name="Option2" value="61-80"    <% if(op2=='61-80') {%> checked="checked" <% } %>>61-80 %</label><br>
+        <label><input type="radio" name="Option2" value="81-100" <% if(op2=='81-100') {%> checked="checked" <% } %>>81-100 %</label><br>
       </fieldset>
     </form>
 <script>
@@ -154,7 +157,7 @@
     <h4>Location</h4>
     <form action="#" class="rating_ftr">
       <fieldset>
-        <label><input type="radio" name="Option0" value="johannesburg" >Near me</label><br>
+        <label><input type="radio" name="Option0" value="johannesburg" checked="checked" >Near me</label><br>
       </fieldset>
     </form>
     
@@ -164,11 +167,11 @@
       <input type="hidden" name="Option1" value="<%= op1 %>">
       <input type="hidden" name="Option2" value="<%= op2 %>">
       <fieldset>
-        <label><input type="radio" name="Option3" value="#music" >#music</label><br>
-        <label><input type="radio" name="Option3" value="#Sports" >#sports</label><br>
-        <label><input type="radio" name="Option3" value="#Food"  >#food</label><br>
-        <label><input type="radio" name="Option3" value="#Reading" >#reading</label><br>
-        <label><input type="radio" name="Option3" value="#Gaming" >#gaming</label><br>
+        <label><input type="radio" name="Option3" value="#music"   <% if(op3=='#music') {%> checked="checked" <% } %>>#music</label><br>
+        <label><input type="radio" name="Option3" value="#Sports"  <% if(op3=='#Sports') {%> checked="checked" <% } %>>#sports</label><br>
+      <label><input type="radio" name="Option3" value="#Food"      <% if(op3=='#Food') {%> checked="checked" <% } %>>#food</label><br>
+        <label><input type="radio" name="Option3" value="#Reading" <% if(op3=='#Reading') {%> checked="checked" <% } %>>#reading</label><br>
+        <label><input type="radio" name="Option3" value="#Gaming"  <% if(op3=='#Gaming') {%> checked="checked" <% } %>>#gaming</label><br>
         </fieldset>
       </form>
     

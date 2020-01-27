@@ -5,8 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Login</title>
+    <link rel="stylesheet" href="../public/stylesheets/style.css">
 </head>
 <body>
-    <h1>Verified <%= name %></h1>
+    <div id="mail_snt">
+        <div>
+            <img src="../public/icons/envelope.png" alt="envelop">
+        </div>
+        <div id="mail_txt">
+            <h3>Thank you for joining us</h3>
+            <span>A verification email has been sent</span>
+            <button style="margin-top: 14px;" onclick="window.location.href='localhost:8080/'">Back</button>
+        </div>
+    </div>
 </body>
 </html>
