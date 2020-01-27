@@ -486,6 +486,37 @@ router.post("/gallery", function (req, res) {
     });
 });
 
+
+router.post("/notify", function (req, res) {
+    if(req.body.notifynum == 1)
+    {
+        MongoClient.connect(url, function(err, db)
+        {
+            var dbo = db.db("matcha");
+            if(err) throw err;
+            dbo.collection("users").updateOne({email:req.session.user.email}, {$set: {notifications: 0}}, function(err, dan)
+            {
+                if(err) throw err;
+            });
+        });
+        res.redirect('http://localhost:8080/profile');
+    }
+    else
+    {
+        MongoClient.connect(url, function(err, db)
+        {
+            var dbo = db.db("matcha");
+            if(err) throw err;
+            dbo.collection("users").updateOne({email:req.session.user.email}, {$set: {notifications: 1}}, function(err, dan)
+            {
+                if(err) throw err;
+            });
+        });
+        res.redirect('http://localhost:8080/profile');
+    }
+});
+
+
 //Profiles view Point/////////
 router.post("/view", function (req, res) {
     /* copy the code from the profile and set email according to hidden input and make the if conditioin for mail to be visible in certain conditions */
@@ -896,6 +927,7 @@ router.get("/", function (req, res) {
     var vies = new Array();
     var rate = 0;
     var mail = 1;
+    var notifications = 1;
 
     if (req.session.user == undefined) {
         res.redirect('http://localhost:8080/');
@@ -1011,6 +1043,7 @@ router.get("/", function (req, res) {
                     username1 = user.name + ' ' + user.surname;
                     birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
                     age = user.age;
+                    notifications = user.notifications;
                 })
                 //console.log(username1);
             }
@@ -1103,7 +1136,7 @@ router.get("/", function (req, res) {
                         console.log("rating updated");
                 }); */
 
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, notifications:notifications, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
             //db.close();
         });
