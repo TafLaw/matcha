@@ -265,6 +265,20 @@
                     <% } %>
             </div>
             <% } %>
+            <% if(mail == 1){ %>
+            <h3>Notifications</h3>
+            <div>
+                <% if(notifications == 1){ %>
+                    <p> Email Notifications Are On</p>
+                <% }else{ %>
+                    <p> Email Notifications Are Off</p>
+                <% } %>
+                <form method="POST" action="http://localhost:8080/profile/notify">
+                    <input type="hidden" name="notifynum" value="<%= notifications %>">
+                    <input type="submit" name="notify" value="notifications">
+                </form>
+            </div>
+            <% } %>
         </div>
     </div>
 </body>
