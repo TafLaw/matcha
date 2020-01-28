@@ -573,8 +573,13 @@ router.post("/view", function (req, res) {
 
             dbo.collection("profileimages").findOne(query4, function (err, result4) {
                 if (err) throw err;
-                if(req.body.hmail == result4.name)
-                    img = result4.pathinfo;
+                if(result4 != undefined)
+                {
+                    if(req.body.hmail == result4.name)
+                    {
+                        img = result4.pathinfo;
+                    }
+                }
                 //console.log("mthomega" + image.pathinfo)
                 console.log("profile images");
                 console.log(result4);
@@ -956,10 +961,14 @@ router.get("/", function (req, res) {
 
             dbo.collection("profileimages").findOne(query4, function (err, result4) {
                 if (err) throw err;
-
-                if(req.session.user.email == result4.name)
-                    img = result4.pathinfo;
-                    //console.log("mthomega" + image.pathinfo)
+                if (result4 != undefined)
+                {
+                    if(req.session.user.email == result4.name)
+                    {
+                        img = result4.pathinfo;
+                    }
+                }
+                 //console.log("mthomega" + image.pathinfo)()
                 console.log("profile images");
                 console.log(result4);
             });
