@@ -123,6 +123,7 @@ router.get('/home', function(req, res){
           console.log(p);
             console.log("c");
             console.log(c);
+            console.log(c);
             if(p == c - 1)
             {
               callno();
