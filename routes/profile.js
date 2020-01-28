@@ -680,7 +680,8 @@ router.post("/view", function (req, res) {
             dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
                 if (err) throw err;
                 result4.forEach(function (image) {
-                    img = image.pathinfo;
+                    if(req.body.hmail == image.name)
+                        img = image.pathinfo;
                     //console.log("mthomega" + image.pathinfo)
                 });
                 console.log("profile images");
@@ -1068,7 +1069,8 @@ router.get("/", function (req, res) {
             dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
                 if (err) throw err;
                 result4.forEach(function (image) {
-                    img = image.pathinfo;
+                    if(req.session.user.email == image.name)
+                        img = image.pathinfo;
                     //console.log("mthomega" + image.pathinfo)
                 });
                 console.log("profile images");
