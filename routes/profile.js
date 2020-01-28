@@ -543,8 +543,6 @@ router.post("/view", function (req, res) {
         res.redirect('http://localhost:8080/');
     }
     else {
-        console.log("This is the search email");
-        console.log(req.body.hmail); 
         if(req.session.user.email != req.body.hmail)
         {
             mail = 0;
@@ -666,16 +664,19 @@ router.post("/view", function (req, res) {
 
             var query = { email: req.body.hmail };
 
-            dbo.collection("users").findOne(query, function (err, user) {
+            dbo.collection("users").find(query).toArray(function (err, result) {
                 if (err) throw err;
                 //console.log(result);
                 //console.log("Myname");
+                result.forEach(function (user) {
                     username1 = user.name + ' ' + user.surname;
                     birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
                     age = user.age;
                     activity = user.activity;
+                })
                 //console.log(username1);
-            });
+            }
+            );
 
             var query1 = { email: req.body.hmail }
 
@@ -1051,18 +1052,19 @@ router.get("/", function (req, res) {
 
             var query = { email: req.session.user.email };
 
-            dbo.collection("users").findOne(query, function (err, user) {
+            dbo.collection("users").find(query).toArray(function (err, result) {
                 if (err) throw err;
                 //console.log(result);
                 //console.log("Myname");
-
+                result.forEach(function (user) {
                     username1 = user.name + ' ' + user.surname;
                     birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
                     age = user.age;
                     notifications = user.notifications;
-
+                })
                 //console.log(username1);
-            });
+            }
+            );
 
             var query1 = { email: req.session.user.email }
 

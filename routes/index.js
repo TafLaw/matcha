@@ -22,7 +22,7 @@ router.get("/", function(req, res){
 });
 
 router.get('/home', function(req, res){
-          //var no = 2;
+  //var no = 2;
   var userinfo = new Array();
   var profiles = new Array();
   var locals = new Array();
@@ -62,7 +62,7 @@ router.get('/home', function(req, res){
           if(a == ress2.length - 1 && x == ress2.length - 1)
           {
             callimage();
-         }
+          }
         });
       }
       
@@ -188,13 +188,16 @@ router.get('/home', function(req, res){
   }
   
 });
-
+        
 router.get("/reset", function(req, res){
   var email = req.query.email;
-  res.render('reset', {email:email});
+  res.render('reset', {email:email, errorType:''});
 });
 
 router.get("/logout", function(req, res){
+  if (!req.session.user)
+    res.redirect('http://localhost:8080/');
+
   MongoClient.connect(url, function(err, db)
   {
     var dbo = db.db("matcha");
@@ -212,17 +215,20 @@ router.get("/logout", function(req, res){
 });
 
 router.get("/search", function(req, res){
+  if (!req.session.user)
+    res.redirect('http://localhost:8080');
   var user = req.session.user.name;
   var active_email = req.session.user.email;
-  var request = req.query.name;
+  var request = req.query.name.trim();
   var liked = new Array();
   var liked_back = new Array();
   var fliked = new Array();
   var fliked_bck = new Array();
   var conn = new Array();
   var images = new Array();
+  var fblocked = new Array();
   var lock = 2;
-
+  var user_image = '';
   //filters
   var rlen = 0;
   var fil1 = req.query.Option1;
@@ -230,13 +236,13 @@ router.get("/search", function(req, res){
   var fil3 = req.query.Option3;
 
 
-  function takeValues(images, fTag, result, len, user, mail, liked, liked_back, request, connected, no, fil1, fil2, fil3){
+  function takeValues(fblocked, images, fTag, result, len, user, mail, liked, liked_back, request, connected, no, fil1, fil2, fil3){
     rlen++;
   
     if (rlen === result.length){
       console.log('stop');
       len = 0;
-      res.render('search',{active:active_email, image:images, results:fTag, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
+      res.render('search',{blocked:fblocked, user_image:user_image, active:active_email, image:images, results:fTag, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
     }
   }
 
@@ -258,6 +264,15 @@ router.get("/search", function(req, res){
         lik_bck = liked_back[i];
     }
     return lik_bck;
+  }
+  
+  function checkBlocked(results, mail, email, blocked){
+    var len = results.length;
+    for (i = 0; i < len; i++) {
+      if (mail[i] === email)
+        var blckd = blocked[i];
+    }
+    return blckd;
   }
   
   function checkConnection(results, mail, email, connect){
@@ -295,7 +310,7 @@ router.get("/search", function(req, res){
   MongoClient.connect(url, function(err, db) {
     if (err) throw err;
 
-    var q = req.query.name;
+    var q = req.query.name.trim();
     var sp = q.split(" ");
     var qn = sp[0].toLowerCase();
 
@@ -307,7 +322,8 @@ router.get("/search", function(req, res){
     var mail = new Array();
     var fTag = new Array();
     var fTagMail = new Array();
-    var al_liked = new Array();
+    // var al_liked = new Array();
+    var blocked = new Array();
     var connected = new Array();
     var i = 0;
     
@@ -387,16 +403,17 @@ router.get("/search", function(req, res){
       
       var finishRequest = function(no) {
         rlen = 0;
+        
         if (fil2 == 'none' && fil3 != 'none'){
           liked = fliked;
           liked_back = fliked_bck;
           len = fTag.length;
           if (!fTag.length)
             len = 0;
-          res.render('search',{active:active_email, image:images, results:fTag, len:len, name:user, mail:fTagMail, liked:liked, liked_back:liked_back, request:request, connected:conn, no:no, op1:fil1, op2:fil2, op3:fil3});
+          res.render('search',{blocked:fblocked, user_image:user_image, active:active_email, image:images, results:fTag, len:len, name:user, mail:fTagMail, liked:liked, liked_back:liked_back, request:request, connected:conn, no:no, op1:fil1, op2:fil2, op3:fil3});
         }
         else
-          res.render('search',{active:active_email, image:images, results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
+          res.render('search',{blocked:blocked, user_image:user_image, active:active_email, image:images, results:results, len:len, name:user, mail:mail, liked:liked, liked_back:liked_back, request:request, connected:connected, no:no, op1:fil1, op2:fil2, op3:fil3});
       }
 
       //this function checks if each account has a profile pic
@@ -408,7 +425,11 @@ router.get("/search", function(req, res){
           resu.forEach(function(tr){
             var usr = tr.name;
             var path = tr.pathinfo;
-            var inc = mail.includes(usr);        
+            var inc = mail.includes(usr);
+            if (tr.name === req.session.user.email){
+              console.log('found the user session');
+              user_image = path;
+            }  
             if (inc){
               var j = pos(mail, usr);
               images[j] = path;
@@ -419,7 +440,7 @@ router.get("/search", function(req, res){
               if (flag == 'finish')
                 finishRequest(no);
               else if (flag == 'take')
-                takeValues(images, fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
+                takeValues(fblocked, images, fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
             }
             i++;
           });
@@ -431,9 +452,10 @@ router.get("/search", function(req, res){
         liked[i] = 0;
         liked_back[i] = 0;
         connected[i] = 0;
-        al_liked[i] = 0; //check if user has already liked the active session
+        // al_liked[i] = 0; //check if user has already liked the active session
         images[i] = 0;
         conn[i] = 0;
+        blocked[i] = 0;
       }
       // console.log(result);
       var no = 2;
@@ -467,12 +489,11 @@ router.get("/search", function(req, res){
                 conn[j] = checkConnection(results, mail, tag.email, connected);
                 fliked[j] = checkLiked(results, mail, tag.email, liked);
                 fliked_bck[j] = checkLiked_back(results, mail, tag.email, liked_back);
+                fblocked[j] = checkBlocked(results, mail, tag.email, blocked);
                 // console.log('in the for')
                 j++;
                 // rlen++;
               });
-              // console.log(len);
-              
               if (j){
                 var flag = 'finish';
                 checkImg(dbo, fTagMail, images, flag);
@@ -499,7 +520,7 @@ router.get("/search", function(req, res){
               result.forEach(function(user) {
                 j = pos(mail, user.liked_user_mail);
                 liked[j] = user.liked;
-                
+                blocked[j] = user.blocked;
                 liked_back[j] = user.liked_back;
                 connected[j] = user.connected;
               });
@@ -543,6 +564,9 @@ router.get("/forgot_pass", function(req, res){
 });
 
 router.get('/notifications', function(req, res){
+  if (!req.session.user)
+    res.redirect('http://localhost:8080/');
+
   var user = req.session.user.name;
   var email = req.session.user.email;
 
@@ -554,9 +578,15 @@ router.get('/notifications', function(req, res){
     var i = 0;
     var query = {User:email}
     
+    dbo.collection("notifications").updateMany({User:email},{$set:{read:1}}, function(err, res){
+      if (err) throw err;
+      console.log('read updated successfully');
+    });
+
     dbo.collection("notifications").find(query).toArray(function(err, result){
       if (err) throw err;
-      console.log(result);
+      // console.log(result);
+      console.log('then display');
       
       result.forEach(function(user){
         results[i] = user.notification;
@@ -752,20 +782,13 @@ router.post('/', function(req, res){
       var dbo = db.db("matcha");
       var query = {email: email};
       
-      dbo.collection("users").find(query).toArray(function(err, result) {
-        if (err) throw err;
-        result.forEach(function(user) {
+      dbo.collection('users').findOne({email: email}, function(err, user) {
+        
+        if (user != null){
           hashedPass = user.password;
           verified = user.verify;
-          console.log(verified);
-        });
-        // console.log(result);
-       // db.close();
-      });
+        }
 
-      dbo.collection('users').findOne({email: email}, function(err, user) {
-        console.log(user);
-        
         if (user === null){
           errorType = "User not found!"
           console.log("User not found!");
