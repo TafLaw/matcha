@@ -568,6 +568,18 @@ router.post("/view", function (req, res) {
                 }
             });
 
+
+            var query4 = { name: req.body.hmail }
+
+            dbo.collection("profileimages").findOne(query4, function (err, result4) {
+                if (err) throw err;
+                if(req.body.hmail == result4.name)
+                    img = result4.pathinfo;
+                //console.log("mthomega" + image.pathinfo)
+                console.log("profile images");
+                console.log(result4);
+            });
+
             var l_user = {liked_user_mail: req.body.hmail};
 
             dbo.collection("connections").find(l_user).toArray( function(err, ress)
@@ -672,22 +684,7 @@ router.post("/view", function (req, res) {
                     height = userabout.height;
                 });
                 console.log(result2);
-            }
-            );
-
-            var query4 = { name: req.body.hmail }
-
-            dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
-                if (err) throw err;
-                result4.forEach(function (image) {
-                    if(req.body.hmail == image.name)
-                        img = image.pathinfo;
-                    //console.log("mthomega" + image.pathinfo)
-                });
-                console.log("profile images");
-                console.log(result4);
-            }
-            );
+            });
 
             var query2 = { email: req.body.hmail }
 
@@ -955,7 +952,17 @@ router.get("/", function (req, res) {
                 //console.log(vies);
             });
          
-        
+            var query4 = { name: req.session.user.email }
+
+            dbo.collection("profileimages").findOne(query4, function (err, result4) {
+                if (err) throw err;
+
+                if(req.session.user.email == result4.name)
+                    img = result4.pathinfo;
+                    //console.log("mthomega" + image.pathinfo)
+                console.log("profile images");
+                console.log(result4);
+            });
 
             var l_user = {liked_user_mail: req.session.user.email};
 
@@ -1064,20 +1071,6 @@ router.get("/", function (req, res) {
             }
             );
 
-            var query4 = { name: req.session.user.email }
-
-            dbo.collection("profileimages").find(query4).toArray(function (err, result4) {
-                if (err) throw err;
-                result4.forEach(function (image) {
-                    if(req.session.user.email == image.name)
-                        img = image.pathinfo;
-                    //console.log("mthomega" + image.pathinfo)
-                });
-                console.log("profile images");
-                console.log(result4);
-            }
-            );
-
             var query2 = { email: req.session.user.email }
 
             dbo.collection("profiletext").find(query2).toArray(function (err, result3) {
@@ -1130,7 +1123,7 @@ router.get("/", function (req, res) {
                 }
                 console.log("This the user information");
                 console.log(req.session);
-                console.log(img);
+                //console.log(img);
     
                /*  dbo.collection("connections").updateMany({liked_user_mail: req.session.user.email},{$set: { rating: (rate/10) * 100}}, function(err, res)
                 {
