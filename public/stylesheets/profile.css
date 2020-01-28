@@ -1,0 +1,65 @@
+body {
+    padding: 0;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: rgba(158, 199, 201, 0.08);
+  }
+
+.picbod {
+    border: #17a2b8 5px solid;
+    border-radius: 50%;
+    height: 180px;
+    width: 170px;
+}
+
+.proimage {
+    border-radius: 50%;
+    height: 170px;
+    width: 160px;
+}
+
+.topcontainer {
+    display: flex;
+    margin: 50px;
+}
+
+.rating {
+    margin-left: 100px;
+}
+
+.bio {
+    height: 600px;
+    width: 800px;
+}
+
+.map{
+    height: 500px;
+    width: 500px;
+    margin-bottom: 40px;
+    border: #17a2b8 2px solid;
+}
+.location
+{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 40px;
+    color: #17a2b8;
+}
+.gallery
+{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 40px;
+    color: #17a2b8;
+}
+.imagegallery{
+    margin-top: 40px;
+}
+.profileinterests{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: 40px;
+    color: #17a2b8;
+}
+
+.profile_par {
+    font-size: 35px;
+    color:#17a2b8;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
