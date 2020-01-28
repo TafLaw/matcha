@@ -8,7 +8,7 @@
         Matcha Profile
     </title>
     <style>
-        .picbod {
+/*         .picbod {
             border: pink 5px solid;
             border-radius: 50%;
             height: 180px;
@@ -61,7 +61,7 @@
             font-size: 40px;
             color: pink;
         }
-        /* .form-popup {
+ */        /* .form-popup {
             display: none;
             position: fixed;
             bottom: 0;
@@ -70,6 +70,7 @@
             z-index: 9;
         } */
     </style>
+    <link rel="stylesheet" href="/stylesheets/profile.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
@@ -83,38 +84,48 @@
 </head>
 <!-- https://gcs.thesouthafrican.com/2019/12/edf14e72-zozibini-tunzi-2-1200x858.jpg -->
 
-<body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                <a class="navbar-brand" href="#">Matcha</a>
-                <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
-                <a class="nav-link" href="http://localhost:8080/profile"><%= username1 %></a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-                </button>
+<body style="  background-color: rgba(158, 199, 201, 0.08);">
+                  <!-- nav bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Matcha</a>
+        <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
+        <a class="nav-link" href="http://localhost:8080/profile"><%= username1 %></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    
+        <div class="collapse navbar-collapse" id="navbarColor01">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="http://localhost:8080/home">Home <span class="sr-only">(current)</span></a>
+            </li>
             
-                <div class="collapse navbar-collapse" id="navbarColor01">
-                  <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                      <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    
-                    <li class="nav-item">
-                      <a class="nav-link" href="#">Notifications</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
-                    </li><!-- 
-                    <li class="nav-item">
-                      <a class="nav-link" href="#"></a>
-                    </li> -->
-                  </ul>
-                  <a href="http://localhost:8080/logout">Logout</a>
-                  <form class="form-inline" action="http://localhost:8080/search">
-                    <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-                  </form>
-                </div>
-              </nav>
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8080/likes">Likes</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
+            </li>
+          </ul>
+          <a href="http://localhost:8080/logout">Logout</a>
+          <form class="form-inline" action="http://localhost:8080/search">
+            <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
+            <input type="hidden" name="Option1" value="none">
+            <input type="hidden" name="Option2" value="none">
+            <input type="hidden" name="Option3" value="none">
+            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+      </nav>
+<!-- nav bar ends here -->
     <div class="topcontainer">
         <div class="picbod">
             <img class="proimage" src='<%= imageu %>'  alt="profile picture">
@@ -142,11 +153,9 @@
             </div>
         </div>
         <div class="rating">
-            <p
-                style="margin-bottom:50px;color: pink;font-size: 40px;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+            <p class="profile_par">
                 <%= rating %> %</p>
-            <p
-                style="font-size: 35px;color:lightcoral;font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;">
+            <p class="profile_par">
                 Match</p>
                 <div>
                     Last Seen:
@@ -159,8 +168,7 @@
     <hr style="width: 900px">
     <div class="bio">
         <div>
-            <p
-                style="font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
+            <p class="profile_par">
                 About MySelf
             </p>
             <% if(mail == 1){ %>
@@ -174,7 +182,7 @@
             </p>
         </div>
         <div>
-            <p style="font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;font-size: 40px;color: pink;">
+            <p class="profile_par">
                 My Details
             </p>
             <% if(mail == 1){ %>

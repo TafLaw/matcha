@@ -5,27 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Forgot Password</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 
 </head>
-<body>
+<body style="background-color: rgba(158, 199, 201, 0.08);">
      <!-- nav bar -->
      <nav class="nv navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">Matcha</a>
+            <a href="http://localhost:8080/">Login/Register</a>
+ 
       </nav>
 <!-- nav bar ends here -->
 
-    <%= errorType %>
     <div class="fgPass">
-        
-        <legend>Forgotten Your Password?</legend>
-        <form action="http://localhost:8080/reset_pass" method="GET">
-            <input type="email" name="email" placeholder="Enter your verified email" required>
-            <input type="submit" value="Proceed">
-        </form>
+        <% if (errorType == 'Success') {%>
+            <h4>An email to reset your Password has been sent!</h4> <% }else { if (errorType == 'email not found!') {%> <h4 style="color: red;">Email not found</h4> <%} } %>
+            <div <% if (errorType == 'Success') {%> style="display: none" <% }%>>
+                <legend>Forgotten Your Password?</legend>
+                <form action="http://localhost:8080/reset_pass" method="GET">
+                    <input type="email" name="email" placeholder="Enter your verified email" required>
+                    <input type="submit" value="Proceed">
+                </form>
+            </div>
     </div>
 </body>
 </html>

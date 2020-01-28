@@ -5,16 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Reset Password</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
-<body>
-    <h3><%=email%></h3>
-    <div>
-        <form action="http://localhost:8080/reset_pass" method="post">
-            <input type="hidden" name="email" value=<%= email %>>
-            <input type="password" name="password" placeholder="New Password" required>
-            <input type="password" name="confirmPass" placeholder="Confirm Password" required>
-            <input type="submit" value="Reset">
-        </form>
+<body style="background-color: rgba(158, 199, 201, 0.08);">
+     <!-- nav bar -->
+     <nav class="nv navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">Matcha</a>
+            <a href="http://localhost:8080/">Login/Register</a>
+ 
+      </nav>
+<!-- nav bar ends here -->
+    <!-- <div class="new_pass"> -->
+    <h2 id="error"><%= errorType %></h2>
+    <div class="new_pass">
+        <div class="new_pass_sub">
+            <h3><%=email%></h3>
+            <form action="http://localhost:8080/reset_pass" method="post">
+                <input type="hidden" name="email" value=<%= email %>>
+                <input class="inpt_rps" type="password" minlength="6" pattern="(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])\S*" title="password must contain at least 1 uppercase, lowercase, digit, special character" name="password" placeholder="New Password" required> <br>
+                <input class="inpt_rps" type="password" minlength="6" pattern="(?=\S*\d)(?=\S*[a-z])(?=\S*[A-Z])\S*" title="password must contain at least 1 uppercase, lowercase, digit, special character" name="confirmPass" placeholder="Confirm Password" required><br>
+                <input class="inpt_rps btn_rps" type="submit" value="Reset">
+            </form>
+        </div>
     </div>
 </body>
 </html>
