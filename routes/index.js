@@ -32,39 +32,24 @@ router.get('/home', function(req, res){
   if (!req.session.user)
     res.redirect('http://localhost:8080/');
   else{
-
     MongoClient.connect(url, function(err, db)
     {
       var dbo = db.db("matcha");
-      //var image;
-      //profile image query
 
-      /* dbo.collection("profileimages").find({}).toArray(function(err, ress1)
-      {
-          if(err) throw err;
+      userscall();
 
-          if(ress1 == undefined)
-          {
-              image = "images/profile.jpg";
-          }
-          else
-          {
-              image = ress1.pathinfo;
-          }
-      }); */
-      async function userscall(){
-      
-      await dbo.collection("users").find({}).toArray(function(err, ress2)
-      {
-        if(err) throw err;
-        console.log(ress2.length);
-        var x = 0;
-        var y = 0;
-        var z = 0;
-        var a = 0;
-
-        ress2.forEach(function(base)
+      function userscall(){
+        dbo.collection("users").find({}).toArray(function(err, ress2)
         {
+          if(err) throw err;
+          console.log(ress2.length);
+          var x = 0;
+          var y = 0;
+          var z = 0;
+          var a = 0;
+          
+          ress2.forEach(function(base)
+          {
             if(base.email != req.session.user.email)
             {
               userinfo[x] = base.email;
@@ -72,17 +57,18 @@ router.get('/home', function(req, res){
               a++;
               x++;
             }
-         });
-
-         
-         if(a == ress2.length - 1 && x == ress2.length - 1)
-         {
-          callimage();
+          });
+  
+          if(a == ress2.length - 1 && x == ress2.length - 1)
+          {
+            callimage();
          }
         });
       }
       
       function callimage(){
+        
+        
         for(i = 0; i < userinfo.length; i++)
         {
           profiles[i] = "images/profile.jpg";
@@ -93,50 +79,51 @@ router.get('/home', function(req, res){
           var k = 0;
           fun.forEach(function(cry)
           {
-             for(j = 0;  j < userinfo.length; j++)
-             {
-               if(cry.name == userinfo[j])
-               {
-                 k = j;
-                 j = userinfo.length;
-               }
-             }
-             profiles[k] = cry.pathinfo;
+            for(j = 0;  j < userinfo.length; j++)
+            {
+              if(cry.name == userinfo[j])
+              {
+                k = j;
+                j = userinfo.length;
+              }
+            }
+            profiles[k] = cry.pathinfo;
           });
         });
         callcity();
       }
 
-      async function callcity(){
+      function callcity(){
         var c = 0;
         var p = 0;
         for(i = 0; i < userinfo.length; i++)
         {
           locals[i] = "";
         }
-        await dbo.collection("profileGeo").find({}).toArray(function(err, fun1)
+        dbo.collection("profileGeo").find({}).toArray(function(err, fun1)
         {
           if(err) throw err;
           c = fun1.length;
           var k = 0;
           fun1.forEach(function(cry1)
           {
-             for(j = 0;  j < userinfo.length; j++)
-             {
-               if(cry1.email == userinfo[j])
-               {
-                 k = j;
-                 j = userinfo.length;
-                 p = p + 1;
-               }
-             }
-             locals[k] = cry1.City;
-            }); 
-            /* console.log("p");
-            console.log(p);
+            for(j = 0;  j < userinfo.length; j++)
+            {
+              if(cry1.email == userinfo[j])
+              {
+                k = j;
+                j = userinfo.length;
+                p = p + 1;
+              }
+            }
+            locals[k] = cry1.City;
+          }); 
+          console.log("I am here");
+          console.log("p");
+          console.log(p);
             console.log("c");
-            console.log(c); */
-            if(p == c)
+            console.log(c);
+            if(p == c - 1)
             {
               callno();
             }
@@ -145,10 +132,10 @@ router.get('/home', function(req, res){
 
 
         //notifications query correct
-        async function callno(){
+        function callno(){
           console.log("this is where it goes");
           var b = 0;
-          await dbo.collection('notifications').find({User:req.session.user.email}).toArray(function(err, resu) {
+          dbo.collection('notifications').find({User:req.session.user.email}).toArray(function(err, resu) {
             if (err) throw err;
             // console.log(resu);
             if (!resu.length){
@@ -175,9 +162,6 @@ router.get('/home', function(req, res){
         console.log(locals);
         res.render('home', {name: req.session.user.name , no: no, initials:initials, locals:locals, userinfo:userinfo, profiles:profiles });
       }
-
-      userscall();
-      
     });
 
     /* var name = req.session.user.name;
@@ -204,6 +188,7 @@ router.get('/home', function(req, res){
         // finishRequest(no)
     });*/
   }
+  
 });
 
 router.get("/reset", function(req, res){
