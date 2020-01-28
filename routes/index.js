@@ -94,8 +94,8 @@ router.get('/home', function(req, res){
       }
 
       function callcity(){
-        var c = 0;
-        var p = 0;
+        //var c = 0;
+        //var p = 0;
         for(i = 0; i < userinfo.length; i++)
         {
           locals[i] = "";
@@ -113,21 +113,18 @@ router.get('/home', function(req, res){
               {
                 k = j;
                 j = userinfo.length;
-                p = p + 1;
+                //p = p + 1;
               }
             }
             locals[k] = cry1.City;
           }); 
-            console.log("I am here");
+            /* console.log("I am here");
             console.log("p");
             console.log(p);
             console.log("c");
             console.log(c);
-            console.log(c);
-            if(p == c - 1)
-            {
+            console.log(c); */
               callno();
-            }
           });
       }
 
