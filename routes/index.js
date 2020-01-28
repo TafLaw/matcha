@@ -118,9 +118,9 @@ router.get('/home', function(req, res){
             }
             locals[k] = cry1.City;
           }); 
-          console.log("I am here");
-          console.log("p");
-          console.log(p);
+            console.log("I am here");
+            console.log("p");
+            console.log(p);
             console.log("c");
             console.log(c);
             console.log(c);
