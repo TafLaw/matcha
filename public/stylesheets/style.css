@@ -222,6 +222,14 @@ a {
     width: 87%;
 }
 
+  .rs_btn {
+    right: 3%;
+  }
+
+  .pending {
+    right: 20%;
+  }
+  
   .gridcontainer {
     display: grid;
     grid-gap: 20px;
