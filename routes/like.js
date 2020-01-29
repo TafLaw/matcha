@@ -273,5 +273,36 @@ router.get('/block', function(req, res){
   });
 });
 
+router.get('/decline', function(req, res){
+  if (!req.session.user)
+    res.redirect('http://localhost:8080/');
+  var mail = req.query.mail;
+  var sess_user = req.session.user.email;
+  var details = req.query.name.split(" ");
+  var liked_user_name = details[0];
+  var liked_user_sname = details[1];
+  
+  MongoClient.connect(url, function(err, db) {
+    var dbo = db.db("matcha");
+    dbo.collection('connections').deleteOne({user_mail:mail, liked_user_mail:sess_user}, function(err, res){
+      if (err) throw err;
+      console.log('user delined');
+      
+      function message(){
+        var l1 = req.session.user.name + ' ';
+        var l2 = req.session.user.surname;
+        var l3 = " declined your request.";
+        return l1 + l2 + l3;
+      }
+      var notif = req.session.user.name + ' ' +  req.session.user.surname + " declined your request.";
+      var sub = 'REQUEST DECLINED';
+      if (req.session.user.notifications)
+        send(sub, message, mail);
+      notify(dbo, db, notif, mail);
+    });
+    res.redirect('http://localhost:8080/likes/connections');
+  });
+});
+
 
 module.exports = router;
