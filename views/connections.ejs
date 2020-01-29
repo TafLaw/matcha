@@ -77,6 +77,13 @@
                               <input class="l_btn block" type="submit" value="Block">
                             </form>
                     </div>
+                    <div>
+                            <form action="http://localhost:8080/chatbe" method="get">
+                              <input type="hidden" name="mail" value=<%= mail[i] %>>
+                              <input type="hidden" name="name" value="<%= names[i] %>">
+                              <input class="chat" type="submit" value="Chat">
+                            </form>
+                    </div>
                 </div>
                 <hr>
         <% } %>

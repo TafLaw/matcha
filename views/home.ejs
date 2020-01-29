@@ -58,17 +58,17 @@
       {%>
           <div>
               <form method="post" action="http://localhost:8080/profile/view">
-              <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= profiles[x] %>' alt=gallery>
-              <input type="hidden" name="hmail" value="<%= userinfo[x] %>">
-              <div>
-                <%= initials[x] %>
-              </div>
-              <div>
-                <%= locals[x] %>
-              </div>
-              <div>
-              <input type="submit" name="view" value="view">
-              </div>
+                <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= profiles[x] %>' alt=gallery>
+                <input type="hidden" name="hmail" value="<%= userinfo[x] %>">
+                <div>
+                  <%= initials[x] %>
+                </div>
+                <div>
+                  <%= locals[x] %>
+                </div>
+                <div>
+                  <input type="submit" name="view" value="view">
+                </div>
               </form>
           </div>
       <% } %>
