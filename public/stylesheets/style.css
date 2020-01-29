@@ -138,6 +138,11 @@ a {
   right: 50%;
 }
 
+.b_btn {
+  position: absolute;
+  right: 50%;
+}
+
 .pending {
   color: red;
   position: absolute;
@@ -180,21 +185,79 @@ a {
   display: grid;
   grid-gap: 20px;
   grid-template-columns: auto auto auto auto;
-  background-color: white;
   width: 100%;
   height: 100%;
 }
 .gridcontainer > div{
   background-color: #17a2b826;
 }
+.prfl_home {
+  display: -webkit-flex;
+}
+.marq {
+  display: none;
+}
+
+.decline {
+  right: 56%;
+}
+
+#a {
+  display: none;
+}
 
 @media only screen and (max-width:500px) {
+  #a {
+    display: block;
+  }
+  .loop {
+    width: 100%;
+  }
+  
+  .filter {
+    display: none;
+    margin-left: 26px;
+    margin-top: 3%;
+    border: 0.016px solid lightgrey;
+    width: 87%;
+}
+
   .gridcontainer {
     display: grid;
     grid-gap: 20px;
     grid-template-columns: auto auto;
-    background-color: white;
     width: 100%;
     height: 100%;
+  }
+
+  .marq {
+    border: 0.5px solid red;
+    display: block;
+  }
+
+  .prfl_home {
+    display: block;
+  }
+  
+  #danger-zone {
+    display: none;
+  }
+
+  .b_btn {
+    position: absolute;
+    right: 3%;
+  }
+
+  .chat {
+    position: absolute;
+    right: 20%;
+  }
+
+  .decline {
+    right: 20%;
+  }
+
+  .accpt {
+    right: 2%;
   }
 }

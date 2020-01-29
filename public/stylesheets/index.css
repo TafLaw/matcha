@@ -138,6 +138,16 @@ select {
 }
 
 @media only screen and (max-width:500px) {
+    #error {
+        color: white;
+        max-width: max-content;
+        position: relative;
+        top: 31px;
+        height: 44px;
+        left: 17px;
+        background-color: #ec2626c9;
+    }
+    
     div#popupContact {
         background-color: #0000008c;
         position: absolute;
