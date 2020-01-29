@@ -31,12 +31,9 @@
           </li>
           
           <li class="nav-item">
-            <a class="nav-link" href="http://localhost:8080/likes">Likes</a>
+            <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
           </li>
           
-          <li class="nav-item">
-            <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
           </li>
@@ -58,16 +55,22 @@
       {%>
           <div>
               <form method="post" action="http://localhost:8080/profile/view">
-                <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= profiles[x] %>' alt=gallery>
-                <input type="hidden" name="hmail" value="<%= userinfo[x] %>">
-                <div>
-                  <%= initials[x] %>
-                </div>
-                <div>
-                  <%= locals[x] %>
-                </div>
-                <div>
-                  <input type="submit" name="view" value="view">
+                <div class="prfl_home">
+                  <div>
+                    <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= profiles[x] %>' alt=gallery>
+                  </div>
+                  <input type="hidden" name="hmail" value="<%= userinfo[x] %>">
+                  <div class="view_dtls">
+                    <div>
+                     <h5><%= initials[x] %></h5> 
+                    </div>
+                    <div>
+                      <i><%= locals[x] %></i>
+                    </div>
+                    <div id="view_bt">
+                      <input type="submit" name="view" value="view">
+                    </div>
+                  </div>
                 </div>
               </form>
           </div>

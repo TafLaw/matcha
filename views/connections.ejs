@@ -12,48 +12,52 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color: rgba(158, 199, 201, 0.08);">
-    <!-- nav bar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="#">Matcha</a>
-        <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
-        <a class="nav-link" href="http://localhost:8080/profile"><%= name %></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-    
-        <div class="collapse navbar-collapse" id="navbarColor01">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="http://localhost:8080/home">Home <span class="sr-only">(current)</span></a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/likes">Likes</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/chatbe">Chat</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
-            </li>
-          </ul>
-          <a href="http://localhost:8080/logout">Logout</a>
-          <form class="form-inline" action="http://localhost:8080/search">
-            <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
-            <input type="hidden" name="Option1" value="none">
-            <input type="hidden" name="Option2" value="none">
-            <input type="hidden" name="Option3" value="none">
-            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
+     <!-- nav bar -->
+     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">Matcha</a>
+      <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
+      <a class="nav-link" href="http://localhost:8080/profile"><%= name %></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="http://localhost:8080/home">Home <span class="sr-only">(current)</span></a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
+          </li>
+        </ul>
+        <a href="http://localhost:8080/logout">Logout</a>
+        <form class="form-inline" action="http://localhost:8080/search">
+          <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
+          <input type="hidden" name="Option1" value="none">
+          <input type="hidden" name="Option2" value="none">
+          <input type="hidden" name="Option3" value="none">
+          <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
 <!-- nav bar ends here -->
 
+<div>
+  <marquee class="marq" behavior="scroll" direction="left">
+    <p><b>Please Note</b>: If you block a user, you will not be able to connect with them again.
+    If you do not wish to be connected with a user, please unliked them.
+    By blocking a user, they will be reported and Matcha assumes that they are a fake account.</p >
+  </marquee>
+</div>
 <div class="main_search">
     <div class="loop">
         <%  
@@ -74,7 +78,7 @@
                             <form action="http://localhost:8080/like/block" method="get">
                               <input type="hidden" name="mail" value=<%= mail[i] %>>
                               <input type="hidden" name="name" value="<%= names[i] %>">
-                              <input class="l_btn block" type="submit" value="Block">
+                              <input class="b_btn block" type="submit" value="Block">
                             </form>
                     </div>
                     <div>
