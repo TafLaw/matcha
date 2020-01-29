@@ -1,6 +1,7 @@
 body {
   padding: 0;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background-color: rgba(158, 199, 201, 0.08);
 }
 
 a {
@@ -13,6 +14,61 @@ a {
   max-width: max-content;
   height: 44px;
 
+}
+
+.block {
+  background-color: rgb(243, 28, 28);
+  color: white;
+}
+
+.chat {
+  position: absolute;
+  right: 68%;
+  background-color: rgb(45, 211, 12);
+  color: white;
+}
+
+#danger-zone {
+  margin-top: 20px;
+  margin-left: 111px;
+  border: 0.016px solid rgb(247, 103, 103);
+  width: 50%;
+}
+
+.dz-p {
+  padding-left: 3%;
+}
+
+.new_pass {
+  border: 1px solid #80808061;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px;
+  border-radius: 3%;
+}
+
+.new_pass_sub {
+  padding: 4% 0%;
+}
+
+.inpt_rps {
+  padding: 5px;
+  margin: 5px;
+}
+.btn_rps {
+  width: 58%;
+  background-color: #17a2b8;
+}
+
+#error {
+  color: white;
+  max-width: max-content;
+  position: relative;
+  top: 80px;
+  height: 44px;
+  left: 179px;
+  background-color: #ec2626c9;
 }
 
 .main_search {
@@ -55,6 +111,11 @@ a {
   background-color: red;
   width: 50px;
   height: 50px;
+}
+
+.fgPass {
+  padding: 11%;
+  
 }
 
 .s_prfl {
@@ -113,4 +174,27 @@ a {
 
 #mail_txt {
   padding: 2%;
+}
+
+.gridcontainer{
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: auto auto auto auto;
+  background-color: white;
+  width: 100%;
+  height: 100%;
+}
+.gridcontainer > div{
+  background-color: #17a2b826;
+}
+
+@media only screen and (max-width:500px) {
+  .gridcontainer {
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: auto auto;
+    background-color: white;
+    width: 100%;
+    height: 100%;
+  }
 }
