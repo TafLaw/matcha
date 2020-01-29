@@ -34,7 +34,7 @@ router.post("/gallery", function(req, res)
 router.post("/", function (req, res) {
     console.log(req.body);
     if (req.session.user == undefined) {
-        res.redirect('http://localhost:8080/');
+        //res.redirect('http://localhost:8080/');
     }
     else {
         if (req.body.updateAbout == "updateAbout") {
@@ -44,7 +44,7 @@ router.post("/", function (req, res) {
             console.log(string);
             if (string.length == 0) {
                 console.log("The about field is empty");
-                //res.redirect('http://localhost:8080/profile');
+                res.redirect('http://localhost:8080/profile');
             }
             else {
                 MongoClient.connect(url, function (err, db) {
@@ -74,13 +74,14 @@ router.post("/", function (req, res) {
                     });
                     // db.close();
                 });
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
         }
         else if (req.body.updateCity == "updateCity") {
             var string1 = req.body.city.trim();
             if (string1.length == 0) {
                 console.log("The City field is empty");
+                //res.redirect('http://localhost:8080/profile');
             }
             else {
                 MongoClient.connect(url, function (err, db) {
@@ -110,8 +111,8 @@ router.post("/", function (req, res) {
                     });
                     // db.close();
                 });
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
         }
         else if (req.body.updateName == "updateName") {
             console.log("changing name");
@@ -140,8 +141,8 @@ router.post("/", function (req, res) {
                          //if(err) throw err;
                      }); */
                 });
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
         }
         else if (req.body.updateSurname == "updateSurname") {
             console.log("updateSurname");
@@ -160,19 +161,9 @@ router.post("/", function (req, res) {
                         if (err) throw err;
                         console.log("New Surname");
                     });
-                    /* dbo.collection("users").findOne(user,newname, function(err,res)
-                    {
-                        if(err) throw err;
-                        console.log("New Session");
-                    }); */
-                    // req.session.user = res;
-                    /*  req.session.save( function(err)
-                     {
-                         //if(err) throw err;
-                     }); */
                 });
+                res.redirect('http://localhost:8080/profile');
             }
-            res.redirect('http://localhost:8080/profile');
         }
         else if (req.body.updateEmail == "updateEmail") {
             console.log("updateEmail");
@@ -200,7 +191,7 @@ router.post("/", function (req, res) {
                                 var dbo = db.db("matcha");
                                 var search = {email: req.session.user.email};
                                 var search1 = {name : req.session.user.email};
-                                var eupdate1 = {$set: {email: req.body.email}}
+                                var eupdate1 = {$set: { name: req.body.email}}
                                 var eupdate = {$set: {email: req.body.email}};
                                 var usupdate = {$set: {email: req.body.email, verify: 0}};
 
@@ -308,8 +299,8 @@ router.post("/", function (req, res) {
                         }
                     });
                 });
+                res.redirect('http://localhost:8080/');
             }
-            res.redirect('http://localhost:8080/');
         }
         else if (req.body.saveAbout == "saveAbout") {
             console.log("updating inputs");
@@ -349,12 +340,41 @@ router.post("/", function (req, res) {
                 if (err) throw err;
                 var dbo = db.db("matcha");
                 var profinfo = { email: req.session.user.email };
+                var pname;
+                var psurname;
+                var pemail;
+
+                dbo.collection("users").findOne(profinfo, function(err, see)
+                {
+                    if(err) throw err;
+                    pname = see.name;
+                    psurname = see.surname;
+                    pemail = see.email;
+                
+                    res.render('edit_profile', { username: pname , surname: psurname, email: pemail });
+                })
             });
-            res.render('edit_profile', { username: req.session.user.name, surname: req.session.user.surname, email: req.session.user.email });
         }
         else if (req.body.Details == "Details") {
             console.log("Personal Details Are Being Changed")
-            res.render('edit_profile', { username: req.session.user.name, surname: req.session.user.surname, email: req.session.user.email });
+            MongoClient.connect(url, function (err, db) {
+                if (err) throw err;
+                var dbo = db.db("matcha");
+                var profinfo = { email: req.session.user.email };
+                var pname;
+                var psurname;
+                var pemail;
+
+                dbo.collection("users").findOne(profinfo, function(err, see)
+                {
+                    if(err) throw err;
+                    pname = see.name;
+                    psurname = see.surname;
+                    pemail = see.email;
+
+                    res.render('edit_profile', { username: pname , surname: psurname, email: pemail });
+                });
+            });
         }
         else if (req.body.Geolocation == "Geolocation") {
             console.log("Finding your current location");
@@ -405,7 +425,7 @@ router.post("/", function (req, res) {
                                         console.log('profile image updated');
                                     });
                                 });
-                                //  res.redirect('http://localhost:8080/profile');
+                                res.redirect('http://localhost:8080/profile');
                             }
                             else {
                                 MongoClient.connect(url, function (err, db) {
@@ -417,12 +437,12 @@ router.post("/", function (req, res) {
                                         console.log("profile path saved!");
                                     });
                                 });
+                                res.redirect('http://localhost:8080/profile');
                             }
                         });
                     });
                     /*  console.log("file has been moved");
                     console.log("profile redirected"); */
-                    res.redirect('http://localhost:8080/profile');
                 }
             });
         }
@@ -567,7 +587,6 @@ router.post("/view", function (req, res) {
                     })
                 }
             });
-
 
             var query4 = { name: req.body.hmail }
 
@@ -943,20 +962,6 @@ router.get("/", function (req, res) {
 
             /* query the views table and turn names into an array to read at the front end */
 
-            dbo.collection("profileviews").find({user_account: req.session.user.email}).toArray(function(err, bean)
-            {
-                if(err) throw err;
-                var f = 0;
-                
-                bean.forEach(function(mr)
-                {
-                    vies[f] = mr.user_view_name;
-                    f++;
-                });
-                //console.log("vies");
-                //console.log(vies);
-            });
-         
             var query4 = { name: req.session.user.email }
 
             dbo.collection("profileimages").findOne(query4, function (err, result4) {
@@ -972,6 +977,21 @@ router.get("/", function (req, res) {
                 console.log("profile images");
                 console.log(result4);
             });
+
+            dbo.collection("profileviews").find({user_account: req.session.user.email}).toArray(function(err, bean)
+            {
+                if(err) throw err;
+                var f = 0;
+                
+                bean.forEach(function(mr)
+                {
+                    vies[f] = mr.user_view_name;
+                    f++;
+                });
+                //console.log("vies");
+                //console.log(vies);
+            });
+         
 
             var l_user = {liked_user_mail: req.session.user.email};
 
