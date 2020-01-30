@@ -85,6 +85,8 @@
                             <form action="http://localhost:8080/chatbe" method="get">
                               <input type="hidden" name="mail" value=<%= mail[i] %>>
                               <input type="hidden" name="name" value="<%= names[i] %>">
+                              <input type="hidden" name="flag" value="-1">
+                              <input type="hidden" name="i" value="0">
                               <input class="chat" type="submit" value="Chat">
                             </form>
                     </div>
