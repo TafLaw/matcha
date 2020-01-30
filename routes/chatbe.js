@@ -76,11 +76,12 @@ router.get('/', function (req, res, next) {
           
           //chats from the table/collection
           //----->>>
-          let name = req.session.user.email;
+          let email = req.session.user.email;
+          let name = req.session.user.name;
           let message = req.query.message;
           let to = req.query.mail;
           console.log(req.query);
-          console.log(req.query.message);
+          console.log(req.session.user);
       if (flag == -1){
         var tmp = i;
         flag++;
@@ -89,7 +90,7 @@ router.get('/', function (req, res, next) {
           function disp(){
             console.log('to display');
             
-            chat.find({name: name, to: to}).limit(100).sort({ _id: 1 }).toArray(function (err, resu) {
+            chat.find({$or:[{email: email, to: to}, {email:to, to:email}]}).limit(100).sort({ _id: 1 }).toArray(function (err, resu) {
               if (err) {
                 throw err;
               }
@@ -111,10 +112,10 @@ router.get('/', function (req, res, next) {
         function insrt(){
           console.log('somewhere');
           
-          if (name != null && message != null && req.query.mail != null && flag != (flag+1)) {
+          if (email != null && message != null && req.query.mail != null && flag != (flag+1)) {
             console.log(visited, 'ereeeewe');
             // sendStatus("Please insert something");
-            chat.insert({ name: name, message: message, to: to, passed : i }, function () {
+            chat.insert({ name: name, email: email, message: message, to: to, passed : i }, function () {
               flag++;
               i++;
               tmp = i;
@@ -129,7 +130,7 @@ router.get('/', function (req, res, next) {
         } 
 
         async function vis(){
-          await chat.find({name: name, to: to}).toArray(function (err, res) {
+          await chat.find({email: email, to: to}).toArray(function (err, res) {
             if (err) {
               throw err;
             }

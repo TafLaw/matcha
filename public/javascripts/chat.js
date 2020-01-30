@@ -14,6 +14,7 @@
     // setTimeout("location.reload();",8000)
     
     var m_input = element('m_input');
+    // var m = element('m');
     var messageRec = element('messageRec');
     
     
@@ -67,6 +68,7 @@
                         '</div>';
                 }
                 m.innerHTML = output;
+                // b.innerHTML = output;
             }
         }
         xhr.send();

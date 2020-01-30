@@ -8,6 +8,17 @@ a {
   color: #00B7FF;
 }
 
+.user {
+  display: flex;
+  background-color: #f4f4f4;
+  padding: 10px 0;
+  margin-bottom: 10px;
+}
+
+.user ul {
+  list-style: none;
+}
+
 #r_pass{
   color: white;
   background-color: #ec2626c9;
