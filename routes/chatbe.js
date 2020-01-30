@@ -8,7 +8,7 @@ var url = "mongodb://localhost:27017/";
 // app.listen(3000);
 // app.on("/json", (req, res) => {
 //   res.sendFile("./index.js");
-//   console.log("listing on 3000");
+//   //console.log("listing on 3000");
 
 // });
 
@@ -16,7 +16,7 @@ const FileSystem = require("fs");
 
 // router.get('/file.json', function(req, res)
 // {
-//    console.log("The file is being ");
+//    //console.log("The file is being ");
 // })
 
 // router.post('/', function (req, res) {
@@ -30,7 +30,7 @@ const FileSystem = require("fs");
 //         throw err;
 //       }
 
-//       console.log("MongoDB connected...");
+//       //console.log("MongoDB connected...");
 
 //       var dbo = db.db("matcha");
 //       let chat = dbo.collection("chats");
@@ -42,7 +42,7 @@ const FileSystem = require("fs");
 
 //     });
 //   }
-//   console.log(req.body.mail);
+//   //console.log(req.body.mail);
 
 // });
 router.get('/', function (req, res, next) {
@@ -60,7 +60,7 @@ router.get('/', function (req, res, next) {
         throw err;
       }
       
-      console.log("MongoDB connected...");
+      //console.log("MongoDB connected...");
       
       //Connect to socket.io
       // io.on('connection', function (socket) {
@@ -80,15 +80,15 @@ router.get('/', function (req, res, next) {
           let name = req.session.user.name;
           let message = req.query.message;
           let to = req.query.mail;
-          console.log(req.query);
-          console.log(req.session.user);
+          //console.log(req.query);
+          //console.log(req.session.user);
       if (flag == -1){
         var tmp = i;
-        flag++;
+        // flag++;
         // i++;
       }
           function disp(){
-            console.log('to display');
+            //console.log('to display');
             
             chat.find({$or:[{email: email, to: to}, {email:to, to:email}]}).limit(100).sort({ _id: 1 }).toArray(function (err, resu) {
               if (err) {
@@ -96,34 +96,34 @@ router.get('/', function (req, res, next) {
               }
               // socket.emit('output', res);
               resu = JSON.stringify(resu);
-              // console.log(res);
+              // //console.log(res);
               
               FileSystem.writeFile('chats.json', ' { "chats": ' + resu + '}', function (e) {
                 if (e) throw e;
               });
                 db.close();
                 tmp=i;
-                console.log("HERER", flag, tmp, i);
+                //console.log("HERER", flag, tmp, i);
                 // i++;
                 res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i:tmp });
               });
     
           }
         function insrt(){
-          console.log('somewhere');
+          //console.log('somewhere');
           
           if (email != null && message != null && req.query.mail != null && flag != (flag+1)) {
-            console.log(visited, 'ereeeewe');
+            //console.log(visited, 'ereeeewe');
             // sendStatus("Please insert something");
             chat.insert({ name: name, email: email, message: message, to: to, passed : i }, function () {
               flag++;
               i++;
               tmp = i;
-              console.log('insertwd');
+              //console.log('insertwd');
               disp()
               // res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i });
             });
-            // console.log(req.session.user);
+            // //console.log(req.session.user);
           }
           else
             res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i:tmp });
@@ -134,40 +134,47 @@ router.get('/', function (req, res, next) {
             if (err) {
               throw err;
             }
+            //console.log(res);
+            
             res.forEach(function(u){
               visited[j] = u.passed;
-              console.log(i);
               j++;
+              
             });
             
-            if (j && visited.includes(i)){
-              console.log('it includes i');
+            if (j && visited.includes(i) && flag != -1){
+              //console.log('it includes i');
               i++;
+              flag++;
               disp();
             }
             /* if (j){
-              console.log(i, 'this is i');
+              //console.log(i, 'this is i');
               disp();
             } */
             else{
-              console.log('we goinf somewhere else');
+              if (flag == -1){
+                flag++;
+                i = Math.max.apply(Math, visited) + 1;
+                tmp = i;
+              }
               insrt();
             }
             
           });
         }  
         
-        // console.log(req.session.user.name);
+        // //console.log(req.session.user.name);
         vis();
         /* if (name != null && message != null && req.query.mail != null && flag != (flag+1)) {
-          console.log(visited, 'ereeeewe');
+          //console.log(visited, 'ereeeewe');
           // sendStatus("Please insert something");
             flag++;
             i++;
           chat.insert({ name: name, message: message, to: to, passed : i }, function () {
-            console.log('insertwd');
+            //console.log('insertwd');
           });
-          // console.log(req.session.user);
+          // //console.log(req.session.user);
         } */
         /* chat.find({name: name, to: to}).limit(100).sort({ _id: 1 }).toArray(function (err, res) {
           if (err) {
@@ -175,23 +182,23 @@ router.get('/', function (req, res, next) {
           }
           // socket.emit('output', res);
           res = JSON.stringify(res);
-          // console.log(res);
+          // //console.log(res);
           
           FileSystem.writeFile('chats.json', ' { "chats": ' + res + '}', function (e) {
             if (e) throw e;
           });
             db.close();
           }); */
-          // console.log("he");
+          // //console.log("he");
           // res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i });
           
-          // console.log("hello");
+          // //console.log("hello");
           
           
         });
       }
   else
-  console.log("failed");
+    console.log("failed");
   
 });
 
