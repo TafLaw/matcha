@@ -547,6 +547,8 @@ router.post("/view", function (req, res) {
     var race = null;
     var gender = null;
     var height = null;
+    var lat = null;
+    var long = null;
     var img = '/images/profile.jpg';
     var marker = '/images/marker.png';
     var activity = null;
@@ -637,6 +639,8 @@ router.post("/view", function (req, res) {
                 if (err) throw err;
                 result5.forEach(function (cityname) {
                     cityn = cityname.City;
+                    lat = cityname.lat;
+                    long = cityname.long;
                 })
             })
 
@@ -701,12 +705,13 @@ router.post("/view", function (req, res) {
 
             dbo.collection("profile").find(query1).toArray(function (err, result2) {
                 if (err) throw err;
-                result2.forEach(function (userabout) {
-                    sex = userabout.sex;
-                    race = userabout.race;
-                    gender = userabout.gender;
-                    height = userabout.height;
-                });
+                if(result2 != undefined)
+                {
+                    sex = result2.sex;
+                    race = result2.race;
+                    gender = result2.gender;
+                    height = result2.height;
+                }
                 console.log(result2);
             });
 
@@ -737,6 +742,14 @@ router.post("/view", function (req, res) {
                 }
                 else if (birthday == null) {
                     birthday = '';
+                }
+                else if(lat == null)
+                {
+                    lat = '';
+                }
+                else if(long == null)
+                {
+                    long == '';
                 }
                 else if (sex == null) {
                     sex = '';
@@ -770,7 +783,7 @@ router.post("/view", function (req, res) {
                         console.log("rating updated");
                 }); */
 
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, lat:lat, long:long, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
             //db.close();
         });
@@ -929,6 +942,44 @@ router.get("/Gaming", function (req, res) {
 });
 
 
+router.get('/geofin', function(req, res)
+{
+    console.log("I am in the insertion of the location of the user");
+    console.log(res.query);
+    
+    MongoClient.connect(url, function(err, db)
+    {
+        var dbo = db.db("matcha");
+        var gsearch = { email: req.session.user.email };
+        var gupdate = { $set: { lat: req.query.lat, long: req.query.long }};
+        var ginsert = { lat: req.query.lat, long: req.query.long };
+
+        if(err) throw err;
+
+        dbo.collection("profileGeo").findOne(gsearch, function(err, fin)
+        {
+            if(err) throw err;
+
+            if(fin == undefined)
+            {
+                dbo.collection("profileGeo").insertOne(ginsert, function(err, ok)
+                {
+                    if(err) throw err;
+                })
+            }
+            else
+            {
+                dbo.collection("profileGeo").updateOne( gsearch, gupdate , function(err, ok)
+                {
+                    if(err) throw err;
+                })
+            }
+        })
+
+    });    
+    res.redirect('http://localhost:8080/profile');
+})
+
 router.get("/", function (req, res) {
     /* copy start here */
     var username1 = null;
@@ -938,6 +989,8 @@ router.get("/", function (req, res) {
     var race = null;
     var gender = null;
     var height = null;
+    var lat = null;
+    var long = null;
     var img = 'images/profile.jpg';
     var marker = 'images/marker.png';
     var activity = "Online";
@@ -1026,6 +1079,8 @@ router.get("/", function (req, res) {
                 if (err) throw err;
                 result5.forEach(function (cityname) {
                     cityn = cityname.City;
+                    lat = cityname.lat;
+                    long = cityname.long;
                 })
             })
 
@@ -1088,17 +1143,17 @@ router.get("/", function (req, res) {
 
             var query1 = { email: req.session.user.email }
 
-            dbo.collection("profile").find(query1).toArray(function (err, result2) {
+            dbo.collection("profile").findOne(query1, function (err, result2) {
                 if (err) throw err;
-                result2.forEach(function (userabout) {
-                    sex = userabout.sex;
-                    race = userabout.race;
-                    gender = userabout.gender;
-                    height = userabout.height;
-                });
+                if(result2 != undefined)
+                {
+                    sex = result2.sex;
+                    race = result2.race;
+                    gender = result2.gender;
+                    height = result2.height;
+                }
                 console.log(result2);
-            }
-            );
+            });
 
             var query2 = { email: req.session.user.email }
 
@@ -1127,6 +1182,14 @@ router.get("/", function (req, res) {
                 }
                 else if (birthday == null) {
                     birthday = '';
+                }
+                else if(lat == null)
+                {
+                    lat = '';
+                }
+                else if(long == null)
+                {
+                    long == '';
                 }
                 else if (sex == null) {
                     sex = '';
@@ -1160,7 +1223,7 @@ router.get("/", function (req, res) {
                         console.log("rating updated");
                 }); */
 
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, notifications:notifications, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
+                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity:activity, mail: mail, marker:marker, notifications:notifications, lat:lat, long:long, vies:vies, rating: (rate/10) * 100, def: "images/profile.jpg"});
             });
             //db.close();
         });
