@@ -105,6 +105,7 @@ router.get('/connections', function(req, res){
             // console.log(result);
             result.forEach(function(user){
                 mail[i] = user.user_mail;
+                // console.log("Connection emails: " + user.user_mail);
                 names[i] = user.user_name + ' ' + user.user_sname;
                 connected[i] = user.connected;
                 images[i] = 0;

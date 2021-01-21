@@ -1,25 +1,27 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var session = require('client-sessions');
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var loginRouter = require('./routes/login');
-var verifyRouter = require('./routes/verify');
-var resetRouter = require('./routes/reset_pass');
-var chatRouter = require('./routes/chatbe');
-var profileRouter = require('./routes/profile');
-var likeRouter = require('./routes/like');
-var likesRouter = require('./routes/likes');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const mysql = require('mysql');
+const logger = require('morgan');
+const session = require('client-sessions');
+let indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+let loginRouter = require('./routes/login');
+let verifyRouter = require('./routes/verify');
+let resetRouter = require('./routes/reset_pass');
+let chatRouter = require('./routes/chatbe');
+let profileRouter = require('./routes/profile');
+let likeRouter = require('./routes/like');
+let likesRouter = require('./routes/likes');
 
-var app = express();
+const app = express();
 
 var http = require('http');
-const socketIO = require('socket.io');
+// const socketIO = require('socket.io');
 let server = http.createServer(app);
-global.io = socketIO(server);
+// global.io = socketIO(server);
+const io = require('socket.io')(server)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -51,10 +53,26 @@ app.use('/profile', profileRouter);
 app.use('/like', likeRouter);
 app.use('/likes', likesRouter);
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// catch 404 and forward to error  also blockeds other routes for some strange reason
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
+
+
+//enabling headers required for POST request
+app.use(function(request, result, next) {
+  result.setHeader("Access-Control-Allow-Origin", "*");
+  next();
+})
+
+//api for returning all messages
+app.post("/get_messages", function(request, result) {
+  //get all messages from DB
+  connection.query("SELECT * FROM messages WHERE (senderMail = '" + request.body.sender + "' AND receiverMail = '" + request.body.receiver + "') OR (senderMail = '" + request.body.receiver + "' AND receiverMail = '" + request.body.sender + "') ", (err, messages) => {
+      result.end(JSON.stringify(messages));
+  });
+  
+})
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -67,8 +85,55 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+let user = [];
+
+
+
+// ==================DATABASE CONNECTION=================
+
+let connection = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "password",
+  database: "matcha_db",
+  port: "3306"
+})
+
+connection.connect((err) => {
+  if (err) {
+      throw err
+  } else {
+      console.log("Database connected!");
+  }
+})
+
+// ===========================================================
+
+
 io.on('connection', function(socket){
-  console.log('a user connected');
+  console.log('a user connected', socket.id);
+
+  socket.on('user_connected', username=> {
+      console.log(username);
+
+      user[username] = socket.id;
+      console.log(user);
+
+      // notify all connected clients
+      io.emit('user_connected', username);
+  });
+
+  socket.on('sendMessage', msg=> {
+      console.log(msg);
+
+      var socketId = user[msg.receiverMail];
+      console.log("This email " + msg.receiverMail);
+      console.log("found it " + socketId);
+
+      connection.query("INSERT INTO messages (senderName, senderMail, receiverMail, message) VALUE ('" + msg.senderName + "', '" + msg.senderMail + "', '" + msg.receiverMail + "', '" + msg.message +"')")
+      io.to(socketId).emit("newMessage", msg)
+      // socket.broadcast.emit('sendToAll', msg);
+  });
 });
 
 server.listen(8080, (err) => {
