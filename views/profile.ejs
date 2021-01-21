@@ -66,7 +66,7 @@
     <!-- nav bar ends here -->
     <div class="topcontainer">
         <div class="picbod">
-            <img class="proimage" src='<%= imageu %>' alt="profile picture">
+            <img class="proimage" src='<%= profileData.image %>' alt="profile picture">
             <div style="display: flex;">
                 <div>
                     <% if(mail == 1){ %>
@@ -116,7 +116,7 @@
             <% } %>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Veerdana, sans-serif;">
-                <%= text %>
+                <%= profileData.about %>
             </p>
         </div>
         <div>
@@ -134,19 +134,19 @@
             </p>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Orientation&nbsp;&nbsp;<%= gender %>
+                Orientation&nbsp;&nbsp;<%= profileData.gender %>
             </p>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Sexual Preference&nbsp;&nbsp;<%= sex %>
+                Sexual Preference&nbsp;&nbsp;<%= profileData.sexualPreference %>
             </p>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                height&nbsp;&nbsp;<%= height %>
+                height&nbsp;&nbsp;<%= profileData.height %>
             </p>
             <hr>
             <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Ethnicity&nbsp;&nbsp;<%= race %>
+                Ethnicity&nbsp;&nbsp;<%= profileData.race %>
             </p>
             <hr>
         </div>
@@ -160,7 +160,7 @@
             <% } %>
             <div>
                 <img style="width:65px; height: 65px" src='<%= marker %>' alt="marker">
-                <%= cityn %>
+                <%= profileData.city %>
             </div>
             <!-- <form action="/profile.html" method="post"></form>
                 <input type="submit" name="Geolocation" value="Geolocation">
