@@ -54,39 +54,40 @@ router.get('/', function (req, res, next) {
 
   if (req.session.user) {
     
-    // res.render('chatbe', { title: 'Matcha' });
-    MongoClient.connect('mongodb://127.0.0.1:27017/matcha', function (err, db) {
-      if (err) {
-        throw err;
-      }
-      
-      //console.log("MongoDB connected...");
-      
-      //Connect to socket.io
-      // io.on('connection', function (socket) {
-        //   socket.emit('session_name', req.session.user.name);
-        // let chat = db.collection('chats');
-        var dbo = db.db("matcha");
-        let chat = dbo.collection("chats");
-        //function that sends status
-        // sendStatus = function (s) {
-          //   socket.emit('status', s)
-          // };
-          // chat.insertOne({name: "hello", message: "world"});
-          
-          //chats from the table/collection
-          //----->>>
+    
           let email = req.session.user.email;
           let name = req.session.user.name;
           let message = req.query.message;
           let to = req.query.mail;
-          //console.log(req.query);
-          //console.log(req.session.user);
-      if (flag == -1){
-        var tmp = i;
-        // flag++;
-        // i++;
-      }
+
+        //   function onUserSelected() {
+        //     // receiver = username;
+        //     // console.log(username);
+        
+        //     $.ajax({
+        //         url: "http://localhost:3000/get_messages",
+        //         method: "POST",
+        //         data: {
+        //             sender: mail,
+        //             receiver: to
+        //         },
+        //         success: function (response) {
+        //             console.log(response);
+        
+        //             let messages = JSON.parse(response);
+        //             let type = "";
+        //             console.log(messages[0]);
+        //             for (let a = 0; a < messages.length; a++) {
+        //                 console.log("compare: " + messages[a].sender + "   " + sender);
+        //                 type = messages[a].sender == sender ? "you-message" : "other-message";
+        //                 display(messages[a], type);
+                        
+        //             }
+        //         }
+        //     })
+        // }
+        // onUserSelected();
+    
           function disp(){
             //console.log('to display');
             
@@ -94,18 +95,18 @@ router.get('/', function (req, res, next) {
               if (err) {
                 throw err;
               }
-              // socket.emit('output', res);
+              // socket.emit('output', res); cc
               resu = JSON.stringify(resu);
-              // //console.log(res);
+              // //console.log(res);c
               
               FileSystem.writeFile('chats.json', ' { "chats": ' + resu + '}', function (e) {
                 if (e) throw e;
               });
                 db.close();
                 tmp=i;
-                //console.log("HERER", flag, tmp, i);
-                // i++;
-                res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i:tmp });
+                //console.log("HERER", flag, tmp, i);c
+                // i++;c
+                res.render('chat', { title: 'Matcha', mail: req.query.mail, name: req.query.name}); //, flag, i:tmp 
               });
     
           }
@@ -126,7 +127,7 @@ router.get('/', function (req, res, next) {
             // //console.log(req.session.user);
           }
           else
-            res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i:tmp });
+            res.render('chat', { title: 'Matcha', rMail: req.query.receiverMail, rName: req.query.receiverName.split(" ")[0], sMail: email, sName: name}); // passing only the name not the surname ( req.query.receiverName.split(" ")[0] )
         } 
 
         async function vis(){
@@ -164,38 +165,8 @@ router.get('/', function (req, res, next) {
           });
         }  
         
-        // //console.log(req.session.user.name);
-        vis();
-        /* if (name != null && message != null && req.query.mail != null && flag != (flag+1)) {
-          //console.log(visited, 'ereeeewe');
-          // sendStatus("Please insert something");
-            flag++;
-            i++;
-          chat.insert({ name: name, message: message, to: to, passed : i }, function () {
-            //console.log('insertwd');
-          });
-          // //console.log(req.session.user);
-        } */
-        /* chat.find({name: name, to: to}).limit(100).sort({ _id: 1 }).toArray(function (err, res) {
-          if (err) {
-            throw err;
-          }
-          // socket.emit('output', res);
-          res = JSON.stringify(res);
-          // //console.log(res);
-          
-          FileSystem.writeFile('chats.json', ' { "chats": ' + res + '}', function (e) {
-            if (e) throw e;
-          });
-            db.close();
-          }); */
-          // //console.log("he");
-          // res.render('chatbe', { title: 'Matcha', mail: req.query.mail, flag, i });
-          
-          // //console.log("hello");
-          
-          
-        });
+        insrt();
+        
       }
   else
     console.log("failed");

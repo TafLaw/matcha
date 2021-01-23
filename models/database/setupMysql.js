@@ -8,7 +8,7 @@ async function createDB() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "AfricanMthoko#15"
+            password: "password"
         });
     
         con.connect(function (err) {
@@ -29,8 +29,8 @@ async function createTables() {
     var con = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: "AfricanMthoko#15",
-        database: "matcha"
+        password: "password",
+        database: "matcha_db"
     });
 
     con.connect(function (err) {
@@ -123,8 +123,8 @@ async function createConn() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "AfricanMthoko#15",
-            database: "matcha"
+            password: "password",
+            database: "matcha_db"
         });
     
         con.connect(function (err) {
