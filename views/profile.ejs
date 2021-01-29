@@ -1,7 +1,5 @@
 <!DOCTYPE html>
 <html>
-<!-- it seems like ejs can run if else and while (statements and conditions should be easy to work on the view profile ksasa) -->
-
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
@@ -12,6 +10,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script>
+        window.onload = function (){
+            var element = document.getElementById('gallery');
+            if('<%= mail %>' == '0' && '<%= gallery.length %>' == '0'){
+                element.style.display = 'none';
+            }
+        }
+    </script>
 </head>
 <!-- https://gcs.thesouthafrican.com/2019/12/edf14e72-zozibini-tunzi-2-1200x858.jpg -->
 
@@ -73,7 +79,7 @@
                             </form>
                         <% } %>
                 </div>
-                <div style="height: 100px;width: 200px;">
+                <div style="margin-left: 20px; height: 100px;width: 200px;">
                     <h2 id="profileName">
                         <%= username1 +","%>
                             <%= age %>
@@ -82,11 +88,6 @@
                     <p>last Seen <%= activity %></p>
                 </div>
             </div>
-            <!-- <% if(mail == 1){ %>
-        <form method="post">
-            <input type="submit" name="Details" value="Details">
-        </form>
-        <% } %> -->
             <% if(mail==1){ %>
                 <div>
                     <button class="iconbtns" onclick="settings()"><i class="material-icons">settings</i></button>
@@ -94,7 +95,7 @@
                 <% } %>
         </div>
         <hr>
-        <div class="Gallery">
+        <div id="gallery" class="Gallery">
             <div style="width: 100px;">
                 <% if(mail==1 && gallery.length <= 4){ %>
                     <form class="uploadForm" method="post" enctype="multipart/form-data"
@@ -121,46 +122,6 @@
                     <% } %>
             </div>
         </div>
-        <!-- <div class="topcontainer"> -->
-        <!-- <div class="picbod">
-            <img class="proimage" src='<%= profileData.image %>' alt="profile picture">
-            <div style="display: flex;">
-                <div>
-                    <% if(mail==1){ %>
-                        <form method="post" enctype="multipart/form-data">
-                            <input style="margin-top: 20px;" type="file" name="fileuploaded">
-                            <input type="submit" name="upload" value="upload">
-                        </form>
-                        <% } %>
-                </div>
-            </div>
-        </div> -->
-        <!-- <div style="display: flex;margin: 50px;">
-            <div>
-                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                    <%= username1 %>
-                </p>
-            </div>
-            <div style="margin-left: 30px;">
-                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                    <%= age %>
-                </p>
-            </div>
-        </div> -->
-        <!-- <div class="rating">
-            <p class="profile_par">
-                <%= rating %> %
-            </p>
-            <p class="profile_par">
-                Match</p>
-            <div>
-                Last Seen:
-            </div>
-            <div>
-                <%= activity %>
-            </div>
-        </div> -->
-        <!-- </div> -->
         <hr>
         <div class="About">
             <div>
@@ -200,19 +161,23 @@
         </div>
         <div id="profileInfoChange">
             <div class="profileSelect">Orientation : <div style="margin-left: auto;">
-                    <%= profileData.gender %>
+                    <% var gender = profileData.gender == null ? 'No Info Added' : profileData.gender%>
+                    <%= gender %>
                 </div>
             </div>
             <div class="profileSelect">Sexual Preference : <div style="margin-left: auto;">
-                    <%= profileData.sexualPreference %>
+                <% var sexualPreference = profileData.sexualPreference == null ? 'No Info Added' : profileData.sexualPreference%>
+                    <%= sexualPreference %>
                 </div>
             </div>
             <div class="profileSelect">ethnicity : <div style="margin-left: auto;">
-                    <%= profileData.race %>
+                <% var race = profileData.race == null ? 'No Info Added' : profileData.race%>
+                    <%= race %>
                 </div>
             </div>
             <div class="profileSelect">height : <div style="margin-left: auto;">
-                    <%= profileData.height %>
+                <% var height = profileData.height == null ? 'No Info Added' : profileData.height%>
+                    <%= height %>
                 </div>
             </div>
         </div>
@@ -289,37 +254,6 @@
                 <% } %>
         </div>
         <hr>
-        <!-- <h3 class="gallery">gallery</h3>
-                    <div class="imagegallery">
-                        <div class="galleryform">
-                            <div style="display: flex;">
-                                <%for(x=0; x < gallery.length; x++) {%>
-                                    <div>
-                                        <form method="post" action="http://localhost:8080/profile/remove">
-                                            <img style="width: 120px;height: 120px;margin-right: 30px;"
-                                                src='<%= gallery[x] %>' alt=gallery>
-                                            <input type="hidden" name="pathr" value="<%= gallery[x] %>">
-                                            <div>
-                                                <% if(mail==1){ %>
-                                                    <input type="submit" name="delete" value="delete">
-                                                    <% } %>
-                                            </div>
-                                        </form>
-                                    </div>
-                                    <% } %>
-                            </div>
-                            <div>
-                                <% if(mail==1){ %>
-                                    <form method="post" enctype="multipart/form-data"
-                                        action="http://localhost:8080/profile/gallery">
-                                        <input style="margin-top: 20px;" type="file" name="fileuploaded">
-                                        <input type="submit" name="Saveupload" value="Saveupload">
-                                    </form>
-                                    <% } %>
-                            </div>
-                        </div>
-                    </div> -->
-
         <div class="Interests">
             <div>
                 <h2>Interests</h2>
@@ -359,20 +293,6 @@
                                     <% } %>
                         </div>
                         <% } %> -->
-        <!-- <% if(mail==1){ %> -->
-        <!-- <h3>Notifications</h3>
-                                <div>
-                                    <% if(notifications==1){ %>
-                                        <p> Email Notifications Are On</p>
-                                        <% }else{ %>
-                                            <p> Email Notifications Are Off</p>
-                                            <% } %>
-                                                <form method="POST" action="http://localhost:8080/profile/notify">
-                                                    <input type="hidden" name="notifynum" value="<%= notifications %>">
-                                                    <input type="submit" name="notify" value="notifications">
-                                                </form>
-                                </div>
-                                <% } %> -->
     </div>
 </body>
 <script>
@@ -484,6 +404,11 @@
     function activities(activity) {
         var url = "http://localhost:8080/profile/"+activity;
         window.location.replace(url);
+    }
+
+    function hideElement(id){
+        var element = document.getElementById(id);
+        element.style.display = 'none';
     }
 </script>
 

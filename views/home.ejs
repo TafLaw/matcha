@@ -57,13 +57,13 @@
   <!-- nav bar ends here -->
   <!-- <h1>User Profiles</h1> -->
   <div class="gridcontainer">
-    <%for(profile in profiles) {%>
-      <div onclick="viewProfile()">
+    <%for(profile in profiles) { %>
+      <div onclick="viewProfile('<%= profile %>')">
         <img src='<%= profiles[profile].image %>' alt=gallery>
-        <form id="view" method="post" action="http://localhost:8080/profile/view">
+        <form id="<%= profile %>" method="post" action="http://localhost:8080/profile/view">
           <div class="desc">
             <input type="hidden" name="hmail" value="<%= profiles[profile].email %>">
-            <a onclick="viewProfile()">
+            <a>
               <%= profiles[profile].name + " " + profiles[profile].surname + "," + profiles[profile].age %>
             </a>
             <% if(profiles[profile].city !=null){ %>
@@ -71,7 +71,7 @@
                 <%= profiles[profile].city %>
               </p>
               <% } %>
-                <input type="submit" name="view" value="view">
+                <!-- <input type="button" name="view" value="view"> -->
           </div>
         </form>
       </div>
@@ -79,8 +79,8 @@
   </div>
 </body style="  background-color: rgba(158, 199, 201, 0.08);">
 <script>
-  function viewProfile() {
-    document.getElementById('view').submit();
+  function viewProfile(id) {
+    document.getElementById(id).submit();
   }
 </script>
 
