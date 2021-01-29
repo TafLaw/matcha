@@ -130,11 +130,16 @@ io.on('connection', function(socket){
       console.log("This email " + msg.receiverMail);
       console.log("found it " + socketId);
 
-      connection.query("INSERT INTO messages (senderName, senderMail, receiverMail, message) VALUE ('" + msg.senderName + "', '" + msg.senderMail + "', '" + msg.receiverMail + "', '" + msg.message +"')")
+      connection.query("INSERT INTO messages (senderName, senderMail, receiverMail, message) VALUE ('" + msg.senderName + "', '" + msg.senderMail + "', '" + msg.receiverMail + "', '" + escapeRegExp(msg.message) +"')")
+      console.log(escapeRegExp(msg.message));
       io.to(socketId).emit("newMessage", msg)
       // socket.broadcast.emit('sendToAll', msg);
   });
 });
+
+function escapeRegExp(string) {
+  return encodeURI(string).replace(/[.*'+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
 
 server.listen(8080, (err) => {
   if (err)  throw err;

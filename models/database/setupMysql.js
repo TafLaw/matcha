@@ -115,6 +115,19 @@ async function createTables() {
             if(err) throw err;
             console.log('views created!');
         });
+
+        let sql5 = `CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            senderName VARCHAR(255) NOT NULL,
+            senderMail VARCHAR(255) NOT NULL,
+            receiverMail VARCHAR(255) NOT NULL,
+            message LONGTEXT,
+            
+        )`;
+        con.query(sql5,function(err,result){
+            if(err) throw err;
+            console.log('messages created!');
+        });
     });
 }
 
