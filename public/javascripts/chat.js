@@ -103,7 +103,7 @@ const display = (msg, type) => {
 
                             </div>
                             <div class="message-text">
-                            ${msg.message}
+                            ${decodeURI(msg.message)}
                             </div>
                             <div class="message-time">
                             ${times}
