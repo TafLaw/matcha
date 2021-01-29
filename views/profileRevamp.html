@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="C:\Users\Mthokozisi Nzolo\Desktop\matcha\public\stylesheets\profileRevamp.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="profileName">
+            <div class="profCtn">
+                <div class="profileImage">
+                    <p>heer</p>
+                </div>
+                <h2 id="profileName">Mthokozisi Nzolo, 22</h2>
+            </div>
+            <div>
+                <button class="iconbtns"><i class="material-icons">settings</i></button>
+            </div>
+        </div>
+        <hr>
+        <div class="Gallery">
+            <div class="galleryImage">
+                <div>
+                    <!-- <p>images div</p> -->
+                </div>
+            </div>
+        </div>
+        <hr> 
+        <div class="About">
+            <div>
+                <h2>About Myself</h2>
+            </div>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('aboutChange','aboutText')"><i class="material-icons">edit</i></button>
+            </div>
+        </div>
+        <div id="aboutChange">
+            <p>In publishing and graphic design, Lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document or a typeface without relying on meaningful content. Lorem ipsum may be used as a placeholder before final copy is available</p>
+        </div>
+        <div id="aboutText">
+            <form method="post">
+                <textarea class="textarea" type="text" name="aboutprofile">Tell us more about yourself...</textarea>
+                <input class="formtbtn" type="submit" name="updateAbout" value="updateAbout">
+            </form>
+        </div>
+        <hr>
+        <div class="personalInformation">
+            <div>
+                <h2>Personal Information</h2>
+            </div>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('profileInfoChange','profileInfo')"><i class="material-icons">edit</i></button>
+            </div>
+        </div>
+        <div id="profileInfoChange">
+            <div class="profileSelect">Orientation : <div style="padding-left: 150px;">Male</div></div>
+            <div class="profileSelect">Sexual Preference : <div style="padding-left: 108px;">female</div></div>
+            <div class="profileSelect">ethnicity : <div style="padding-left: 166px;">African</div></div>
+            <div class="profileSelect">height : <div style="padding-left: 180px;">Tall</div></div>
+        </div>
+        <div id="profileInfo">
+            <form method="post">
+                <div class="selectors">
+                    Orientation :
+                    <select class="select" name="gender">
+                        <option name="Female" value="Female">Female</option>
+                        <option name="Male" value="Male">Male</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    Sexual Preference :
+                    <select class="select" name="sex">
+                        <option name="male" value="male">Male</option>
+                        <option name="Female" value="Female">Female</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    ethnicity :
+                    <select class="select" name="race">
+                        <option name="African" value="African">African</option>
+                        <option name="Asian" value="Asian">Asian</option>
+                        <option name="white" value="white">white</option>
+                        <option name="indian" value="indian">indian</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    height :
+                    <select class="select" nname="height">
+                        <option name="Short" value="Short">Short</option>
+                        <option name="Average" value="Average">Average</option>
+                        <option name="Tall" value="Tall">Tall</option>
+                    </select>
+                </div>
+                <input class="formtbtn" type="submit" name="saveAbout" value="saveAbout">
+            </form>
+        </div>
+        <hr>
+        <div class="Location">
+            <div>
+                <h2>Location</h2>
+            </div>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('location','editLocation')"><i
+                        class="material-icons">edit</i></button>
+            </div>
+        </div>
+        <div id="location">
+            <div>
+                <p><i class="material-icons">location_on</i>Johannesburg</p>
+            </div>
+        </div>
+        <div id="editLocation">
+            <form method="post">
+                <input class="editInput" type="text" name="city" placeholder="Your City Name">
+                <input class="formtbtn" type="submit" name="updateCity" value="updateCity">
+            </form>
+        </div>
+        <div id="Map">
+
+        </div>
+        <hr>
+        <div class="Interests">
+            <div>
+                <h2>Interests</h2>
+            </div>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('showInterests','interests')"><i class="material-icons">edit</i></button>
+            </div>
+        </div>
+        <div id="showInterests">
+            <div class="interest">
+                <div class="iconbtns" >#music</div>
+                <div class="iconbtns" >#sports</div>
+                <div class="iconbtns" >#food</div>
+                <div class="iconbtns" >#readingon</div>
+                <div class="iconbtns" >#gaming</div>
+            </div>
+        </div>
+        <div id="interests">
+            <div class="interest">
+                <div><button class="iconbtns" onclick="">music</button></div>
+                <div><button class="iconbtns" onclick="">sports</button></div>
+                <div><button class="iconbtns" onclick="">food</button></div>
+                <div><button class="iconbtns" onclick="">reading</button></div>
+                <div><button class="iconbtns" onclick="">gaming</button></div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    function changeLookLocation(id, id2) {
+        let element = document.getElementById(id);
+
+        if (element.style.display.length === 0) {
+            element.style.display = 'none';
+        } else {
+            setElementView(element);
+        }
+        if (id2 != null) {
+            let element1 = document.getElementById(id2);
+            if (element1.style.display.length == 0) {
+                element1.style.display = 'block';
+            }
+            else {
+                setElementView(element1);
+            }
+        }
+
+    }
+
+    function changeLook(id){
+        let element = document.getElementById(id);
+        if(element.style.display.length === 0){
+            element.style.display = 'block';
+        } else {
+            setElementView(element);
+        }
+    }
+
+    function setElementView(element) {
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+</html

@@ -103,6 +103,7 @@ async function createTables() {
 
         let sql4 = `CREATE TABLE IF NOT EXISTS views (
             id INT AUTO_INCREMENT PRIMARY KEY,
+            user VARCHAR(255) NOT NULL,
             email VARCHAR(255) NOT NULL,
             profile_id INT,
             CONSTRAINT fk_views

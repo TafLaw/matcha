@@ -13,8 +13,8 @@
     "express": "^4.16.4",
     "express-session": "^1.17.0",
     "formidable": "^1.2.1",
+    "geoip-lite": "^1.4.2",
     "http-errors": "^1.6.3",
-    "ip": "^1.1.5",
     "is-image": "^3.0.0",
     "json-server": "^0.15.1",
     "mongodb": "^3.4.0",
@@ -25,6 +25,7 @@
     "nodemon": "^2.0.2",
     "password-hash": "^1.2.2",
     "path": "^0.12.7",
+    "public-ip": "^4.0.3",
     "socket.io": "^2.3.0",
     "sync": "^0.2.5"
   },

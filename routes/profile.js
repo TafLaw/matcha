@@ -10,11 +10,13 @@ var nodemailer = require("nodemailer");
 var MongoClient = require('mongodb').MongoClient;
 const { type } = require('os');
 var url = "mongodb://localhost:27017/";
-var ip = require('ip');
 const { resolve } = require('path');
 const { rejects } = require('assert');
 const { response } = require('../app');
+const { exit } = require('process');
 var globalUserKey;
+var geoip = require('geoip-lite');
+const publicIp = require('public-ip');
 
 //for sending an email
 var transporter = nodemailer.createTransport({
@@ -33,6 +35,7 @@ router.post("/", async function (req, res) {
         res.redirect('http://localhost:8080/');
     }
     else {
+        await profileSetUP(req.session.user.email);
         if (req.body.updateAbout == "updateAbout") {
             if (validString(req.body.aboutprofile)) {
                 await updateDB('UPDATE profile SET about = ? WHERE profile_id = ' + mysql.escape(globalUserKey), [[req.body.aboutprofile.trim()]], "PROFILE");
@@ -191,24 +194,8 @@ router.post("/", async function (req, res) {
             });
         }
         else if (req.body.Details == "Details") {
-            console.log("Personal Details Are Being Changed")
-            MongoClient.connect(url, function (err, db) {
-                if (err) throw err;
-                var dbo = db.db("matcha");
-                var profinfo = { email: req.session.user.email };
-                var pname;
-                var psurname;
-                var pemail;
-
-                dbo.collection("users").findOne(profinfo, function (err, see) {
-                    if (err) throw err;
-                    pname = see.name;
-                    psurname = see.surname;
-                    pemail = see.email;
-
-                    res.render('edit_profile', { username: pname, surname: psurname, email: pemail });
-                });
-            });
+            console.log("Came in for routing to details");
+            res.redirect('http://localhost:8080/profile/edit_profile');
         }
         else if (req.body.Geolocation == "Geolocation") {
             console.log("Finding your current location");
@@ -237,6 +224,7 @@ router.post("/", async function (req, res) {
 });
 
 router.post("/remove", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     console.log("removing images");
     var imageUrl = req.body.pathr;
     await deleteDB("DELETE FROM gallery WHERE imageUrl = ? AND profile_id = " + mysql.escape(globalUserKey), [[imageUrl]], "GALLERY");
@@ -248,6 +236,7 @@ router.post("/gallery", function (req, res) {
     var form = new formidable.IncomingForm();
 
     form.parse(req, async function (err, fields, files) {
+        await profileSetUP(req.session.user.email);
         var oldpath = files.fileuploaded.path;
         var newpath = __dirname.replace("routes", "public") + "/images/" + files.fileuploaded.name;
         var imageUrl = "/images/" + files.fileuploaded.name;
@@ -259,8 +248,11 @@ router.post("/gallery", function (req, res) {
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
             });
-
-            await insertDB('INSERT INTO gallery (imageURL,profile_id) VALUES ? ', [[imageUrl, globalUserKey]], "GALLERY");
+            console.log('hwlebfwh4.nlfui4hwbe.f4jhwebgfilqh4be.rfnilqubjenf');
+            console.log(await checkExistance("SELECT * FROM gallery WHERE imageUrl = "+mysql.escape(imageUrl)+" AND profile_id = "+ mysql.escape(globalUserKey),'',"GALLERY"));
+            if (!await checkExistance("SELECT * FROM gallery WHERE imageUrl = "+mysql.escape(imageUrl)+" AND profile_id = "+ mysql.escape(globalUserKey),'',"GALLERY")) {
+                await insertDB('INSERT INTO gallery (imageUrl,profile_id) VALUES ? ', [[imageUrl, globalUserKey]], "GALLERY");
+            }
             res.redirect('http://localhost:8080/profile');
         }
     });
@@ -276,7 +268,6 @@ router.post("/notify", function (req, res) {
                 if (err) throw err;
             });
         });
-        res.redirect('http://localhost:8080/profile');
     }
     else {
         MongoClient.connect(url, function (err, db) {
@@ -286,251 +277,17 @@ router.post("/notify", function (req, res) {
                 if (err) throw err;
             });
         });
-        res.redirect('http://localhost:8080/profile');
     }
 });
 
-
-//Profiles view Point/////////
-router.post("/view", function (req, res) {
-    /* copy the code from the profile and set email according to hidden input and make the if conditioin for mail to be visible in certain conditions */
-    var username1 = null;
-    var texta = null;
-    var age = null;
-    var sex = null;
-    var race = null;
-    var gender = null;
-    var height = null;
-    var lat = null;
-    var long = null;
-    var img = '/images/profile.jpg';
-    var marker = '/images/marker.png';
-    var activity = null;
-    var birthday = null;
-    var cityn = null;
-    var tags = new Array();
-    var gallery = new Array();
-    var loves = new Array();
-    var vies = new Array();
-    var rate = 0;
-    var mail = 1;
-
-    if (req.session.user == undefined) {
-        res.redirect('http://localhost:8080/');
-    }
-    else {
-        if (req.session.user.email != req.body.hmail) {
-            mail = 0;
-        }
-        MongoClient.connect(url, function (err, db) {
-            if (err) throw err;
-            //console.log("connecting for profile");
-            var dbo = db.db('matcha');
-
-            /* write code to check where user is already in users if not insert else continue to other queries */
-
-            var li_user = { user_view: req.session.user.email, user_account: req.body.hmail };
-
-            dbo.collection("profileviews").findOne(li_user, function (err, vie) {
-                if (err) throw err;
-                if (vie == undefined) {
-                    dbo.collection("profileviews").insertOne({ user_view_name: req.session.user.name + ' ' + req.session.user.surname, user_view: req.session.user.email, user_account: req.body.hmail }, function (err, succ) {
-                        if (err) throw err;
-                    })
-                }
-            });
-
-            var query4 = { name: req.body.hmail }
-
-            dbo.collection("profileimages").findOne(query4, function (err, result4) {
-                if (err) throw err;
-                if (result4 != undefined) {
-                    if (req.body.hmail == result4.name) {
-                        img = result4.pathinfo;
-                    }
-                }
-                //console.log("mthomega" + image.pathinfo)
-                console.log("profile images");
-                console.log(result4);
-            });
-
-            var l_user = { liked_user_mail: req.body.hmail };
-
-            dbo.collection("connections").find(l_user).toArray(function (err, ress) {
-                if (err) throw err;
-                var x = 0;
-
-                ress.forEach(function (love) {
-                    loves[x] = love.liked_user_mail;
-                    x++;
-                })
-                if (loves.length >= 10) {
-                    rate = Number(10);
-                }
-                else {
-                    rate = loves.length;
-                }
-                //console.log("love");
-                //console.log(rate);
-                /* console.log("rate");
-                console.log(rate); */
-            });
-
-
-            var checkcity = { email: req.body.hmail };
-
-            dbo.collection("profileGeo").find(checkcity).toArray(function (err, result5) {
-                if (err) throw err;
-                result5.forEach(function (cityname) {
-                    cityn = cityname.City;
-                    lat = cityname.lat;
-                    long = cityname.long;
-                })
-            })
-
-            var checkgall = { name: req.body.hmail };
-
-            dbo.collection("profileGallery").find(checkgall).toArray(function (err, result7) {
-                if (err) throw err;
-                // console.log(result6[0]);
-                //i = 0;
-                //var res0 = new Array(result6[0]);
-                console.log("Gallery");
-                console.log(result7);
-                var i = 0;
-
-                result7.forEach(function (gname) {
-                    gallery[i] = gname.pathinfo;
-                    i++;
-                    //console.log(tname.length);
-                    //console.log("tags");
-                    //console.log(tags);
-                });
-                console.log(gallery);
-            })
-
-            var checktags = { email: req.body.hmail };
-
-            dbo.collection("profiletags").find(checktags).toArray(function (err, result6) {
-                if (err) throw err;
-                // console.log(result6[0]);
-                //i = 0;
-                //var res0 = new Array(result6[0]);
-                console.log("tags");
-                var i = 0;
-
-                result6.forEach(function (tname) {
-                    tags[i] = tname.tag;
-                    i++;
-                    //console.log(tname.length);
-                    //console.log("tags");
-                    //console.log(tags);
-                });
-                console.log(tags);
-            })
-
-            var query = { email: req.body.hmail };
-
-            dbo.collection("users").find(query).toArray(function (err, result) {
-                if (err) throw err;
-                //console.log(result);
-                //console.log("Myname");
-                result.forEach(function (user) {
-                    username1 = user.name + ' ' + user.surname;
-                    birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
-                    age = user.age;
-                    activity = user.activity;
-                })
-                //console.log(username1);
-            }
-            );
-
-            var query1 = { email: req.body.hmail }
-
-            dbo.collection("profile").find(query1).toArray(function (err, result2) {
-                if (err) throw err;
-                if (result2 != undefined) {
-                    sex = result2.sex;
-                    race = result2.race;
-                    gender = result2.gender;
-                    height = result2.height;
-                }
-                console.log(result2);
-            });
-
-            var query2 = { email: req.body.hmail }
-
-            dbo.collection("profiletext").find(query2).toArray(function (err, result3) {
-                if (err) throw err;
-                //console.log("result3"); 
-                //console.log(result3);
-                result3.forEach(function (textb) {
-                    texta = textb.about;
-                    console.log(texta);
-                });
-                //console.log(result3);
-
-
-
-                console.log(username1 + "the nigga");
-                if (texta == null) {
-                    texta = '';
-                }
-                /* else if (img == null || img === undefined) {
-                    img = 'images/profile.jpg';
-                    //img = '';
-                } */
-                else if (username1 == null) {
-                    username1 = '';
-                }
-                else if (birthday == null) {
-                    birthday = '';
-                }
-                else if (lat == null) {
-                    lat = '';
-                }
-                else if (long == null) {
-                    long == '';
-                }
-                else if (sex == null) {
-                    sex = '';
-                }
-                else if (race == null) {
-                    race = '';
-                }
-                else if (gender == null) {
-                    gender = '';
-                }
-                else if (height == null) {
-                    height = '';
-                }
-                else if (cityn == null) {
-                    cityn = '';
-                }
-                else if (tags == null) {
-                    tags = '';
-                }
-                else if (gallery == null) {
-                    gallery = '';
-                }
-                console.log("This the user information");
-                console.log(req.session);
-                console.log(img);
-
-                /*  dbo.collection("connections").updateMany({liked_user_mail: req.body.hmail },{$set: { rating: (rate/10) * 100}}, function(err, res)
-                 {
-                         if(err) throw err;
-                         console.log("rating updated");
-                 }); */
-
-                res.render('profile', { username1: username1, imageu: img, birthday: birthday, age: age, text: texta, sex: sex, race: race, gender: gender, height: height, cityn: cityn, tags: tags, gallery: gallery, activity: activity, mail: mail, marker: marker, lat: lat, long: long, vies: vies, rating: (rate / 10) * 100, def: "images/profile.jpg" });
-            });
-            //db.close();
-        });
-    }
+router.post("/view", async function (req, res) {
+    console.log('hfnlw4fnljfnl3qhfnlj3n');
+    console.log(req.body);
+    await profile(req, res, req.body.hmail);
 });
 
 router.get("/music", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     if (await checkExistance("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES")) {
         result = await selectDB("SELECT music FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let value = result[0].music == 0 || result[0].music == null ? true : false;
@@ -542,6 +299,7 @@ router.get("/music", async function (req, res) {
 });
 
 router.get("/Sports", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     if (await checkExistance("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES")) {
         result = await selectDB("SELECT sports FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let value = result[0].sports == 0 || result[0].sports == null ? true : false;
@@ -553,9 +311,11 @@ router.get("/Sports", async function (req, res) {
 });
 
 router.get("/Food", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     if (await checkExistance("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES")) {
         result = await selectDB("SELECT food FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let value = result[0].food == 0 || result[0].food == null ? true : false;
+        console.log(globalUserKey);
         await updateDB("UPDATE activities SET food = ? WHERE profile_id = " + mysql.escape(globalUserKey), [[value]], "ACTIVITIES");
     } else {
         await insertDB("INSERT INTO activities (food,profile_id) VALUES ?", [[true, globalUserKey]], "ACTIVITIES");
@@ -564,6 +324,7 @@ router.get("/Food", async function (req, res) {
 });
 
 router.get("/Reading", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     if (await checkExistance("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES")) {
         result = await selectDB("SELECT reading FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let value = result[0].reading == 0 || result[0].reading == null ? true : false;
@@ -575,6 +336,7 @@ router.get("/Reading", async function (req, res) {
 });
 
 router.get("/Gaming", async function (req, res) {
+    await profileSetUP(req.session.user.email);
     if (await checkExistance("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES")) {
         result = await selectDB("SELECT gaming FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let value = result[0].gaming == 0 || result[0].gaming == null ? true : false;
@@ -586,61 +348,91 @@ router.get("/Gaming", async function (req, res) {
 });
 
 
-router.get('/geofin', function (req, res) {
+router.get('/location', async function (req, res) {
+    await profileSetUP(req.session.user.email);
     console.log("I am in the insertion of the location of the user");
-    console.log(res.query);
 
-    MongoClient.connect(url, function (err, db) {
-        var dbo = db.db("matcha");
-        var gsearch = { email: req.session.user.email };
-        var gupdate = { $set: { lat: req.query.lat, long: req.query.long } };
-        var ginsert = { lat: req.query.lat, long: req.query.long };
+    let latitude = req.query.lat;
+    let longitude = req.query.long;
 
+    if (latitude.length == 0 && longitude.length == 0) {
+        let ip = await publicIp.v4();
+        let geo = geoip.lookup(ip);
+        latitude = geo.ll[0];
+        longitude = geo.ll[1];
+    }
+    if (await checkExistance("SELECT * FROM location WHERE profile_id = ? ", [[globalUserKey]], "LOCATION")) {
+        await updateDB("UPDATE location SET latitude = (" + mysql.escape(latitude) + "),longitude = (" + mysql.escape(longitude) + ") WHERE profile_id = (" + mysql.escape(globalUserKey) + ")", "", "LOCATION");
+    } else {
+        await insertDB("INSERT INTO location (latitude,longitude,profile_id) VALUES ?", [[latitude, longitude, globalUserKey]], "LOCATION");
+    }
+    console.log(req.query);
+    console.log(latitude);
+    console.log(longitude);
+});
+
+router.get("/edit_profile", async function (req, res) {
+    MongoClient.connect(url, async function (err, db) {
         if (err) throw err;
-
-        dbo.collection("profileGeo").findOne(gsearch, function (err, fin) {
-            if (err) throw err;
-
-            if (fin == undefined) {
-                dbo.collection("profileGeo").insertOne(ginsert, function (err, ok) {
-                    if (err) throw err;
-                })
-            }
-            else {
-                dbo.collection("profileGeo").updateOne(gsearch, gupdate, function (err, ok) {
-                    if (err) throw err;
-                })
-            }
-        })
-
+        let dbo = db.db("matcha");
+        let profileData = await dbo.collection("users").findOne({ email: req.session.user.email });
+        console.log('gfffffffffffffffffffffr');
+        console.log(profileData);
+        res.render('edit_profile', { profileData: profileData });
     });
-    res.redirect('http://localhost:8080/profile');
-})
+});
 
 router.get("/", async function (req, res) {
-    var username1 = null;
-    var age = null;
-    var lat = null;
-    var long = null;
-    var marker = 'images/marker.png';
-    var activity = "Online";
-    var birthday = null;
-    var tags = new Array();
-    var gallery = new Array();
-    var loves = new Array();
-    var vies = new Array();
-    var rate = 0;
-    var mail = 1;
-    var notifications = 1;
+    if (req.session.user == undefined) {
+        res.redirect('http://localhost:8080/')
+    }
+    await profile(req, res, req.session.user.email);
+});
+
+function validString(stringChecked) {
+    if (stringChecked.trim().length == 0) {
+        return false;
+    }
+    return true;
+}
+
+async function profile(req, res, email) {
+    let username1 = null;
+    let age = null;
+    let marker = '/images/marker.png';
+    let activity = "Online";
+    let birthday = null;
+    let tags = new Array();
+    let gallery = new Array();
+    let loves = new Array();
+    let rating = 0;
+    let mail;
+    let notifications = 1;
 
     if (req.session.user == undefined) {
         res.redirect('http://localhost:8080/');
     }
     else {
-        await profileSetUP(req);
+        await profileSetUP(email);
         let data = await selectDB("SELECT * FROM profile WHERE profile_id = ?", [[globalUserKey]], "PROFILE");
+        console.log(email);
+        console.log(globalUserKey);
+        console.log(data);
         let tagsData = await selectDB("SELECT * FROM activities WHERE profile_id = ?", [[globalUserKey]], "ACTIVITIES");
         let galleryData = await selectDB("SELECT * FROM gallery WHERE profile_id = ?", [[globalUserKey]], "GALLERY");
+        let locationData = await selectDB("SELECT * FROM location WHERE profile_id = ? ", [[globalUserKey]], "LOCATION");
+        let views;
+
+        if (req.session.user.email == email) {
+            views = await selectDB("SELECT * FROM views WHERE profile_id = ?", [[globalUserKey]], "VIEWS");
+            console.log(views);
+            mail = 1;
+        } else {
+            if (!await checkExistance("SELECT * FROM views WHERE email = ? AND profile_id = " + mysql.escape(globalUserKey), [[req.session.user.email]], "VIEWS")) {
+                await insertDB("INSERT INTO views (user,email,profile_id) VALUES ?", [[`${req.session.user.name} ${req.session.user.surname}`, req.session.user.email, globalUserKey]], "VIEWS");
+            }
+            mail = 0;
+        };
 
         for (const property in tagsData[0]) {
             if (property != 'id' && property != 'profile_id') {
@@ -650,9 +442,11 @@ router.get("/", async function (req, res) {
             }
         }
 
-        for (const image in galleryData[0]) {
-            if (image == 'imageUrl') {
-                gallery.push(galleryData[0][image]);
+        for (const image in galleryData) {
+            for (const url in galleryData[image]) {
+                if (url == 'imageUrl') {
+                    gallery.push(galleryData[image][url]);
+                }
             }
         }
 
@@ -660,91 +454,50 @@ router.get("/", async function (req, res) {
             if (err) throw err;
             var dbo = db.db('matcha');
 
-            const response = dbo.collection("profileviews").find({ user_account: req.session.user.email });
+            var queryUser = { liked_user_mail: email };
 
-            for (let doc = await response.next(); doc; doc = await response.next()) {
-                console.log(doc);
+            const response = dbo.collection("connections").find(queryUser);
+
+            for (let connection = await response.next(); connection; connection = await response.next()) {
+                console.log(connection);
+                loves.push(connection.liked_user_mail);
+                if (loves.length >= 10) {
+                    rate = Number(10);
+                }
+                else {
+                    rate = loves.length;
+                }
+                rating = (rate / 10) * 100;
             }
 
+            var query = { email: email };
 
-            var l_user = { liked_user_mail: req.session.user.email };
+            const response1 = dbo.collection("users").find(query);
 
-            const response1 = dbo.collection("connections").find(l_user);
-            // .toArray(function (err, ress) {
-            //     if (err) throw err;
-            //     var x = 0;
-
-            //     ress.forEach(function (love) {
-            //         loves[x] = love.liked_user_mail;
-            //         x++;
-            //     })
-            //     if (loves.length >= 10) {
-            //         rate = Number(10);
-            //     }
-            //     else {
-            //         rate = loves.length;
-            //     }
-            // });
-
-            for (let doc = await response1.next(); doc; doc = await response1.next()) {
-                console.log(doc);
-            }
-            1
-
-            var checkcity = { email: req.session.user.email };
-
-            const response2 = dbo.collection("profileGeo").find(checkcity);
-            // .toArray(function (err, result5) {
-            //     if (err) throw err;
-            //     result5.forEach(function (cityname) {
-            //         lat = cityname.lat;
-            //         long = cityname.long;
-            //     })
-            // });
-
-            for (let doc = await response2.next(); doc; doc = await response2.next()) {
-                console.log(doc);
-            }
-
-            var query = { email: req.session.user.email };
-
-            const response5 = dbo.collection("users").find(query);
-
-            for (let user = await response5.next(); user != null; user = await response5.next()) {
+            for (let user = await response1.next(); user != null; user = await response1.next()) {
                 username1 = user.name + ' ' + user.surname;
                 birthday = user.birthday_day + ' ' + user.birthday_month + ' ' + user.birthday_year;
                 age = user.age;
                 notifications = user.notifications;
+                activity = user.activity;
             }
 
             console.log("This the user information");
-            console.log(req.session);
-            console.log(data);
-            res.render('profile', { profileData: data[0], username1: username1, birthday: birthday, age: age, tags: tags, gallery: gallery, activity: activity, mail: mail, marker: marker, notifications: notifications, lat: lat, long: long, vies: vies, rating: (rate / 10) * 100, def: "images/profile.jpg" });
+            console.log(Object.assign(data[0], locationData[0]));
+            res.render('profile', { profileData: Object.assign(data[0], locationData[0]), username1: username1, birthday: birthday, age: age, tags: tags, gallery: gallery, activity: activity, mail: mail, marker: marker, notifications: notifications, views: views, rating: rating });
         });
     }
-});
-
-function getUserIP() {
-    return ip.address();
 }
 
-function validString(stringChecked) {
-    if (stringChecked.trim().length == 0) {
-        return false;
-    }
-    return true;
-}
+async function profileSetUP(email) {
 
-async function profileSetUP(req) {
-
-    if (await checkExistance("SELECT * FROM profile WHERE email = ?", [[req.session.user.email]])) {
-        results = await selectDB("SELECT * FROM profile WHERE email = ?", [[req.session.user.email]], "PROFILE");
+    if (await checkExistance("SELECT * FROM profile WHERE email = ?", [[email]])) {
+        results = await selectDB("SELECT * FROM profile WHERE email = ?", [[email]], "PROFILE");
         globalUserKey = results[0].profile_id;
         console.log("ID profile" + globalUserKey);
     } else {
         let value = [
-            ['images/profile.jpg', req.session.user.email],
+            ['/images/profile.jpg', email],
         ]
         results = await insertDB("INSERT INTO profile(image,email) VALUES ? ", value, "PROFILE");
         globalUserKey = results.insertId;
@@ -816,4 +569,4 @@ async function deleteDB(sql, values, table) {
     );
 }
 
-module.exports = router;
+module.exports = { router, selectDB, profileSetUP, mysql };

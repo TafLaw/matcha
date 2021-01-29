@@ -5,6 +5,7 @@ var Sync = require("sync");
 var router = express.Router();
 var MongoClient = require('mongodb').MongoClient;
 var url = "mongodb://localhost:27017/";
+var queryFunctions = require('./profile');
 
 //for sending an email
 var transporter = nodemailer.createTransport({
@@ -21,12 +22,9 @@ router.get("/", function (req, res) {
   res.render('index', { errorType: errorType });
 });
 
-router.get('/home', function (req, res) {
-  var userinfo = new Array();
-  var profiles = new Array();
-  var locals = new Array();
-  var initials = new Array();
-  var no;
+router.get('/home', async function (req, res) {
+  var viewData = new Array();
+  var no = 2;
 
   if (!req.session.user) {
     res.redirect('http://localhost:8080/');
@@ -34,115 +32,36 @@ router.get('/home', function (req, res) {
   else {
     MongoClient.connect(url, function (err, db) {
       var dbo = db.db("matcha");
+      let active_email = req.session.user.email;
 
       userscall();
 
-      function userscall() {
-        dbo.collection("users").find({}).toArray(function (err, ress2) {
-          if (err) throw err;
-          console.log(ress2.length);
-          var x = 0;
-          var y = 0;
-          var z = 0;
-          var a = 0;
+      async function userscall() {
+        let profilesData = await queryFunctions.selectDB("SELECT * FROM profile", '', "PROFILE");
 
-          ress2.forEach(function (base) {
-            if (base.email != req.session.user.email) {
-              userinfo[x] = base.email;
-              initials[a] = base.name + ' ' + base.surname;
-              a++;
-              x++;
-            }
-          });
+        const response = dbo.collection("users").find({});
 
-          if (a == ress2.length - 1 && x == ress2.length - 1) {
-            callimage();
+        for (let user = await response.next(); user != null; user = await response.next()) {
+          if (user.email != active_email) {
+            viewData.push(Object.assign(user, profilesData.find(profile => profile.email === user.email)));
           }
-        });
-      }
-
-      function callimage() {
-
-
-        for (i = 0; i < userinfo.length; i++) {
-          profiles[i] = "images/profile.jpg";
         }
-        dbo.collection("profileimages").find({}).toArray(function (err, fun) {
-          if (err) throw err;
-          var k = 0;
-          fun.forEach(function (cry) {
-            for (j = 0; j < userinfo.length; j++) {
-              if (cry.name == userinfo[j]) {
-                k = j;
-                j = userinfo.length;
-              }
-            }
-            profiles[k] = cry.pathinfo;
-          });
-        });
-        callcity();
+
+        console.log(viewData);
+        callno();
       }
 
-      function callcity() {
-        //var c = 0;
-        //var p = 0;
-        for (i = 0; i < userinfo.length; i++) {
-          locals[i] = "";
+      async function callno() {
+        const response = dbo.collection('notifications').find({ User: req.session.user.email });
+
+        for (let notifications = await response.next(); notifications != null; notifications = await response.next()) {
+          no = notifications.read;
         }
-        dbo.collection("profileGeo").find({}).toArray(function (err, fun1) {
-          if (err) throw err;
-          c = fun1.length;
-          var k = 0;
-          fun1.forEach(function (cry1) {
-            for (j = 0; j < userinfo.length; j++) {
-              if (cry1.email == userinfo[j]) {
-                k = j;
-                j = userinfo.length;
-                //p = p + 1;
-              }
-            }
-            locals[k] = cry1.City;
-          });
-          /* console.log("I am here");
-          console.log("p");
-          console.log(p);
-          console.log("c");
-          console.log(c);
-          console.log(c); */
-          callno();
-        });
-      }
-
-
-      //notifications query correct
-      function callno() {
-        console.log("this is where it goes");
-        var b = 0;
-        dbo.collection('notifications').find({ User: req.session.user.email }).toArray(function (err, resu) {
-          if (err) throw err;
-          // console.log(resu);
-          if (!resu.length) {
-            no = 2;
-            b = 1;
-          }
-          resu.forEach(function (number) {
-            no = number.read;
-            b = 1;
-          });
-
-          if (b == 1) {
-            finishRequest()
-          }
-        })
+        finishRequest();
       }
 
       function finishRequest() {
-        console.log("profiles");
-        console.log(profiles);
-        console.log(initials);
-        console.log(userinfo);
-        console.log(locals);
-        res.render('home', { name: req.session.user.name, no: no, initials: initials, locals: locals, userinfo: userinfo, profiles: profiles });
+        res.render('home', { profiles: viewData, no: no, currentUser: req.session.user.name });
       }
     });
   }
@@ -375,34 +294,25 @@ router.get("/search", function (req, res) {
       }
 
       //this function checks if each account has a profile pic
-      function checkImg(dbo, mail, images, flag) {
-        var i = 1;
-        console.log(flag);
+      async function checkImg(dbo, mail, images, flag) {
+        let profileData = await queryFunctions.selectDB("SELECT * FROM profile", "", "PROFILE");
+        for (profile in profileData) {
+          let usr = profileData[profile].email;
+          let inc = mail.includes(usr);
+          let path = profileData[profile].image;
+          if (profileData[profile].email === req.session.user.email) {
+            user_image = path;
+          }
+          if (inc) {
+            let j = pos(mail, usr);
+            images[j] = path;
+          }
+        }
 
-        dbo.collection("profileimages").find().toArray(function (err, resu) {
-          resu.forEach(function (tr) {
-            var usr = tr.name;
-            var path = tr.pathinfo;
-            var inc = mail.includes(usr);
-            if (tr.name === req.session.user.email) {
-              console.log('found the user session');
-              user_image = path;
-            }
-            if (inc) {
-              var j = pos(mail, usr);
-              images[j] = path;
-            }
-            console.log(i);
-
-            if (i === resu.length) {
-              if (flag == 'finish')
-                finishRequest(no);
-              else if (flag == 'take')
-                takeValues(fblocked, images, fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
-            }
-            i++;
-          });
-        });
+        if (flag == 'finish')
+          finishRequest(no);
+        else if (flag == 'take')
+          takeValues(fblocked, images, fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
       }
 
 
@@ -431,40 +341,29 @@ router.get("/search", function (req, res) {
       lock += (len - 1);
 
       async function tags() {
+        let j = 0;
         for (i = 0; i < len; i++) {
-          var u_mail = mail[i];
-          var qry = { email: u_mail, tag: fil3 }
-          // console.log(fil3);
+          let u_mail = mail[i];
+          let qry = { email: u_mail, tag: fil3 };
+          let tag = fil3.replace('#', '').toLowerCase();
+          let profiles = await queryFunctions.selectDB("SELECT * FROM profile WHERE email = ?", [[u_mail]], "PROFILE");
+          let Key = profiles[0].profile_id;
+          let tagsData = await queryFunctions.selectDB("SELECT " + tag + " FROM activities WHERE profile_id = " + queryFunctions.mysql.escape(Key), "", "ACTIVITIES");
 
-          await dbo.collection("profiletags").find(qry).toArray(function (err, resu) {
-            var j = 0;
-
-            if (err) throw err;
-            // console.log('len = ',resu.length);
-            resu.forEach(function (tag) {
-              fTag[j] = getName(results, mail, tag.email);
-              fTagMail[j] = tag.email;
-              conn[j] = checkConnection(results, mail, tag.email, connected);
-              fliked[j] = checkLiked(results, mail, tag.email, liked);
-              fliked_bck[j] = checkLiked_back(results, mail, tag.email, liked_back);
-              fblocked[j] = checkBlocked(results, mail, tag.email, blocked);
-              // console.log('in the for')
-              j++;
-              // rlen++;
-            });
-            if (j) {
-              var flag = 'finish';
-              checkImg(dbo, fTagMail, images, flag);
-              // finishRequest();
-            }
-            else {
-              var flag = 'take';
-              checkImg(dbo, fTagMail, images, flag);
-              // takeValues(fTag, results, len, user, fTagMail, fliked, fliked_bck, request, conn, no, fil1, fil2, fil3);
-            }
-          });
-
+          console.log(tagsData.length);
+          console.log(Key);
+          if (tagsData.length && tagsData[0][tag] == 1 && tagsData[0][tag] != null) {
+            fTag[j] = getName(results, mail, profiles[0].email);
+            fTagMail[j] = profiles[0].email;
+            conn[j] = checkConnection(results, mail, profiles[0].email, connected);
+            fliked[j] = checkLiked(results, mail, profiles[0].email, liked);
+            fliked_bck[j] = checkLiked_back(results, mail, profiles[0].email, liked_back);
+            fblocked[j] = checkBlocked(results, mail, profiles[0].email, blocked);
+          }
+          j++;
         }
+        let flag = 'finish';
+        await checkImg(dbo, fTagMail, images, flag);
       }
       async function data() {
         for (i = 0; i < len; i++) {
@@ -472,7 +371,7 @@ router.get("/search", function (req, res) {
           var u_mail = mail[i];
           var qry = { user_mail: req.session.user.email, liked_user_mail: u_mail }
           j = -1;
-          await dbo.collection("connections").find(qry).toArray(function (err, result) {
+          await dbo.collection("connections").find(qry).toArray(async function (err, result) {
             if (err) throw err;
 
             result.forEach(function (user) {
@@ -485,6 +384,7 @@ router.get("/search", function (req, res) {
             lock--;
 
             if (fil3 != 'none' && !lock) {
+              //tags filter here
               tags();
             }
             else if (!lock) {
@@ -493,7 +393,7 @@ router.get("/search", function (req, res) {
               console.log('hahvgjvgjvjg');
 
               var flag = 'finish';
-              checkImg(dbo, mail, images, flag);
+              await checkImg(dbo, mail, images, flag);
               // finishRequest(no);
             }
             console.log('hereeer')
@@ -501,7 +401,7 @@ router.get("/search", function (req, res) {
         }
         if (!lock) {
           var flag = 'finish';
-          checkImg(dbo, mail, images, flag);
+          await checkImg(dbo, mail, images, flag);
           // finishRequest(no);
         }
       }
@@ -665,8 +565,9 @@ router.post('/', function (req, res) {
 
           });
           if (!exist) {
-            dbo.collection('users').insertOne(data, function (err, res) {
+            dbo.collection('users').insertOne(data, async function (err, res) {
               if (err) throw err;
+              await queryFunctions.profileSetUP(email);
               console.log("record inserted successfully!");
               console.log(hashedPassword);
               //db.close();

@@ -1,0 +1,291 @@
+.profileName {
+    height: 150.0px;
+    font-size: larger;
+    display: flex;
+    justify-content: space-between;
+}
+
+#profileName {
+    font-size: larger;
+}
+
+body {
+    margin: 0;
+    background-color: rgba(158, 199, 201, 0.08);
+}
+
+.container {
+    max-width: 750px;
+    margin: 20px auto;
+}
+
+.iconbtns {
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    color: aliceblue;
+    background-color: #00B7FF;
+    padding: 5px;
+    margin: 8px;
+}
+
+.Gallery{
+    display: flex;
+    height: 150px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.galleryImage{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+    grid-auto-flow: dense;
+    height: 100px;
+    width: 80%;
+}
+
+.About{
+    display: flex;
+}
+
+.formtbtn{
+    color: aliceblue;
+    background-color: #00B7FF;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.textarea{
+    width: 100%;
+    height: 100px;
+    padding: 12px 15px;
+    box-sizing: border-box;
+    border: 2px solid aliceblue;
+    border-radius: 4px;
+    resize: none;
+}
+
+textarea:focus {
+    border-color: none;
+}
+
+#aboutText {
+    display: none;
+}
+
+
+.personalInformation{
+    display: flex;
+}
+
+#profileInfo{
+    display: none;
+}
+
+.selectors{
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+}
+
+.select{
+    width: 50%;
+    border-radius: 4px;
+    padding: 12px 15px;
+}
+
+#editLocation{
+    display: none;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.editInput{
+    width: 50%;
+    border-radius: 4px;
+    padding: 12px 15px;
+    margin-right: 20px;
+}
+
+.Location{
+    display: flex;
+}
+
+#location{
+    display: block;
+}
+
+#map{
+    width: 100%;
+    height: 180px;
+    background-color: #00B7FF;
+    border-radius: 4px;
+}
+
+.Interests{
+    display: flex;
+}
+
+.interest{
+    display: flex;
+    margin: 20px;
+}
+
+#interests{
+    display: none;
+}
+
+.general{
+    display: flex;
+    justify-content: space-between;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+  
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+#userName {
+    display: none;
+}
+
+#userSurname {
+    display: none;
+}
+
+#userEmail {
+    display: none;
+}
+
+#Name{
+    display: block;
+}
+
+#surname{
+    display: block;
+}
+
+#emailChange{
+    display: block;
+}
+
+#aboutChange{
+    display: block;
+}
+
+.profileImage{
+    background-color: #00B7FF;
+    width: 100px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.profimage{
+    width: 100px;
+    height: 80px;
+}
+
+.profCtn{
+    display: flex;
+}
+
+#profileInfoChange{
+    display: block;
+}
+
+#showInterests{
+    display: block;
+}
+
+.profileSelect{
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.locationbtn{
+    margin-top: 20px;
+}
+
+.uploadForm{
+    display: flex;
+    flex-direction: column; 
+}
+
+.defaultInput::-webkit-file-upload-button{
+    visibility: hidden;
+}
+
+.defaultInput {
+    color: transparent;
+}
+
+.defaultInput::before{
+    content: 'Select a profile image';
+    color: aliceblue;
+    background-color: #00B7FF;
+    border: none;
+    border-radius: 12px;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
