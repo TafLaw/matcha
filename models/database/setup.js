@@ -27,42 +27,8 @@ MongoClient.connect(ur, function(err, db) {
     console.log("notifications Collection created!");
   });
 
-  dbo.createCollection("profiletext", function(err, res) {
-    if (err) throw err;
-    console.log("profiletext created!");
-  });
-
   dbo.createCollection("rating", function(err, res) {
     if (err) throw err;
     console.log("rating created!");
-  });
-
-  dbo.createCollection("profileviews", function(err, res) {
-    if (err) throw err;
-    console.log("profileviews created!");
-  });
-
-  dbo.createCollection("profileimages", function(err, res) {
-    if (err) throw err;
-    console.log("profileimages created!");
-  });
-  dbo.createCollection("profiletags", function(err, res) {
-    if (err) throw err;
-    console.log("profiletags created!");
-  });
-  dbo.createCollection("profileGeo", function(err, res) {
-    if (err) throw err;
-    console.log("profileGeo created!");
-  });
-
-  dbo.createCollection("profileGallery", function(err, res) {
-    if (err) throw err;
-    console.log("profileGallery created!");
-  });
-  dbo.createCollection("profile", function(err,res)
-  {
-    if(err) throw err;
-    console.log("profile colection created!");
-    db.close();
   });
 });

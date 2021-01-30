@@ -80,8 +80,8 @@ router.get("/logout", function (req, res) {
   MongoClient.connect(url, function (err, db) {
     var dbo = db.db("matcha");
     if (err) throw err;
-    var t = new Date();
-    dbo.collection("users").updateOne({ email: req.session.user.email }, { $set: { activity: t } }, function (err, act) {
+    var time = new Date();
+    dbo.collection("users").updateOne({ email: req.session.user.email }, { $set: { activity: time } }, function (err, act) {
       if (err) throw err;
     });
     req.session.destroy();

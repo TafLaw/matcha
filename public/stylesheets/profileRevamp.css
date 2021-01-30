@@ -289,3 +289,17 @@ input:checked + .slider:before {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+.viewScroll{
+    background-color: #00B7FF;
+    overflow: auto;
+    white-space: nowrap;
+    display: flex;
+}
+
+.viewImage{
+    border-radius: 50%;
+    height: 60px;
+    width: 50px;
+    margin-left: 40px;
+}

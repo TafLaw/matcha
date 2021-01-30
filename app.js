@@ -94,8 +94,8 @@ let user = [];
 let connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "password",
-  database: "matcha_db",
+  password: "AfricanMthoko#15",
+  database: "matcha",
   port: "3306"
 })
 

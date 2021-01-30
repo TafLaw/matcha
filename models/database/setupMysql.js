@@ -8,7 +8,7 @@ async function createDB() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "password"
+            password: "AfricanMthoko#15"
         });
     
         con.connect(function (err) {
@@ -29,8 +29,8 @@ async function createTables() {
     var con = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: "password",
-        database: "matcha_db"
+        password: "AfricanMthoko#15",
+        database: "matcha"
     });
 
     con.connect(function (err) {
@@ -122,8 +122,7 @@ async function createTables() {
             senderName VARCHAR(255) NOT NULL,
             senderMail VARCHAR(255) NOT NULL,
             receiverMail VARCHAR(255) NOT NULL,
-            message LONGTEXT,
-            
+            message LONGTEXT
         )`;
         con.query(sql5,function(err,result){
             if(err) throw err;
@@ -137,8 +136,8 @@ async function createConn() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "password",
-            database: "matcha_db"
+            password: "AfricanMthoko#15",
+            database: "matcha"
         });
     
         con.connect(function (err) {
@@ -149,6 +148,6 @@ async function createConn() {
     });
 }
 
-// createTables();
+createTables();
 
 module.exports = { createTables , createConn };

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
@@ -11,9 +12,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
     <script>
-        window.onload = function (){
+        window.onload = function () {
             var element = document.getElementById('gallery');
-            if('<%= mail %>' == '0' && '<%= gallery.length %>' == '0'){
+            if ('<%= mail %>' == '0' && '<%= gallery.length %>' == '0') {
                 element.style.display = 'none';
             }
         }
@@ -73,19 +74,21 @@
                 <div class="profileImage">
                     <img class="profimage" src='<%= profileData.image %>' alt="profile picture">
                     <% if(mail==1){ %>
-                            <form method="post" enctype="multipart/form-data">
-                                <input class="defaultInput" type="file" name="fileuploaded">
-                                <input class="formtbtn" type="submit" name="upload" value="upload">
-                            </form>
+                        <form method="post" enctype="multipart/form-data">
+                            <input class="defaultInput" type="file" name="fileuploaded">
+                            <input class="formtbtn" type="submit" name="upload" value="upload">
+                        </form>
                         <% } %>
                 </div>
-                <div style="margin-left: 20px; height: 100px;width: 200px;">
+                <div style="margin-left: 20px; height: 100px;width: 400px;">
                     <h2 id="profileName">
                         <%= username1 +","%>
                             <%= age %>
                     </h2>
-                    <p>Rating <%= rating %></p>
-                    <p>last Seen <%= activity %></p>
+                    <p>Rating <%= rating %>
+                    </p>
+                    <p>last Seen <%= activity %>
+                    </p>
                 </div>
             </div>
             <% if(mail==1){ %>
@@ -97,10 +100,10 @@
         <hr>
         <div id="gallery" class="Gallery">
             <div style="width: 100px;">
-                <% if(mail==1 && gallery.length <= 4){ %>
+                <% if(mail==1 && gallery.length <=4){ %>
                     <form class="uploadForm" method="post" enctype="multipart/form-data"
                         action="http://localhost:8080/profile/gallery">
-                        <input  class="defaultInput" type="file" name="fileuploaded">
+                        <input class="defaultInput" type="file" name="fileuploaded">
                         <input class="formtbtn" type="submit" name="Saveupload" value="Saveupload">
                     </form>
                     <% } %>
@@ -109,8 +112,8 @@
                 <%for(x=0; x < gallery.length; x++) {%>
                     <div>
                         <form method="post" action="http://localhost:8080/profile/remove">
-                            <img style="width: 120px;height: 120px;margin-right: 30px;"
-                                src='<%= gallery[x] %>' alt=gallery>
+                            <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= gallery[x] %>'
+                                alt=gallery>
                             <input type="hidden" name="pathr" value="<%= gallery[x] %>">
                             <div>
                                 <% if(mail==1){ %>
@@ -128,11 +131,11 @@
                 <h2>About Myself</h2>
             </div>
             <% if(mail==1){%>
-            <div style="padding-left: 20px;">
-                <button class="iconbtns" onclick="changeLookLocation('aboutChange','aboutText')"><i
-                        class="material-icons">edit</i></button>
-            </div>
-            <% } %>
+                <div style="padding-left: 20px;">
+                    <button class="iconbtns" onclick="changeLookLocation('aboutChange','aboutText')"><i
+                            class="material-icons">edit</i></button>
+                </div>
+                <% } %>
         </div>
         <div id="aboutChange">
             <p>
@@ -142,7 +145,8 @@
         <div id="aboutText">
             <% if(mail==1){ %>
                 <form method="post">
-                    <textarea maxlength="250" class="textarea" type="text" name="aboutprofile">Tell us more about yourself...</textarea>
+                    <textarea maxlength="250" class="textarea" type="text"
+                        name="aboutprofile">Tell us more about yourself...</textarea>
                     <input class="formtbtn" type="submit" name="updateAbout" value="updateAbout">
                 </form>
                 <% } %>
@@ -153,31 +157,32 @@
                 <h2>Personal Information</h2>
             </div>
             <% if(mail==1){%>
-            <div style="padding-left: 20px;">
-                <button class="iconbtns" onclick="changeLookLocation('profileInfoChange','profileInfo')"><i
-                        class="material-icons">edit</i></button>
-            </div>
-            <% } %>
+                <div style="padding-left: 20px;">
+                    <button class="iconbtns" onclick="changeLookLocation('profileInfoChange','profileInfo')"><i
+                            class="material-icons">edit</i></button>
+                </div>
+                <% } %>
         </div>
         <div id="profileInfoChange">
             <div class="profileSelect">Orientation : <div style="margin-left: auto;">
-                    <% var gender = profileData.gender == null ? 'No Info Added' : profileData.gender%>
-                    <%= gender %>
+                    <% var gender=profileData.gender==null ? 'No Info Added' : profileData.gender%>
+                        <%= gender %>
                 </div>
             </div>
             <div class="profileSelect">Sexual Preference : <div style="margin-left: auto;">
-                <% var sexualPreference = profileData.sexualPreference == null ? 'No Info Added' : profileData.sexualPreference%>
-                    <%= sexualPreference %>
+                    <% var sexualPreference=profileData.sexualPreference==null ? 'No Info Added' :
+                        profileData.sexualPreference%>
+                        <%= sexualPreference %>
                 </div>
             </div>
             <div class="profileSelect">ethnicity : <div style="margin-left: auto;">
-                <% var race = profileData.race == null ? 'No Info Added' : profileData.race%>
-                    <%= race %>
+                    <% var race=profileData.race==null ? 'No Info Added' : profileData.race%>
+                        <%= race %>
                 </div>
             </div>
             <div class="profileSelect">height : <div style="margin-left: auto;">
-                <% var height = profileData.height == null ? 'No Info Added' : profileData.height%>
-                    <%= height %>
+                    <% var height=profileData.height==null ? 'No Info Added' : profileData.height%>
+                        <%= height %>
                 </div>
             </div>
         </div>
@@ -226,11 +231,11 @@
                 <h2>Location</h2>
             </div>
             <% if(mail==1){%>
-            <div style="padding-left: 20px;">
-                <button class="iconbtns" onclick="changeLookLocation('location','editLocation')"><i
-                        class="material-icons">edit</i></button>
-            </div>
-            <% } %>
+                <div style="padding-left: 20px;">
+                    <button class="iconbtns" onclick="changeLookLocation('location','editLocation')"><i
+                            class="material-icons">edit</i></button>
+                </div>
+                <% } %>
         </div>
         <div id="location">
             <div>
@@ -285,14 +290,21 @@
                 <div><button class="iconbtns" onclick="activities('gaming')">gaming</button></div>
             </div>
         </div>
-        <!-- <% if(mail==1){ %>
-                        <h3>Profile Views</h3>
-                        <div>
-                            <%for(view in views) {%>
-                                <%= views[view].user + ' ' %>
-                                    <% } %>
-                        </div>
-                        <% } %> -->
+        <div>
+            <div>
+                <h3>Profile Views</h3>
+            </div>
+            <% if(mail==1){ %>
+            <div class="viewScroll">
+                <%for(view in views) {%>
+                <div>
+                    <img class="viewImage" src='<%= views[view].image %>' alt="profile picture">
+                </div>
+                <%= views[view].user %>
+                <% } %>
+            </div>
+            <% } %>
+        </div>
     </div>
 </body>
 <script>
@@ -402,11 +414,11 @@
     }
 
     function activities(activity) {
-        var url = "http://localhost:8080/profile/"+activity;
+        var url = "http://localhost:8080/profile/" + activity;
         window.location.replace(url);
     }
 
-    function hideElement(id){
+    function hideElement(id) {
         var element = document.getElementById(id);
         element.style.display = 'none';
     }

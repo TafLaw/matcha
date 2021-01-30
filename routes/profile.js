@@ -376,8 +376,6 @@ router.get("/edit_profile", async function (req, res) {
         if (err) throw err;
         let dbo = db.db("matcha");
         let profileData = await dbo.collection("users").findOne({ email: req.session.user.email });
-        console.log('gfffffffffffffffffffffr');
-        console.log(profileData);
         res.render('edit_profile', { profileData: profileData });
     });
 });
@@ -424,8 +422,7 @@ async function profile(req, res, email) {
         let views;
 
         if (req.session.user.email == email) {
-            views = await selectDB("SELECT * FROM views WHERE profile_id = ?", [[globalUserKey]], "VIEWS");
-            console.log(views);
+            views = await selectDB("SELECT * FROM views INNER JOIN profile ON views.profile_id = profile.profile_id WHERE views.profile_id = "+mysql.escape(globalUserKey), '', "VIEWS");
             mail = 1;
         } else {
             if (!await checkExistance("SELECT * FROM views WHERE email = ? AND profile_id = " + mysql.escape(globalUserKey), [[req.session.user.email]], "VIEWS")) {
