@@ -1,167 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <!-- must input field for the city loation of a person -->
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>About</title>
+    <title>settings</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/stylesheets/profileRevamp.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 
 <body style="  background-color: rgba(158, 199, 201, 0.08);">
-     <!-- nav bar -->
-     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- nav bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">Matcha</a>
         <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
-        <a class="nav-link" href="http://localhost:8080/profile"><%= username %></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
+        <a class="nav-link" href="http://localhost:8080/profile">
+            <%= profileData.name +" "+ profileData.surname%>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
         </button>
-    
+
         <div class="collapse navbar-collapse" id="navbarColor01">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="http://localhost:8080/home">Home <span class="sr-only">(current)</span></a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
-            </li>
-            
-            <li class="nav-item">
-              <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
-            </li>
-          </ul>
-          <a href="http://localhost:8080/logout">Logout</a>
-          <form class="form-inline" action="http://localhost:8080/search">
-            <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
-            <input type="hidden" name="Option1" value="none">
-            <input type="hidden" name="Option2" value="none">
-            <input type="hidden" name="Option3" value="none">
-            <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-          </form>
-        </div>
-      </nav>
-  <!-- nav bar ends here -->
-        <div>
-            <h1>Edit Profile Information</h1>
-            <h3>Edit Your Name</h3>
-            <div>
-                    <%= username %>
-                    <form method="post">
-                            <input type="text" name="username" placeholder="Please enter your name">
-                            <input type="submit" name="updateName" value="updateName">
-                        </form>
-            </div>
-            <h3>Edit Your Surname</h3>
-            <div>
-                    <%= surname %>
-                    <form method="post">
-                            <input type="text" name="surname" placeholder="Please enter your surname">
-                            <input type="submit" name="updateSurname" value="updateSurname">
-                        </form>
-            </div>
-            <h3>Edit Your Email</h3>
-            <div>
-                    <%= email %>
-                    <form method="post">
-                            <input type="text" name="email" placeholder="Please enter your email">
-                            <input type="submit" name="updateEmail" value="updateEmail">
-                        </form>
-            </div>
-    </div>
-    <div>
-        <!-- page 1 -->
-        <h3>Update About Message</h3>
-        <form method="post">
-            <input type="text" name="aboutprofile" placeholder="Please enter your about">
-            <input type="submit" name="updateAbout" value="updateAbout">
-        </form>
-    </div>
-    <!-- page 2 -->
-    <h3>Update Profile Information</h3>
-    <form method="post">
-        <div style="margin-bottom: 20px;">
-            <div style="margin-bottom: 20px;">
-                Orientation :
-                <select name="gender">
-                    <option name="Female" value="Female">Female</option>
-                    <option name="Male" value="Male">Male</option>
-                    <option name="other" value="other">other</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 20px;">
-                    Sexual Preference :
-                    <select name="sex">
-                        <option name="male" value="male">Male</option>
-                        <option name="Female" value="Female">Female</option>
-                        <option name="other" value="other">other</option>
-                    </select>
-                </div>
-            <div style="margin-bottom: 20px;">
-                ethnicity :
-                <select name="race">
-                    <option name="African" value="African">African</option>
-                    <option name="Asian" value="Asian">Asian</option>
-                    <option name="white" value="white">white</option>
-                    <option name="indian" value="indian">indian</option>
-                    <option name="other" value="other">other</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 20px;">
-                height :
-                <select name="height">
-                    <option name="Short" value="Short">Short</option>
-                    <option name="Average" value="Average">Average</option>
-                    <option name="Tall" value="Tall">Tall</option>
-                </select>
-                    <!-- <input style="width: 40px;" name="height" type="text"> -->        
-            </div>
-            <input type="submit" name="saveAbout" value="saveAbout">
-        </div>
-    </form>
-    <div>
-        <h3>Add your Geolocation</h3>
-        <form method="post">
-                <input type="text" name="city" placeholder="Please enter City Name">
-                <input type="submit" name="updateCity" value="updateCity">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://localhost:8080/home">Home <span
+                            class="sr-only">(current)</span></a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
+                </li>
+            </ul>
+            <a href="http://localhost:8080/logout">Logout</a>
+            <form class="form-inline" action="http://localhost:8080/search">
+                <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
+                <input type="hidden" name="Option1" value="none">
+                <input type="hidden" name="Option2" value="none">
+                <input type="hidden" name="Option3" value="none">
+                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
             </form>
+        </div>
+    </nav>
+    <!-- nav bar ends here -->
+    <div class="container">
+        <div>
+            <h2>General Information</h2>
+        </div>
+        <hr>
+        <div class="general">
+            <h4>Edit your name</h4>
+            <button class="iconbtns" onclick="changeLookLocation('Name','userName')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="Name">
+            <p>Surname : <%= profileData.name %></p>
+        </div>
+        <div id="userName">
+            <form method="post" action="http://localhost:8080/profile/">
+                <input maxlength="250" class="editInput" type="text" name="username" placeholder="Please enter your name">
+                <input class="formtbtn" type="submit" name="updateName" value="updateName">
+            </form>
+        </div>
+        <hr>
+        <div class="general">
+            <h4>Edit your surname</h4>
+            <button class="iconbtns" onclick="changeLookLocation('surname','userSurname')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="surname">
+            <p>Surname : <%= profileData.surname %></p>
+        </div>
+        <div id="userSurname">
+            <form method="post" action="http://localhost:8080/profile/">
+                <input maxlength="250" class="editInput" type="text" name="surname" placeholder="Please enter your surname">
+                <input class="formtbtn" type="submit" name="updateSurname" value="updateSurname">
+            </form>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Date Of Birth : <%= profileData.birthday_day +" "+profileData.birthday_month+" "+profileData.birthday_year %></p>
+        </div>
+        <hr>
+        <div class="general">
+            <h4>Edit your email</h4>
+            <button class="iconbtns" onclick="changeLookLocation('emailChange','userEmail')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="emailChange">
+            <p>Email Adress : <%= profileData.email %></p>
+        </div>
+        <div id="userEmail">
+            <form method="post" action="http://localhost:8080/profile/">
+                <input maxlength="250" class="editInput" type="email" name="email" placeholder="Please enter your email">
+                <input class="formtbtn" type="submit" name="updateEmail" value="updateEmail">
+            </form>
+        </div>
+        <hr>
+        <% var check = profileData.notifications ? 'checked' : 'unchecked'; %>
+        <div class="general">
+            <p>Notifications</p>
+            <label class="switch">
+                <input type="checkbox" onclick="notificationSlider(event);" <%= check %>/>
+                <span class="slider round"></span>
+            </label>
+        </div>
     </div>
-    <div>
-        <h3>Choose your Interests</h3>
-        <div style="margin-bottom: 20px;">
-                <form action="http://localhost:8080/profile/Music">
-                    <input type="submit" name="Music" value="#Music">
+    <!-- <div>
+        <h1>Edit Profile Information</h1>
+        <h3>Edit Your Name</h3>
+        <div>
+            <%=  %>
+                <form method="post">
+                    <input type="text" name="username" placeholder="Please enter your name">
+                    <input type="submit" name="updateName" value="updateName">
                 </form>
         </div>
-        <div style="margin-bottom: 20px;">
-                <form action="http://localhost:8080/profile/Sports">
-                        <input type="submit" name="Sports" value="#Sports">
-                    </form>
+        <h3>Edit Your Surname</h3>
+        <div>
+            <%=  %>
+                <form method="post">
+                    <input type="text" name="surname" placeholder="Please enter your surname">
+                    <input type="submit" name="updateSurname" value="updateSurname">
+                </form>
         </div>
-        <div style="margin-bottom: 20px;">
-                <form action="http://localhost:8080/profile/Food">
-                        <input type="submit" name="vegan" value="#Food">
-                    </form>
+        <h3>Edit Your Email</h3>
+        <div>
+            <%=  %>
+                <form method="post">
+                    <input type="text" name="email" placeholder="Please enter your email">
+                    <input type="submit" name="updateEmail" value="updateEmail">
+                </form>
         </div>
-        <div style="margin-bottom: 20px;">
-                <form action="http://localhost:8080/profile/Reading">
-                        <input type="submit" name="reading" value="#Reading">
-                    </form>
-        </div>
-        <div style="margin-bottom: 20px;">
-                <form action="http://localhost:8080/profile/Gaming">
-                        <input type="submit" name="gaming" value="#Gaming">
-                    </form>
-        </div>
-    </div>
+    </div> -->
+    <!-- page 1 -->
+    <!-- <div> -->
 </body>
+<script>
+
+function notificationSlider(e){
+    notifynum = e.target.checked ? 0 : 1;
+    $.ajax(
+        {
+            type: "POST",
+            url: "http://localhost:8080/profile/notify",
+            data: { notifynum: notifynum, notify: 'notifications' },
+            success: function(data){
+                console.log(data);
+            }
+        }
+    )
+}
+
+function changeLookLocation(id, id2) {
+        let element = document.getElementById(id);
+
+        if (element.style.display.length === 0) {
+            element.style.display = 'none';
+        } else {
+            setElementView(element);
+        }
+        if (id2 != null) {
+            let element1 = document.getElementById(id2);
+            if (element1.style.display.length == 0) {
+                element1.style.display = 'block';
+            }
+            else {
+                setElementView(element1);
+            }
+        }
+
+    }
+
+    function changeLook(id) {
+        let element = document.getElementById(id);
+        if (element.style.display.length === 0) {
+            element.style.display = 'block';
+        } else {
+            setElementView(element);
+        }
+    }
+
+    function setElementView(element) {
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
 </html>

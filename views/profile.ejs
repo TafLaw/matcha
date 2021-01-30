@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html>
-<!-- it seems like ejs can run if else and while (statements and conditions should be easy to work on the view profile ksasa) -->
-
 <head>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
-    <title>
-        Matcha Profile
-    </title>
-
-    <link rel="stylesheet" href="/stylesheets/profile.css">
+    <title>Profile</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="/stylesheets/profileRevamp.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <!-- <script>
-        function openForm()
-        {
-            document.getElementById("myabout").style.display = "block";
+    <script>
+        window.onload = function (){
+            var element = document.getElementById('gallery');
+            if('<%= mail %>' == '0' && '<%= gallery.length %>' == '0'){
+                element.style.display = 'none';
+            }
         }
-    </script> -->
+    </script>
 </head>
 <!-- https://gcs.thesouthafrican.com/2019/12/edf14e72-zozibini-tunzi-2-1200x858.jpg -->
 
@@ -28,210 +26,278 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">Matcha</a>
         <div style="border: 1px solid; border-radius: 50%; width: 50px; height: 50px; background-color: white"></div>
-        <a class="nav-link" href="http://localhost:8080/profile"><%= username1 %></a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-            aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <% if (mail==1) { %>
+            <a class="nav-link" href="http://localhost:8080/profile">
+                <%= username1 %>
+            </a>
+            <% } %>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+                    aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-        <div class="collapse navbar-collapse" id="navbarColor01">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="http://localhost:8080/home">Home <span
-                            class="sr-only">(current)</span></a>
-                </li>
+                <div class="collapse navbar-collapse" id="navbarColor01">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="http://localhost:8080/home">Home <span
+                                    class="sr-only">(current)</span></a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://localhost:8080/notifications">Notifications</a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
-                </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://localhost:8080/likes">Requests</a>
+                        </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
-                </li>
-            </ul>
-            <a href="http://localhost:8080/logout">Logout</a>
-            <form class="form-inline" action="http://localhost:8080/search">
-                <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search" aria-label="Search">
-                <input type="hidden" name="Option1" value="none">
-                <input type="hidden" name="Option2" value="none">
-                <input type="hidden" name="Option3" value="none">
-                <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
-            </form>
-        </div>
+                        <li class="nav-item">
+                            <a class="nav-link" href="http://localhost:8080/likes/connections">Connections</a>
+                        </li>
+                    </ul>
+                    <a href="http://localhost:8080/logout">Logout</a>
+                    <form class="form-inline" action="http://localhost:8080/search">
+                        <input class="form-control mr-sm-2" name="name" type="search" placeholder="Search"
+                            aria-label="Search">
+                        <input type="hidden" name="Option1" value="none">
+                        <input type="hidden" name="Option2" value="none">
+                        <input type="hidden" name="Option3" value="none">
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
     </nav>
     <!-- nav bar ends here -->
-    <div class="topcontainer">
-        <div class="picbod">
-            <img class="proimage" src='<%= profileData.image %>' alt="profile picture">
-            <div style="display: flex;">
-                <div>
-                    <% if(mail == 1){ %>
-                    <form method="post" enctype="multipart/form-data">
-                        <input style="margin-top: 20px;" type="file" name="fileuploaded">
-                        <input type="submit" name="upload" value="upload">
-                    </form>
-                    <% } %>
+    <div class="container">
+        <div class="profileName">
+            <div class="profCtn">
+                <div class="profileImage">
+                    <img class="profimage" src='<%= profileData.image %>' alt="profile picture">
+                    <% if(mail==1){ %>
+                            <form method="post" enctype="multipart/form-data">
+                                <input class="defaultInput" type="file" name="fileuploaded">
+                                <input class="formtbtn" type="submit" name="upload" value="upload">
+                            </form>
+                        <% } %>
+                </div>
+                <div style="margin-left: 20px; height: 100px;width: 200px;">
+                    <h2 id="profileName">
+                        <%= username1 +","%>
+                            <%= age %>
+                    </h2>
+                    <p>Rating <%= rating %></p>
+                    <p>last Seen <%= activity %></p>
                 </div>
             </div>
+            <% if(mail==1){ %>
+                <div>
+                    <button class="iconbtns" onclick="settings()"><i class="material-icons">settings</i></button>
+                </div>
+                <% } %>
         </div>
-        <div style="display: flex;margin: 50px;">
-            <div>
-                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                    <%= username1 %>
-                </p>
+        <hr>
+        <div id="gallery" class="Gallery">
+            <div style="width: 100px;">
+                <% if(mail==1 && gallery.length <= 4){ %>
+                    <form class="uploadForm" method="post" enctype="multipart/form-data"
+                        action="http://localhost:8080/profile/gallery">
+                        <input  class="defaultInput" type="file" name="fileuploaded">
+                        <input class="formtbtn" type="submit" name="Saveupload" value="Saveupload">
+                    </form>
+                    <% } %>
             </div>
-            <div style="margin-left: 30px;">
-                <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                    <%= age %>
-                </p>
+            <div class="galleryImage">
+                <%for(x=0; x < gallery.length; x++) {%>
+                    <div>
+                        <form method="post" action="http://localhost:8080/profile/remove">
+                            <img style="width: 120px;height: 120px;margin-right: 30px;"
+                                src='<%= gallery[x] %>' alt=gallery>
+                            <input type="hidden" name="pathr" value="<%= gallery[x] %>">
+                            <div>
+                                <% if(mail==1){ %>
+                                    <input class="formtbtn" type="submit" name="delete" value="delete">
+                                    <% } %>
+                            </div>
+                        </form>
+                    </div>
+                    <% } %>
             </div>
         </div>
-        <div class="rating">
-            <p class="profile_par">
-                <%= rating %> %</p>
-            <p class="profile_par">
-                Match</p>
+        <hr>
+        <div class="About">
             <div>
-                Last Seen:
+                <h2>About Myself</h2>
             </div>
-            <div>
-                <%= activity %>
+            <% if(mail==1){%>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('aboutChange','aboutText')"><i
+                        class="material-icons">edit</i></button>
             </div>
-        </div>
-    </div>
-    <hr style="width: 900px">
-    <div class="bio">
-        <div>
-            <p class="profile_par">
-                About MySelf
-            </p>
-            <% if(mail == 1){ %>
-            <form method="post">
-                <input type="submit" name="About" value="About">
-            </form>
             <% } %>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Veerdana, sans-serif;">
+        </div>
+        <div id="aboutChange">
+            <p>
                 <%= profileData.about %>
             </p>
         </div>
-        <div>
-            <p class="profile_par">
-                My Details
-            </p>
-            <% if(mail == 1){ %>
-            <form method="post">
-                <input type="submit" name="Details" value="Details">
-            </form>
-            <% } %>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Birthday&nbsp;&nbsp;<%= birthday %>
-            </p>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Orientation&nbsp;&nbsp;<%= profileData.gender %>
-            </p>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Sexual Preference&nbsp;&nbsp;<%= profileData.sexualPreference %>
-            </p>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                height&nbsp;&nbsp;<%= profileData.height %>
-            </p>
-            <hr>
-            <p style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
-                Ethnicity&nbsp;&nbsp;<%= profileData.race %>
-            </p>
-            <hr>
+        <div id="aboutText">
+            <% if(mail==1){ %>
+                <form method="post">
+                    <textarea maxlength="250" class="textarea" type="text" name="aboutprofile">Tell us more about yourself...</textarea>
+                    <input class="formtbtn" type="submit" name="updateAbout" value="updateAbout">
+                </form>
+                <% } %>
         </div>
-        <div>
-            <h3 class="location">Geolocation</h3>
-            <div id="map" class="map">
-            </div>
-            <p id="location"></p>
-            <% if(mail == 1){ %>
-            <button name="getlocation" onclick="getGeoLocation()">Get Your location</button>
-            <% } %>
+        <hr>
+        <div class="personalInformation">
             <div>
-                <img style="width:65px; height: 65px" src='<%= marker %>' alt="marker">
-                <%= profileData.city %>
+                <h2>Personal Information</h2>
             </div>
-            <!-- <form action="/profile.html" method="post"></form>
-                <input type="submit" name="Geolocation" value="Geolocation">
-            </form> -->
-            <h3 class="gallery">gallery</h3>
-            <div class="imagegallery">
-                <div class="galleryform">
-                    <div style="display: flex;">
-                        <%for(x = 0; x < gallery.length; x++) 
-                        {%>
-                        <div>
-                            <form method="post" action="http://localhost:8080/profile/remove">
-                                <img style="width: 120px;height: 120px;margin-right: 30px;" src='<%= gallery[x] %>'
-                                    alt=gallery>
-                                <input type="hidden" name="pathr" value="<%= gallery[x] %>">
-                                <div>
-                                    <% if(mail == 1){ %>
-                                    <input type="submit" name="delete" value="delete">
-                                    <% } %>
-                                </div>
-                            </form>
-                        </div>
-                        <% } %>
-                    </div>
-                    <div>
-                        <% if(mail == 1){ %>
-                        <form method="post" enctype="multipart/form-data"
-                            action="http://localhost:8080/profile/gallery">
-                            <input style="margin-top: 20px;" type="file" name="fileuploaded">
-                            <input type="submit" name="Saveupload" value="Saveupload">
-                        </form>
-                        <% } %>
-                    </div>
+            <% if(mail==1){%>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('profileInfoChange','profileInfo')"><i
+                        class="material-icons">edit</i></button>
+            </div>
+            <% } %>
+        </div>
+        <div id="profileInfoChange">
+            <div class="profileSelect">Orientation : <div style="margin-left: auto;">
+                    <% var gender = profileData.gender == null ? 'No Info Added' : profileData.gender%>
+                    <%= gender %>
                 </div>
             </div>
-            <h3 class="profileinterests">Interests</h3>
-            <div>
-                <%for(x = 0; x < tags.length; x++) 
-                        {%>
-                <%= tags[x] + ' ' %>
-                <% } %>
-                <!-- <%= tags[0] %> -->
+            <div class="profileSelect">Sexual Preference : <div style="margin-left: auto;">
+                <% var sexualPreference = profileData.sexualPreference == null ? 'No Info Added' : profileData.sexualPreference%>
+                    <%= sexualPreference %>
+                </div>
             </div>
-            <% if(mail == 1){ %>
-            <h3>Profile Views</h3>
-            <div>
-                <%for(x = 0; x < vies.length; x++) 
-                        {%>
-                <%= vies[x] + ' ' %>
-                <% } %>
+            <div class="profileSelect">ethnicity : <div style="margin-left: auto;">
+                <% var race = profileData.race == null ? 'No Info Added' : profileData.race%>
+                    <%= race %>
+                </div>
             </div>
-            <% } %>
-            <% if(mail == 1){ %>
-            <h3>Notifications</h3>
+            <div class="profileSelect">height : <div style="margin-left: auto;">
+                <% var height = profileData.height == null ? 'No Info Added' : profileData.height%>
+                    <%= height %>
+                </div>
+            </div>
+        </div>
+        <div id="profileInfo">
+            <form method="post">
+                <div class="selectors">
+                    Orientation :
+                    <select class="select" name="gender">
+                        <option name="Female" value="Female">Female</option>
+                        <option name="Male" value="Male">Male</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    Sexual Preference :
+                    <select class="select" name="sex">
+                        <option name="male" value="male">Male</option>
+                        <option name="Female" value="Female">Female</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    ethnicity :
+                    <select class="select" name="race">
+                        <option name="African" value="African">African</option>
+                        <option name="Asian" value="Asian">Asian</option>
+                        <option name="white" value="white">white</option>
+                        <option name="indian" value="indian">indian</option>
+                        <option name="other" value="other">other</option>
+                    </select>
+                </div>
+                <div class="selectors">
+                    height :
+                    <select class="select" name="height">
+                        <option name="Short" value="Short">Short</option>
+                        <option name="Average" value="Average">Average</option>
+                        <option name="Tall" value="Tall">Tall</option>
+                    </select>
+                </div>
+                <input class="formtbtn" type="submit" name="saveAbout" value="saveAbout">
+            </form>
+        </div>
+        <hr>
+        <div class="Location">
             <div>
-                <% if(notifications == 1){ %>
-                <p> Email Notifications Are On</p>
-                <% }else{ %>
-                <p> Email Notifications Are Off</p>
-                <% } %>
-                <form method="POST" action="http://localhost:8080/profile/notify">
-                    <input type="hidden" name="notifynum" value="<%= notifications %>">
-                    <input type="submit" name="notify" value="notifications">
-                </form>
+                <h2>Location</h2>
+            </div>
+            <% if(mail==1){%>
+            <div style="padding-left: 20px;">
+                <button class="iconbtns" onclick="changeLookLocation('location','editLocation')"><i
+                        class="material-icons">edit</i></button>
             </div>
             <% } %>
         </div>
+        <div id="location">
+            <div>
+                <p><i class="material-icons">location_on</i>
+                    <%= profileData.city %>
+                </p>
+            </div>
+        </div>
+        <div id="editLocation">
+            <form method="post">
+                <input maxlength="250" class="editInput" type="text" name="city" placeholder="Your City Name">
+                <input class="formtbtn" type="submit" name="updateCity" value="updateCity">
+            </form>
+        </div>
+        <div id="map">
+
+        </div>
+        <div class="locationbtn">
+            <% if(mail==1){ %>
+                <button class="formtbtn" name="getlocation" onclick="getGeoLocation()">Get Your location</button>
+                <% } %>
+        </div>
+        <hr>
+        <div class="Interests">
+            <div>
+                <h2>Interests</h2>
+            </div>
+            <% if(mail==1){%>
+                <div style="padding-left: 20px;">
+                    <button class="iconbtns" onclick="changeLookLocation('showInterests','interests')"><i
+                            class="material-icons">edit</i></button>
+                </div>
+                <% } %>
+        </div>
+        <div id="showInterests">
+            <div class="interest">
+                <div style="display: flex;">
+                    <%for(x=0; x < tags.length; x++) {%>
+                        <div class="iconbtns">
+                            #<%= tags[x] %>
+                        </div>
+                        <% } %>
+                </div>
+            </div>
+        </div>
+        <div id="interests">
+            <div class="interest">
+                <div><button class="iconbtns" onclick="activities('music')">music</button></div>
+                <div><button class="iconbtns" onclick="activities('sports')">sports</button></div>
+                <div><button class="iconbtns" onclick="activities('food')">food</button></div>
+                <div><button class="iconbtns" onclick="activities('reading')">reading</button></div>
+                <div><button class="iconbtns" onclick="activities('gaming')">gaming</button></div>
+            </div>
+        </div>
+        <!-- <% if(mail==1){ %>
+                        <h3>Profile Views</h3>
+                        <div>
+                            <%for(view in views) {%>
+                                <%= views[view].user + ' ' %>
+                                    <% } %>
+                        </div>
+                        <% } %> -->
     </div>
 </body>
 <script>
-    var map = L.map('map').setView([0, 0], 1);
+
+    var map = L.map('map').setView(['<%=profileData.latitude%>', '<%=profileData.longitude%>'], 13);
 
     L.tileLayer('https://api.maptiler.com/maps/streets/{z}/{x}/{y}.png?key=DaIkHlWAFmbWHM9uC42N',
         {
@@ -240,7 +306,8 @@
             minZoom: 1,
             attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>',
         }).addTo(map);
-        var marker = L.marker(['<%= lat %>', '<%= long %>']).addTo(map);
+
+    var marker = L.marker(['<%=profileData.latitude%>', '<%=profileData.longitude%>']).addTo(map);
 
     function getGeoLocation() {
         if (navigator.geolocation) {
@@ -251,32 +318,33 @@
         }
 
         function showPosition(position) {
+            lat = position.coords.latitude;
+            long = position.coords.longitude;
+
             $.ajax({
                 type: "GET",
-                url: "/profile/geofin",
+                url: "/profile/location",
                 data: { lat: position.coords.latitude, long: position.coords.longitude },
                 success: function (data) {
                     console.log(data);
 
                 },
-                error: function (jqXHR, textStatus, err) {
-                    alert('text status ' + textStatus + ', err ' + err)
-                }
             });
-
-            document.getElementById("location").innerHTML = "Latitude: " + position.coords.latitude +
-                "<br>Longitude: " + position.coords.longitude;
-
-            /* var latlon = position.coords.latitude + "," + position.coords.longitude;
-
-           var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlon+"&zoom=14&size=400x300&sensor=false&key=YOUR_KEY"; */
-
-            document.getElementById("Map").innerHTML = "<img src='" + img_url + "' alt='yourlocation'>";
+            // document.getElementById("location").innerHTML = "Latitude: " + position.coords.latitude + "<br>Longitude: " + position.coords.longitude;
+            location.reload();
         }
         function showError(positionError) {
             switch (positionError.code) {
                 case positionError.PERMISSION_DENIED:
-                    document.getElementById("location").innerHTML = "You denied your device location"
+                    $.ajax({
+                        type: "GET",
+                        url: "/profile/location",
+                        data: { lat: null, long: null },
+                        success: function (data) {
+                            console.log(data);
+                        },
+                    });
+                    location.reload();
                     break;
                 case positionError.POSITION_UNAVAILABLE:
                     document.getElementById("location").innerHTML = "Your Device had an Internal Error"
@@ -289,6 +357,58 @@
                     break;
             }
         }
+    }
+
+    function changeLookLocation(id, id2) {
+        let element = document.getElementById(id);
+
+        if (element.style.display.length === 0) {
+            element.style.display = 'none';
+        } else {
+            setElementView(element);
+        }
+        if (id2 != null) {
+            let element1 = document.getElementById(id2);
+            if (element1.style.display.length == 0) {
+                element1.style.display = 'block';
+            }
+            else {
+                setElementView(element1);
+            }
+        }
+
+    }
+
+    function changeLook(id) {
+        let element = document.getElementById(id);
+        if (element.style.display.length === 0) {
+            element.style.display = 'block';
+        } else {
+            setElementView(element);
+        }
+    }
+
+    function setElementView(element) {
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+
+    function settings() {
+        var url = "http://localhost:8080/profile/edit_profile";
+        window.location.replace(url);
+    }
+
+    function activities(activity) {
+        var url = "http://localhost:8080/profile/"+activity;
+        window.location.replace(url);
+    }
+
+    function hideElement(id){
+        var element = document.getElementById(id);
+        element.style.display = 'none';
     }
 </script>
 

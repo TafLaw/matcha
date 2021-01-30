@@ -49,7 +49,7 @@ app.use('/login', loginRouter);
 app.use('/verify',verifyRouter);
 app.use('/reset_pass',resetRouter);
 app.use('/chatbe',chatRouter);
-app.use('/profile', profileRouter);
+app.use('/profile', profileRouter.router);
 app.use('/like', likeRouter);
 app.use('/likes', likesRouter);
 

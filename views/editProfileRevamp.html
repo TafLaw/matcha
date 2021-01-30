@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="C:\Users\Mthokozisi Nzolo\Desktop\matcha\public\stylesheets\profileRevamp.css">
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <h2>General Information</h2>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Name</p>
+            <button class="iconbtns" onclick="changeLook('userName')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="userName">
+            <form method="post">
+                <input class="editInput" type="text" name="username" placeholder="Please enter your name">
+                <input class="formtbtn" type="submit" name="updateName" value="updateName">
+            </form>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Surname</p>
+            <button class="iconbtns" onclick="changeLook('userSurname')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="userSurname">
+            <form method="post">
+                <input class="editInput" type="text" name="surname" placeholder="Please enter your surname">
+                <input class="formtbtn" type="submit" name="updateSurname" value="updateSurname">
+            </form>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Date Of Birth</p>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Email Adress</p>
+            <button class="iconbtns" onclick="changeLook('userEmail')"><i class="material-icons">edit</i></button>
+        </div>
+        <div id="userEmail">
+            <form method="post">
+                <input class="editInput" type="text" name="email" placeholder="Please enter your email">
+                <input class="formtbtn"type="submit" name="updateEmail" value="updateEmail">
+            </form>
+        </div>
+        <hr>
+        <div class="general">
+            <p>Notifications</p>
+            <label class="switch">
+                <input type="checkbox" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+    </div>
+</body>
+<script>
+    function changeLook(id) {
+        let element = document.getElementById(id);
+        if (element.style.display.length === 0) {
+            element.style.display = 'block';
+        } else {
+            setElementView(element);
+        }
+    }
+
+    function setElementView(element) {
+        if (element.style.display === 'none') {
+            element.style.display = 'block';
+        } else {
+            element.style.display = 'none';
+        }
+    }
+</script>
+
+</html>
