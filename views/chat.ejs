@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="stylesheets/chat.css">
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</head>
+
+<body>
+    <div class="chat-container">
+        <ul id='users'></ul>
+        <div class="chat-header">
+            <div class="logo">
+                <i class="fab fa-facebook-messenger"></i>
+            </div>
+            <p id="your-name">
+                <%= sName %>
+            </p>
+        </div>
+        <!-- -------------------- -->
+        <div class="chat-window">
+            <div class="main-wrapper">
+                <div class="chat-content">
+                    <div class="message">
+                        <div class="message-row other-message" >
+                            <span id="receiver-name" style="display: none"><%= rName %></span>
+                            <span id="receiver-mail" style="display: none"><%= rMail %></span>
+                            <!-- <div class="message-title">
+                                <span>Tman</span>
+
+                            </div>
+                            <div class="message-text">
+                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure commodi placeat eos a sunt vitae tempora impedit pariatur corporis non. Possimus impedit illo facilis minus cumque dicta eum pariatur corporis.
+                            </div>
+                            <div class="message-time">
+                                December 20
+                            </div> -->
+                        </div>
+                        <div class="message-row you-message">
+                            <span id="sender-name" style="display: none"><%= sName %></span>
+                            <span id="sender-mail" style="display: none"><%= sMail %></span>
+                            <!-- <div class="message-title">
+                                <span>you</span>
+
+                            </div>
+                            <div class="message-text">
+                                Lorem ipsum dolor, sit amet consectetur adipisicing elit. Iure commodi placeat eos a sunt vitae tempora impedit pariatur corporis non. Possimus impedit illo facilis minus cumque dicta eum pariatur corporis.
+                            </div>
+                            <div class="message-time">
+                                December 20
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+                <form class="msg-field">
+                    <input type="text" name="msg" id="msg" placeholder="Type you message ..." autocomplete="off">
+                    <button id="btn-send"><i class="fas fa-paper-plane">
+                        Send
+                    </i></button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="/javascripts/chat.js"></script>
+</html>

@@ -8,7 +8,7 @@ async function createDB() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "AfricanMthoko#15"
+            password: "password"
         });
     
         con.connect(function (err) {
@@ -29,8 +29,8 @@ async function createTables() {
     var con = mysql.createConnection({
         host: "localhost",
         user: "root",
-        password: "AfricanMthoko#15",
-        database: "matcha"
+        password: "password",
+        database: "matcha_db"
     });
 
     con.connect(function (err) {
@@ -116,6 +116,19 @@ async function createTables() {
             if(err) throw err;
             console.log('views created!');
         });
+
+        let sql5 = `CREATE TABLE IF NOT EXISTS messages (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            senderName VARCHAR(255) NOT NULL,
+            senderMail VARCHAR(255) NOT NULL,
+            receiverMail VARCHAR(255) NOT NULL,
+            message LONGTEXT,
+            
+        )`;
+        con.query(sql5,function(err,result){
+            if(err) throw err;
+            console.log('messages created!');
+        });
     });
 }
 
@@ -124,8 +137,8 @@ async function createConn() {
         var con = mysql.createConnection({
             host: "localhost",
             user: "root",
-            password: "AfricanMthoko#15",
-            database: "matcha"
+            password: "password",
+            database: "matcha_db"
         });
     
         con.connect(function (err) {
