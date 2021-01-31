@@ -422,7 +422,9 @@ async function profile(req, res, email) {
         let views;
 
         if (req.session.user.email == email) {
-            views = await selectDB("SELECT * FROM views INNER JOIN profile ON views.profile_id = profile.profile_id WHERE views.profile_id = "+mysql.escape(globalUserKey), '', "VIEWS");
+            views = await selectDB("SELECT * FROM views INNER JOIN profile ON views.email = profile.email WHERE views.profile_id = "+mysql.escape(globalUserKey), '', "VIEWS");
+            console.log("vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv");
+            console.log(views);
             mail = 1;
         } else {
             if (!await checkExistance("SELECT * FROM views WHERE email = ? AND profile_id = " + mysql.escape(globalUserKey), [[req.session.user.email]], "VIEWS")) {
